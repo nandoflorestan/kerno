@@ -26,3 +26,10 @@ class BaseSQLAlchemyRepository:
             return session_factory()
         else:
             return session_factory
+
+    def flush(self):
+        """Obtain IDs on new objects and update state on the database.
+
+        Without committing the transaction.
+        """
+        self.sas.flush()
