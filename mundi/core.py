@@ -19,8 +19,8 @@ class Mundi:
         # The registry must be local to each Mundi instance, not static:
         @reg.dispatch(reg.match_key('name', lambda name: name))
         def get_utility(name):
-            """Return a utility class, according to configuration."""
-            raise NotImplementedError()
+            """Return a utility class, or None, according to configuration."""
+            return None  # when ``name`` not registered.
         self.get_utility = get_utility
 
         if settings and not hasattr(settings, '__getitem__'):
