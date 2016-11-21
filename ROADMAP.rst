@@ -6,7 +6,6 @@ Mundi needs to do these things:
 
 - mixin composition, for applications made of multiple modules
 - Any layer can see the settings
-- reg to register adapters and enable inversion of control
 - action interface
 - Actions are composable
 - strategies
@@ -15,7 +14,7 @@ Mundi needs to do these things:
     - sqlalchemy
       - Automatically imports modules' storage_sqlalchemy.py and composes
       the final Repository class out of mixins.
-
+- Actions are undoable: Command, History
 - app_name setting
 - app_package setting
 - The Repository strategy is a plugin and it is dependency-injected according to

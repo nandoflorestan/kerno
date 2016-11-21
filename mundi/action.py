@@ -19,7 +19,7 @@ class Action(metaclass=ABCMeta):
         self.payload = payload  # dictionary containing the action parameters
 
     @abstractmethod
-    def run(self) -> dict:
+    def do(self) -> dict:
         """Override this method to do the main work of the action.
 
         At the end return a dict with the payload for the next action.
@@ -45,7 +45,7 @@ class Action(metaclass=ABCMeta):
 
     def steps(self):
         """The steps to execute this action. Override this rarely."""
-        self.run()
+        self.do()
 
     def __call__(self):
         """Managed execution of this single action."""
