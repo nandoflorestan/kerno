@@ -9,14 +9,18 @@ from bag.web.exceptions import Problem
 class Action(metaclass=ABCMeta):
     """Base for Action classes. Actions are composable and chainable."""
 
-    def __init__(self, mundi, agent, target_action, payload: dict):
+    def __init__(self, mundi, agent, payload: dict, target_action=None, **kw):
         self.error = None  # and later, dict or False.
         self.status_int = None  # and later, an HTTP code.
         self.exception = None  # and later hopefully still None
         self.mundi = mundi
         self.agent = agent  # the user or component requesting this action
-        self.target_action = target_action  # class of main requested action
+        # class of main requested action:
+        self.target_action = target_action or type(self)
         self.payload = payload  # dictionary containing the action parameters
+
+        for key, val in kw.items():
+            setattr(self, key, val)
 
     @abstractmethod
     def do(self) -> dict:
@@ -25,8 +29,8 @@ class Action(metaclass=ABCMeta):
         At the end return a dict with the payload for the next action.
         """
 
-    @abstractmethod
-    def undo(self):
+    # @abstractmethod  # prevents instantiation when not implemented
+    # def undo(self):
         """Optionally also implement undo for this action."""
 
     def _succeed(self, status_int=200):
@@ -45,12 +49,12 @@ class Action(metaclass=ABCMeta):
 
     def steps(self):
         """The steps to execute this action. Override this rarely."""
-        self.do()
+        return self.do()
 
     def __call__(self):
         """Managed execution of this single action."""
         try:
-            self.steps()  # separate from exception handling below
+            ret = self.steps()  # separate from exception handling below
         except Problem as e:
             self._fail(e.error_title, e.error_msg, e.error_debug,
                        status_int=e.status_int, exception=e)
@@ -63,3 +67,4 @@ class Action(metaclass=ABCMeta):
             raise
         else:
             self._succeed()
+            return ret

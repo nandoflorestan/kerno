@@ -12,6 +12,7 @@ Mundi is:
   the edges of the system, while still providing ways to make
   development and automated testing easier.
 
+
 Defense of the architecture
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -125,6 +126,16 @@ Using Mundi
 
 If you wish to adopt the Clean Architecture, then Mundi can help you.
 Here is how.
+
+
+Startup time and request time
+=============================
+
+Mundi computes some things at startup and keeps the result in a "global" object
+which is an instance of the Mundi class. This instance is initialized with
+the app's settings and utilities (strategies) are registered on it.
+Then it is used on each request to obtain globals.
+Each request consists of a call to an Action.
 
 
 Component registration
