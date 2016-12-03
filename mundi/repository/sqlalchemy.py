@@ -16,9 +16,9 @@ class BaseSQLAlchemyRepository:
           SQLAlchemy session to be used in this request -- scoped or not.
         """
         self.mundi = mundi
-        self.sas = self.get_sas(session_factory)
+        self.sas = self.new_sas(session_factory)
 
-    def get_sas(self, session_factory):
+    def new_sas(self, session_factory):
         """Obtain a new SQLAlchemy session instance."""
         is_scoped_session = hasattr(session_factory, 'query')
         # Because we don't want to depend on SQLAlchemy:
