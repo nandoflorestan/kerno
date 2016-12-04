@@ -1,8 +1,4 @@
-"""This module contains a base class for SQLAlchemy-based repositories.
-
-The repository pattern describes a storage component that can be easily
-swapped through dependency injection.
-"""
+"""This module contains a base class for SQLAlchemy-based repositories."""
 
 
 class BaseSQLAlchemyRepository:
