@@ -2,13 +2,13 @@
 Concepts
 ========
 
-Mundi wishes to support:
+Kerno wishes to support:
 
 - the storage of a log of commands (for auditing, telling us who did what);
 - live updating of a UI - for example, through WebSockets;
 - an undo feature.
 
-To this end, Mundi shall use the following concepts:
+To this end, Kerno shall use the following concepts:
 
 **User**: The user (or system component) that performs an Operation.
 

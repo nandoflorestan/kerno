@@ -6,14 +6,14 @@ from sys import version_info
 from setuptools import setup, find_packages
 
 if version_info[:2] < (3, 5):
-    raise RuntimeError('Mundi requires Python 3.5+')
+    raise RuntimeError('Kerno requires Python 3.5+')
 
 with open('README.rst', encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    url='https://github.com/nandoflorestan/mundi',
-    name="mundi",
+    url='https://github.com/nandoflorestan/kerno',
+    name="kerno",
     author='Nando Florestan',
     version='0.1.0',
     license='MIT',

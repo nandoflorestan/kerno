@@ -1,22 +1,22 @@
-"""The Mundi class."""
+"""The Kerno class."""
 
 from configparser import NoSectionError
 import reg
 from bag.settings import read_ini_files, resolve
 
 
-class Mundi:
+class Kerno:
     """Integrates decoupled resources."""
 
     @classmethod
     def from_ini(cls, *config_files, encoding='utf-8'):
-        """Return a Mundi instance after reading some INI file(s)."""
+        """Return a Kerno instance after reading some INI file(s)."""
         return cls(settings=read_ini_files(*config_files, encoding=encoding))
 
     def __init__(self, settings=None):
         """The ``settings`` are a dict of dicts."""
 
-        # The registry must be local to each Mundi instance, not static:
+        # The registry must be local to each Kerno instance, not static:
         @reg.dispatch(reg.match_key('name', lambda name: name))
         def get_utility(name):
             """Return a utility class, or None, according to configuration."""
@@ -30,9 +30,9 @@ class Mundi:
         self.set_up_utilities()
 
     def set_up_utilities(self):
-        """Read the config section "Mundi utilites"; register each utility."""
+        """Read the config section "Kerno utilites"; register each utility."""
         try:
-            section = self.settings['Mundi utilities']
+            section = self.settings['Kerno utilities']
         except (NoSectionError, KeyError):
             return
         for key, val in section.items():
@@ -59,7 +59,7 @@ class Mundi:
     def run(self, user, action, payload):
         """Execute, as ``user``, the ``action`` with the ``payload``."""
         obj = action(
-            mundi=self,
+            kerno=self,
             user=user,
             target_action=action,
             payload=payload

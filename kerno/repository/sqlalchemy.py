@@ -4,14 +4,14 @@
 class BaseSQLAlchemyRepository:
     """Base class for a SQLAlchemy-based repository."""
 
-    def __init__(self, mundi, session_factory):
+    def __init__(self, kerno, session_factory):
         """Construct a SQLAlchemy repository instance to serve ONE request.
 
-        - ``mundi`` is the Mundi instance for the current application.
+        - ``kerno`` is the Kerno instance for the current application.
         - ``session_factory`` is a function that returns a
           SQLAlchemy session to be used in this request -- scoped or not.
         """
-        self.mundi = mundi
+        self.kerno = kerno
         self.sas = self.new_sas(session_factory)
 
     def new_sas(self, session_factory):

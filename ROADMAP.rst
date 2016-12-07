@@ -1,8 +1,7 @@
 =============
-Mundi Roadmap
+Kerno Roadmap
 =============
 
-- Change name to Kerno.
 - An operation is a name and a list of action classes.
 - A petition/petitio object with: app, repository, user, agent='web', etc.
 - A result/decretum/decree/ruling/resolution/dispatch object for successful petitions

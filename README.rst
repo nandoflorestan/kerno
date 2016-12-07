@@ -1,8 +1,8 @@
 =====
-Mundi
+Kerno
 =====
 
-Mundi is:
+Kerno is:
 
 - a framework for building applications in Python
 - which approximates Robert C. Martin's
@@ -18,7 +18,7 @@ Defense of the architecture
 
 This is the first such project in the entire Python community, which
 seems so addicted to the insufficient MVC or MVT offered by common
-web frameworks. Mundi does not replace these frameworks, but facilitates
+web frameworks. Kerno does not replace these frameworks, but facilitates
 creation of the top layers of an architecture that contains,
 from center to border:
 
@@ -121,18 +121,18 @@ so the following rules must be followed:
   business rules). Really, only your Repository object can use the session.
 
 
-Using Mundi
+Using Kerno
 ~~~~~~~~~~~
 
-If you wish to adopt the Clean Architecture, then Mundi can help you.
+If you wish to adopt the Clean Architecture, then Kerno can help you.
 Here is how.
 
 
 Startup time and request time
 =============================
 
-Mundi computes some things at startup and keeps the result in a "global" object
-which is an instance of the Mundi class. This instance is initialized with
+Kerno computes some things at startup and keeps the result in a "global" object
+which is an instance of the Kerno class. This instance is initialized with
 the app's settings and utilities (strategies) are registered on it.
 Then it is used on each request to obtain globals.
 Each request consists of a call to an Action.
@@ -141,7 +141,7 @@ Each request consists of a call to an Action.
 Component registration
 ======================
 
-In order to swap components between environments, Mundi could have used the
+In order to swap components between environments, Kerno could have used the
 famous and awesome
 `Zope Component Architecture <http://zopecomponent.readthedocs.io/>`_,
 but we are using `Reg <http://reg.readthedocs.io/>`_ instead.
@@ -152,6 +152,6 @@ each component you want to register.
 Composable actions
 ==================
 
-Mundi provides a base class for actions (the service layer). If you follow
+Kerno provides a base class for actions (the service layer). If you follow
 the pattern, then you can create actions composed of other actions, which
 might be useful to you.
