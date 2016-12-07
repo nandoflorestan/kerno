@@ -2,7 +2,6 @@
 Mundi Roadmap
 =============
 
-- Rename "agent" to "user".
 - Change name to Kerno.
 - An operation is a name and a list of action classes.
 - A petition/petitio object with: app, repository, user, agent='web', etc.

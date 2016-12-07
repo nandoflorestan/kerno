@@ -56,11 +56,11 @@ class Mundi:
                 'Configuration error: {} needs a utility called "{}" '
                 'which has not been registered.'.format(component, name))
 
-    def run(self, agent, action, payload):
-        """Execute, as ``agent``, the ``action`` with the ``payload``."""
+    def run(self, user, action, payload):
+        """Execute, as ``user``, the ``action`` with the ``payload``."""
         obj = action(
             mundi=self,
-            agent=agent,
+            user=user,
             target_action=action,
             payload=payload
         )

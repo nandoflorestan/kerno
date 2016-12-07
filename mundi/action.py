@@ -9,12 +9,12 @@ from bag.web.exceptions import Problem
 class Action(metaclass=ABCMeta):
     """Base for Action classes. Actions are composable and chainable."""
 
-    def __init__(self, mundi, agent, payload: dict, target_action=None, **kw):
+    def __init__(self, mundi, user, payload: dict, target_action=None, **kw):
         self.error = None  # and later, dict or False.
         self.status_int = None  # and later, an HTTP code.
         self.exception = None  # and later hopefully still None
         self.mundi = mundi
-        self.agent = agent  # the user or component requesting this action
+        self.user = user  # the user or component requesting this action
         # class of main requested action:
         self.target_action = target_action or type(self)
         self.payload = payload  # dictionary containing the action parameters
