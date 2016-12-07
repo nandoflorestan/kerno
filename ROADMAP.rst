@@ -2,37 +2,43 @@
 Mundi Roadmap
 =============
 
-Mundi needs to do these things:
-
-- mixin composition, for applications made of multiple modules
-- Any layer can see the settings
+- Rename "agent" to "user".
+- Change name to Kerno.
+- An operation is a name and a list of action classes.
+- A petition/petitio object with: app, repository, user, agent='web', etc.
+- A result/decretum/decree/ruling/resolution/dispatch object for successful petitions
+- Maybe the action is easier to test if it suffers automatic dependency injection?
+- ValidatingOperation adds ValidationAction before the main action.
+- A start procedure in which plugins (the modules of the system) are found
+  and initialized
+- mixin composition, for applications made of multiple modules:
+  ``config.add_mixin(to_assemble='repository', MyRepositoryPart)``
+- Actions are composable: validator actions, then main actions, then logging.
+- Register schemas: ``schemas.register(action=CreateUser, MySchema, petition)``
+- Register logging functions: ``logging.register(action=CreateUser, MyLogger, petition)``
+- Actions are undoable: Command, History
+- A good scheme to communicate with the web framework of choice. This might
+  include good Exception classes, or just a convention for the returned objects.
+- Optional Pyramid integration with total decoupling. Integration could mean,
+  for instance, just something that renders our exceptions into responses.
 - action interface
-- Actions are composable
 - strategies
   - operation logging
   - storage
     - sqlalchemy
       - Automatically imports modules' storage_sqlalchemy.py and composes
       the final Repository class out of mixins.
-- Actions are undoable: Command, History
 - app_name setting
 - app_package setting
 - The Repository strategy is a plugin and it is dependency-injected according to
   configuration, making it easy to create a FakeRepository for fast unit testing.
 - modules_package setting (undocumented, default 'modules')
 - modules directory
-- A start procedure in which plugins (the modules of the system) are found
-  and initialized
 - keepluggable as a plugin?
 - burla, to register and generate URLs. Alternatively, explain to me how
   URL generation can be left to the controller layer outside of this project.
   I don't think it can.
 - Hook documentation for the implemented actions
-- A good scheme to communicate with the web framework of choice. This might
-  include good Exception classes, or just a convention for the returned objects.
-- Optional Pyramid integration with total decoupling. Integration could mean,
-  for instance, just something that converts our exceptions into
-  Pyramid exceptions.
 - Optional SQLAlchemy integration, but at the right distance.
   For instance, research if it is possible to commit the transaction
   after an action, and still return to the controller the (now harmless)
@@ -41,7 +47,7 @@ Mundi needs to do these things:
 
 Ideas:
 
-- Validation for input structures could be registered into zope.component.
+- Validation for input structures could be registered.
   Because validation libraries raise their own exceptions, a couple choices, such as...
 
 - colander and

@@ -10,37 +10,41 @@ Mundi wishes to support:
 
 To this end, Mundi shall use the following concepts:
 
-**Agent**: The user (or system component) that performs an Action.
+**User**: The user (or system component) that performs an Operation.
 
-**Where**: This is the context of an Action -- which object(s) will the operation affect --, such as what division, what round etc.
+**Where**: This is the context of an Operation -- which object(s) will be affected --, such as what division, what round etc.
 
 **State**: Can be stored as a pickle. Preferably as JSON.
 
-**Manual**: A list of available Actions and Queries that the controller (the UI) can call, with an explanation of their parameters.
+**Manual**: A list of available Operations that the controller (the UI)
+can call, with an explanation of their parameters.
 
-**Query**: As seen from the controller (the UI).
+**Query**: A non-destructive Operation as seen from the controller (the UI).
   - Validates the Where (e. g. does this round belong to this division?)
-  - Verifies the Agent's authorization.
+  - Verifies the User's authorization.
   - Returns data.
 
-**Action**: as seen from the controller (the UI).
-  - Validates the Where (e. g. does this round belong to this division?)
-  - Verifies the Agent's authorization.
-  - Validates incoming data (usually).
-  - Creates a State for the Undo -- i. e. the current state.
-  - Creates a State for the Do -- i. e. the future state.
-  - Instantiates a Command with the Where and the 2 States.
+**Action**: A step in an Operation.
+
+**Operation**: A named series of Actions, as seen from the controller (the UI).
+Some of the Actions would be:
+  - Validate the Where (e. g. does this round belong to this division?)
+  - Verifie the User's authorization.
+  - Validate incoming data (usually).
+  - Create a State for the Undo -- i. e. the current state.
+  - Create a State for the Do -- i. e. the future state.
+  - Instantiate a Command with the Where and the 2 States.
   - In a transaction:
     - Executes the Do function of the Command.
     - Stores the Command in the History.
 
 **History**: Enables logging and undo. A stack of Commands with all their data. May have multiple storage backends. Might save space by making an Undo state point to a previously stored state.
 
-**Command**: Enables undo. Stored in History. Contains the date, the Agent, the Do function, the Where, the Undo function, the Do and Undo States, and a brief description. Sometimes both functions will be the same (e. g. just a setter), but other times they will need to be different functions.
+**Command**: Enables undo. Stored in History. Contains the date, the User, the Do function, the Where, the Undo function, the Do and Undo States, and a brief description. Sometimes both functions will be the same (e. g. just a setter), but other times they will need to be different functions.
 
 In the future, we might also have:
 
-**Operation**: A composite Command, or a named sequence of Commands. The History needs to support storage of Commands and Operations. Not sure how an Action instantiates an Operation.
+**Order**: A composite Command, or a named sequence of Commands. The History needs to support storage of Commands and Orders. Not sure how an Action instantiates an Order.
 
 **Impact**: We can allow the execution of Undos out of order, as long as we know their Impact. For instance, the Command "Rename a division" impacts other commands of the same name, but does not impact an "Add round to division" command.
 
