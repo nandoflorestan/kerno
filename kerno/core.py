@@ -5,28 +5,18 @@ import reg
 from bag.settings import read_ini_files, resolve
 
 
-class Kerno:
-    """Integrates decoupled resources."""
+class UtilityRegistry:
+    """Mixin that contains Kerno's utility registry."""
 
-    @classmethod
-    def from_ini(cls, *config_files, encoding='utf-8'):
-        """Return a Kerno instance after reading some INI file(s)."""
-        return cls(settings=read_ini_files(*config_files, encoding=encoding))
-
-    def __init__(self, settings=None):
-        """The ``settings`` are a dict of dicts."""
-
-        # The registry must be local to each Kerno instance, not static:
+    def __init__(self):
+        """Constructor section."""
+        # The registry must be local to each Kerno instance, not static.
+        # This is why we define the registry inside the constructor:
         @reg.dispatch(reg.match_key('name', lambda name: name))
         def get_utility(name):
             """Return a utility class, or None, according to configuration."""
             return None  # when ``name`` not registered.
         self.get_utility = get_utility
-
-        if settings and not hasattr(settings, '__getitem__'):
-            raise TypeError("The *settings* argument must be dict-like. "
-                            "Received: {}".format(type(settings)))
-        self.settings = settings
         self.set_up_utilities()
 
     def set_up_utilities(self):
@@ -56,12 +46,30 @@ class Kerno:
                 'Configuration error: {} needs a utility called "{}" '
                 'which has not been registered.'.format(component, name))
 
-    def run(self, user, action, payload):
-        """Execute, as ``user``, the ``action`` with the ``payload``."""
-        obj = action(
+
+class Kerno(UtilityRegistry):
+    """Core of an application, integrating decoupled resources."""
+
+    @classmethod
+    def from_ini(cls, *config_files, encoding='utf-8'):
+        """Return a Kerno instance after reading some INI file(s)."""
+        return cls(settings=read_ini_files(*config_files, encoding=encoding))
+
+    def __init__(self, settings=None):
+        """The ``settings`` are a dict of dicts."""
+        if settings and not hasattr(settings, '__getitem__'):
+            raise TypeError("The *settings* argument must be dict-like. "
+                            "Received: {}".format(type(settings)))
+        self.settings = settings
+        UtilityRegistry.__init__(self)
+
+    def run(self, user, operation, payload):
+        """Execute, as ``user``, the ``operation`` with the ``payload``."""
+        # TODO Get operation from registry
+        obj = operation(
             kerno=self,
             user=user,
-            target_action=action,
+            target_action=operation,
             payload=payload
         )
         adict = obj()

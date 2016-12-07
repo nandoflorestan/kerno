@@ -1,14 +1,12 @@
 =============
-Kerno Roadmap
+Kerno roadmap
 =============
 
-- An operation is a name and a list of action classes.
-- A petition/petitio object with: app, repository, user, agent='web', etc.
-- A result/decretum/decree/ruling/resolution/dispatch object for successful petitions
+- Operation registry
 - Maybe the action is easier to test if it suffers automatic dependency injection?
 - ValidatingOperation adds ValidationAction before the main action.
 - A start procedure in which plugins (the modules of the system) are found
-  and initialized
+  and initialized. Start with the repository.
 - mixin composition, for applications made of multiple modules:
   ``config.add_mixin(to_assemble='repository', MyRepositoryPart)``
 - Actions are composable: validator actions, then main actions, then logging.
