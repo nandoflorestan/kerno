@@ -1,9 +1,34 @@
 """Classes that store state."""
 
 from copy import copy
-from sys import exc_info
-from traceback import format_tb
-from bag.web.exceptions import Problem
+from datetime import datetime
+
+
+class UIMessage:
+    """Represents a message to be displayed to the user in the UI."""
+
+    KINDS = ['danger', 'warning', 'info', 'success']
+
+    def __init__(self, title, kind='success', plain=None, html=None):
+        """Constructor.
+
+        ``kind`` must be one of ('danger', 'warning', 'info', 'success').
+        """
+        assert (plain and not html) or (html and not plain)
+        if kind == 'error':
+            kind = 'danger'
+        assert kind in self.KINDS, 'Unknown kind of message: "{0}". ' \
+            "Possible kinds are {1}".format(kind, self.KINDS)
+        self.title = title
+        self.plain = plain
+        self.html = html
+
+    def __repr__(self):
+        return '<{} "{}">'.format(self.__class__.__name__, self.title)
+
+    def to_dict(self):
+        """Convert instance to a dictionary, usually for JSON output."""
+        return copy(self.__dict__)
 
 
 class Peto:
@@ -14,7 +39,7 @@ class Peto:
     sends data to the next action.
     """
 
-    def __init__(self, kerno, user, operation, payload: dict, **kw):
+    def __init__(self, kerno, user, operation, payload: dict, when=None, **kw):
         """Constructor.
 
         ``kerno`` must be the Kerno instance for the current application.
@@ -23,6 +48,7 @@ class Peto:
         ``payload`` is a dictionary containing the operation parameters.
         """
         self.kerno = kerno
+        self.when = when or datetime.utcnow()
         self.user = user      # the user or component requesting this action
         self.operation = operation
         self.dirty = payload  # dictionary containing the action parameters
@@ -33,7 +59,10 @@ class Peto:
 
 
 class Returnable:
-    """Base class for Rezulto and for MalbonaRezulto."""
+    """Base class for Rezulto and for MalbonaRezulto.
+
+    Subclasses must define a ``status_int`` variable.
+    """
 
     def __init__(self):
         """Base constructor."""
@@ -42,9 +71,21 @@ class Returnable:
         self.debug = {}     # Not displayed to the user
         self.redirect = None  # URL to redirect to
 
+    def __repr__(self):
+        return "<{} status: {}>".format(
+            self.__class__.__name__, self.status_int)
+
     def to_dict(self):
         """Convert instance to a dictionary, usually for JSON output."""
         return copy(self.__dict__)
+
+    def add_message(self, title, plain=None, html=None):
+        """Add to the grave messages to be displayed to the user on the UI."""
+        self.messages.append(UIMessage(title, plain=plain, html=html))
+
+    def add_toast(self, title, plain=None, html=None):
+        """Add to the quick messages to be displayed to the user on the UI."""
+        self.toasts.append(UIMessage(title, plain=plain, html=html))
 
 
 class Rezulto(Returnable):
@@ -76,8 +117,7 @@ class Rezulto(Returnable):
 class MalbonaRezulto(Returnable, Exception):
     """Base class for exceptions raised by Kerno."""
 
-    def __init__(self, errors=None, status_int=400):
+    def __init__(self, status_int=400):
         """Constructor."""
         Returnable.__init__(self)
         self.status_int = status_int
-        self.errors = errors or {}  # For validation errors

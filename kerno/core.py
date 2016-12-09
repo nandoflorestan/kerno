@@ -3,6 +3,7 @@
 from configparser import NoSectionError
 import reg
 from bag.settings import read_ini_files, resolve
+from .operation import OperationRegistry
 
 
 class UtilityRegistry:
@@ -47,7 +48,7 @@ class UtilityRegistry:
                 'which has not been registered.'.format(component, name))
 
 
-class Kerno(UtilityRegistry):
+class Kerno(UtilityRegistry, OperationRegistry):
     """Core of an application, integrating decoupled resources."""
 
     @classmethod
@@ -62,15 +63,4 @@ class Kerno(UtilityRegistry):
                             "Received: {}".format(type(settings)))
         self.settings = settings
         UtilityRegistry.__init__(self)
-
-    def run(self, user, operation, payload):
-        """Execute, as ``user``, the ``operation`` with the ``payload``."""
-        # TODO Get operation from registry
-        obj = operation(
-            kerno=self,
-            user=user,
-            target_action=operation,
-            payload=payload
-        )
-        adict = obj()
-        return adict
+        OperationRegistry.__init__(self)
