@@ -1,18 +1,21 @@
 """Action base class."""
 
 from abc import ABCMeta, abstractmethod
-from sys import exc_info
-from traceback import format_tb
-from bag.web.exceptions import Problem
 
 
 class Action(metaclass=ABCMeta):
-    """Base for Action classes. Actions are composable and chainable."""
+    """Base for Action classes. Actions are composable and chainable.
 
-    def __init__(self, peto, **kw):
+    Instead of subclassing Action, you can write a function that takes
+    the argument ``peto``. Instead of returning something, it should
+    modify ``peto.rezulto``.
+    """
+
+    def __init__(self, peto):  #, **kw):
+        """Constructor."""
         self.peto = peto
-        for key, val in kw.items():
-            setattr(self, key, val)
+        # for key, val in kw.items():
+        #     setattr(self, key, val)
 
     @abstractmethod
     def __call__(self):
@@ -20,6 +23,7 @@ class Action(metaclass=ABCMeta):
 
         Instead of returning something, modify self.peto.rezulto.
         """
+        pass
 
     # @abstractmethod  # prevents instantiation when not implemented
     # def undo(self):

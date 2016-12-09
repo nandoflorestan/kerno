@@ -13,7 +13,7 @@ class Operation:
         self.name = name
         self.actions = tuple(actions)
 
-    def __call__(self, kerno, user, payload):
+    def __call__(self, kerno, user, payload, peto_vars):
         """Execute the actions of this instance as ``user`` with ``payload``.
 
         Actions can be:
@@ -23,15 +23,17 @@ class Operation:
           and a __call__() method.
         """
         peto = Peto(kerno=kerno, user=user, operation=self, payload=payload)
+        for key, val in peto_vars.items():
+            setattr(peto, key, val)
         for action in self.actions:
-            if isinstance(action, Action):
+            if issubclass(action, Action):
                 action_instance = action(peto)
                 action_instance()
             elif isinstance(action, FunctionType):
                 action(peto)
             else:
                 raise RuntimeError(
-                    'The action {} is not a function or an Action subclass!'
+                    '{} is not a function or an Action subclass!'
                     .format(action))
         return peto  # which has .rezulto
 
@@ -60,8 +62,8 @@ class OperationRegistry:
             raise RuntimeError('register_operation() called with wrong args!')
         self.get_operation.register(lambda name: operation, name=name)
 
-    def run_operation(self, operation, user, payload):
+    def run_operation(self, operation, user, payload, **kw):
         """Execute, as ``user``, the specified operation with ``payload``."""
         if isinstance(operation, str):
             operation = self.get_operation(operation)
-        return operation(kerno=self, user=user, payload=payload)
+        return operation(kerno=self, user=user, payload=payload, peto_vars=kw)
