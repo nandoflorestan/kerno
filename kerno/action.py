@@ -6,12 +6,12 @@ from abc import ABCMeta, abstractmethod
 class Action(metaclass=ABCMeta):
     """Base for Action classes. Actions are composable and chainable.
 
-    Instead of subclassing Action, you can write a function that takes
-    the argument ``peto``. Instead of returning something, it should
-    modify ``peto.rezulto``.
+    If you don't need undo functionality, you may skip subclassing Action and
+    just write a function that takes the argument ``peto``.
+    Instead of returning something, it should modify ``peto.rezulto``.
     """
 
-    def __init__(self, peto):  #, **kw):
+    def __init__(self, peto):  # , **kw):
         """Constructor."""
         self.peto = peto
         # for key, val in kw.items():
