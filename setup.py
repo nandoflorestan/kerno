@@ -5,8 +5,8 @@ from sys import version_info
 # from distutils.core import setup
 from setuptools import setup, find_packages
 
-if version_info[:2] < (3, 5):
-    raise RuntimeError('Kerno requires Python 3.5+')
+if version_info[:2] < (3, 4):
+    raise RuntimeError('Kerno requires Python 3.4+')
 
 with open('README.rst', encoding='utf-8') as f:
     long_description = f.read()

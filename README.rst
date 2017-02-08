@@ -2,7 +2,7 @@
 Kerno
 =====
 
-Kerno is:
+Kerno is trying to be:
 
 - a framework for building applications in Python
 - which approximates Robert C. Martin's
@@ -27,11 +27,11 @@ from center to border:
 - **Model layer:** in which you define entities (e. g. SQLAlchemy models),
   but no I/O (no session, no queries). The entities can be seen
   by all the layers below.
-- **Repository layer:** Performs database access (e. g. queries) and is
-  dependency-injected into the Action layer, making unit tests easier to write.
 - **Action layer:** in which you define business rules (decisions,
   the core of your app), meaning it can import and use the models above,
   and use other utilities that are dependency-injected.
+- **Repository layer:** Performs database access (e. g. queries) and is
+  dependency-injected into the Action layer, making unit tests easier to write.
 - **Controller layer:** Thin glue layer, the only one that imports and uses
   a web framework or GUI framework.
 - **Template layer:** If using a web framework.
