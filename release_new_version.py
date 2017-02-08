@@ -24,20 +24,20 @@ Releaser(
     config,
 
     # ==================  Before releasing, do some checks  ===================
-    Shell('python setup.py test'),  # First of all ensure tests pass
-    CheckRstFiles,  # Documentation: recursively verify ALL .rst files, or:
-    # CheckRstFiles('README.rst', 'CHANGES.rst', 'LICENSE.rst'),  # just a few.
+    # Shell('python setup.py test'),  # First of all ensure tests pass
+    # CheckRstFiles,  # Documentation: recursively verify ALL .rst files, or:
+    CheckRstFiles('README.rst', 'docs/LICENSE.rst'),  # just a few.
     # TODO IMPLEMENT CompileAndVerifyTranslations,
     EnsureGitClean,   # There are no uncommitted changes in tracked files.
     EnsureGitBranch,  # I must be in the branch specified in config
     # InteractivelyEnsureChangesDocumented,     # Did you update CHANGES.rst?
-    Shell('./build_sphinx_documentation.sh'),  # You can write it easily
     InteractivelyApproveDistribution,  # Generate sdist, let user verify it
     InteractivelyApproveWheel,         # Let user verify a temp wheel
     # CheckTravis,  # We run this late, so travis-ci has more time to build
 
     # ======================  All checks pass. RELEASE!  ======================
     SetVersionNumberInteractively,  # Ask for version and write to source code
+    Shell('./build_sphinx_documentation.sh'),  # You can write it easily
     GitCommitVersionNumber,
     GitTag,  # Locally tag the current commit with the new version number
     PypiRegister,           # Create the new release at https://pypi.python.org
