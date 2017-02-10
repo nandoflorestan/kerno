@@ -12,6 +12,8 @@ Kerno is trying to be:
   the edges of the system, while still providing ways to make
   development and automated testing easier.
 
+The documentation is at http://docs.nando.audio/kerno/latest/
+
 
 Defense of the architecture
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~

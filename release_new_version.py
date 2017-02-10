@@ -24,7 +24,7 @@ Releaser(
     config,
 
     # ==================  Before releasing, do some checks  ===================
-    # Shell('python setup.py test'),  # First of all ensure tests pass
+    Shell('python setup.py test'),  # First of all ensure tests pass
     # CheckRstFiles,  # Documentation: recursively verify ALL .rst files, or:
     CheckRstFiles('README.rst', 'docs/LICENSE.rst'),  # just a few.
     # TODO IMPLEMENT CompileAndVerifyTranslations,

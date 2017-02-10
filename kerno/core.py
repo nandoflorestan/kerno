@@ -37,12 +37,12 @@ class UtilityRegistry:
 
     def set_default_utility(self, name, utility):
         """Register ``utility`` as ``name`` only if name not yet registered."""
-        if self.get_utility.component(name) is None:
+        if self.get_utility.by_args(name).component is None:
             self.register_utility(name, utility)
 
     def ensure_utility(self, name, component='The application'):
         """Raise if no utility has been registered under ``name``."""
-        if self.get_utility.component(name) is None:
+        if self.get_utility.by_args(name).component is None:
             raise RuntimeError(
                 'Configuration error: {} needs a utility called "{}" '
                 'which has not been registered.'.format(component, name))
