@@ -43,3 +43,28 @@ real unit tests for the pure part of the code.
 I also recommend against building generic repositories. See
 http://ben-morris.com/why-the-generic-repository-is-just-a-lazy-anti-pattern
 """
+
+from bag.settings import resolve
+
+
+def compose_class(name, mixins):
+    """Return a class called ``name``, made of the bases ``mixins``."""
+    bases = [resolve(mixin) if isinstance(mixin, str) else mixin
+             for mixin in mixins]
+    return type(name, bases, {})
+
+
+class RepositoryAssembler:
+    """Lets application modules contribute mixins to the repository class."""
+
+    def __init__(self, mixins=None):
+        self.repository_mixins = list(mixins) if mixins else []
+
+    def add_repository_mixin(self, mixin):
+        """Store another mixin class that will form the final repository."""
+        assert isinstance(mixin, (str, type))
+        self.repository_mixins.append(mixin)
+
+    def get_final_repository_class(self, name='KernoRepository'):
+        """Assemble the repository class from registered mixins."""
+        return compose_class(name=name, mixins=self.repository_mixins)

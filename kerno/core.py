@@ -4,6 +4,7 @@ from configparser import NoSectionError
 import reg
 from bag.settings import read_ini_files, resolve
 from .operation import OperationRegistry
+from .repository import RepositoryAssembler
 
 
 class UtilityRegistry:
@@ -48,7 +49,7 @@ class UtilityRegistry:
                 'which has not been registered.'.format(component, name))
 
 
-class Kerno(UtilityRegistry, OperationRegistry):
+class Kerno(UtilityRegistry, OperationRegistry, RepositoryAssembler):
     """Core of an application, integrating decoupled resources."""
 
     @classmethod
