@@ -65,3 +65,4 @@ class Kerno(UtilityRegistry, OperationRegistry, RepositoryAssembler):
         self.settings = settings
         UtilityRegistry.__init__(self)
         OperationRegistry.__init__(self)
+        RepositoryAssembler.__init__(self)

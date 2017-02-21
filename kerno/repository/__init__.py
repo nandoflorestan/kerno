@@ -49,9 +49,9 @@ from bag.settings import resolve
 
 def compose_class(name, mixins):
     """Return a class called ``name``, made of the bases ``mixins``."""
-    bases = [resolve(mixin) if isinstance(mixin, str) else mixin
-             for mixin in mixins]
-    return type(name, bases, {})
+    bases = (resolve(mixin) if isinstance(mixin, str) else mixin
+             for mixin in mixins)
+    return type(name, tuple(bases), {})
 
 
 class RepositoryAssembler:
@@ -59,12 +59,21 @@ class RepositoryAssembler:
 
     def __init__(self, mixins=None):
         self.repository_mixins = list(mixins) if mixins else []
+        self._Repository = None
 
     def add_repository_mixin(self, mixin):
         """Store another mixin class that will form the final repository."""
         assert isinstance(mixin, (str, type))
         self.repository_mixins.append(mixin)
+        self._Repository = None
 
-    def get_final_repository_class(self, name='KernoRepository'):
-        """Assemble the repository class from registered mixins."""
-        return compose_class(name=name, mixins=self.repository_mixins)
+    @property
+    def Repository(self):
+        """Return the Repository class.
+
+        On 1st access, assembles the Repository class from registered mixins.
+        """
+        if not self._Repository:
+            self._Repository = compose_class(
+                name='Repository', mixins=self.repository_mixins)
+        return self._Repository
