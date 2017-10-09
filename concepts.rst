@@ -29,14 +29,14 @@ can call, with an explanation of their parameters.
 **Operation**: A named series of Actions, as seen from the controller (the UI).
 Some of the Actions would be:
   - Validate the Where (e. g. does this round belong to this division?)
-  - Verifie the User's authorization.
+  - Verify the User's authorization.
   - Validate incoming data (usually).
   - Create a State for the Undo -- i. e. the current state.
   - Create a State for the Do -- i. e. the future state.
   - Instantiate a Command with the Where and the 2 States.
   - In a transaction:
-    - Executes the Do function of the Command.
-    - Stores the Command in the History.
+    - Execute the Do function of the Command.
+    - Store the Command in the History.
 
 **History**: Enables logging and undo. A stack of Commands with all their data. May have multiple storage backends. Might save space by making an Undo state point to a previously stored state.
 
