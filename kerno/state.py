@@ -1,6 +1,5 @@
 """Classes that store state."""
 
-from copy import copy
 from datetime import datetime
 
 
@@ -14,7 +13,8 @@ class UIMessage:
 
         ``kind`` must be one of ('danger', 'warning', 'info', 'success').
         """
-        assert (plain and not html) or (html and not plain)
+        args_are_valid = (plain and not html) or (html and not plain)
+        assert args_are_valid
         if kind == 'error':
             kind = 'danger'
         assert kind in self.KINDS, 'Unknown kind of message: "{0}". ' \
@@ -28,7 +28,7 @@ class UIMessage:
 
     def to_dict(self):
         """Convert instance to a dictionary, usually for JSON output."""
-        return copy(self.__dict__)
+        return self.__dict__.copy()
 
 
 class Peto:
@@ -61,11 +61,10 @@ class Peto:
 class Returnable:
     """Base class for Rezulto and for MalbonaRezulto.
 
-    Subclasses must define a ``status_int`` variable.
+    Subclasses MUST define a ``status_int`` variable and a DEFAULT_KIND.
     """
 
     def __init__(self):
-        """Base constructor."""
         self.messages = []  # Grave messages for the user to read
         self.toasts = []    # Quick messages that disappear automatically
         self.debug = {}     # Not displayed to the user
@@ -76,16 +75,22 @@ class Returnable:
             self.__class__.__name__, self.status_int)
 
     def to_dict(self):
-        """Convert instance to a dictionary, usually for JSON output."""
-        return copy(self.__dict__)
+        """Convert this to a dictionary, usually for JSON output."""
+        return dict(
+            messages=[m.to_dict() for m in self.messages],
+            toasts=[m.to_dict() for m in self.toasts],
+            debug=self.debug,
+            redirect=self.redirect)
 
-    def add_message(self, title, plain=None, html=None):
+    def add_message(self, title, kind=None, plain=None, html=None):
         """Add to the grave messages to be displayed to the user on the UI."""
-        self.messages.append(UIMessage(title, plain=plain, html=html))
+        self.messages.append(UIMessage(
+            title, kind=kind or self.DEFAULT_KIND, plain=plain, html=html))
 
-    def add_toast(self, title, plain=None, html=None):
+    def add_toast(self, title, kind=None, plain=None, html=None):
         """Add to the quick messages to be displayed to the user on the UI."""
-        self.toasts.append(UIMessage(title, plain=plain, html=html))
+        self.toasts.append(UIMessage(
+            title, kind=kind or self.DEFAULT_KIND, plain=plain, html=html))
 
 
 class Rezulto(Returnable):
@@ -94,30 +99,29 @@ class Rezulto(Returnable):
     Unsuccessful operations raise exceptions instead.
     """
 
+    DEFAULT_KIND = 'success'
+
     def __init__(self):
         """Constructor."""
         super().__init__()
         self.payload = {}
-
-    @property
-    def status_int(self):
-        """Hopefully the appropriate HTTP response code indicating success.
-
-        200 if we are returning data; 201 if there is no payload.
-        """
-        return 200 if self.payload else 201
+        self.status_int = 200  # HTTP response code indicating success
 
     def to_dict(self):
         """Convert instance to a dictionary, usually for JSON output."""
-        adict = super().to_dict()
-        adict['status_int'] = self.status_int
-        return adict
+        return self.__dict__.copy()
 
 
 class MalbonaRezulto(Returnable, Exception):
-    """Base class for exceptions raised by Kerno."""
+    """Base class for exceptions raised by actions."""
 
-    def __init__(self, status_int=400):
+    DEFAULT_KIND = 'danger'
+
+    def __init__(self, status_int: int=400, title: str=None, plain: str=None,
+                 html: str=None, kind: str='danger'):
         """Constructor."""
         Returnable.__init__(self)
         self.status_int = status_int
+        if title or plain or html:
+            self.add_message(
+                title=title, kind=kind, plain=plain, html=html)

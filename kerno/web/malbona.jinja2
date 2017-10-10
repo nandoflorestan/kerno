@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+{%- block html_tag -%}
+<html>
+{%- endblock %}
+
+<head>
+	<meta charset="utf-8">
+	<title>{% block title %}Problem in your request{% endblock %}</title>
+
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#ffffff">
+	{% block page_css %}{% endblock %}
+</head>
+
+{% block body_tag %}
+<body>
+{% endblock %}
+
+{% block header %}
+{%- endblock -%}
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-2"></div>
+			<div class="col-md-8">
+				{%- block flash -%}
+				{%- endblock -%}
+			</div>
+			<div class="col-md-2"></div>
+		</div>
+
+		{% block page_title %}
+		<h1>Problem in your request</h1>
+		<hr />
+		{% endblock %}
+
+		{% block content %}
+			<div class="error-page">
+			{% for msg in messages %}
+				<h3>{$ msg.title $}</h3>
+				{% if msg.html %}
+				<div class="error-content">
+					{$ msg.html | safe $}
+				</div>
+				{% endif %}
+				{% if msg.plain %}
+					<p class="error-content">{$ msg.plain $}</p>
+				{% endif %}
+				<hr />
+			{% endfor %}
+			</div>
+		{% endblock %}
+
+	{%- block footer %}
+	{%- endblock -%}
+
+	{%- block page_js -%}
+	{%- endblock -%}
+	</div>
+</body>
+</html>
