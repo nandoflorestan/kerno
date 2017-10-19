@@ -1,7 +1,4 @@
-"""Integration between Kerno and the awesome Pyramid web framework.
-
-THIS MODULE IS A WORK IN PROGRESS!
-"""
+"""Integration between Kerno and the awesome Pyramid web framework."""
 
 from functools import wraps
 from kerno.state import Peto, Rezulto, MalbonaRezulto
