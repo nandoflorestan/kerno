@@ -2,7 +2,7 @@
 Kerno roadmap
 =============
 
-Because Kerno is in its earliest release, this document is a mess. Do not
+Because Kerno is so young, this document is a mess. Do not
 read it now; I'll tidy it up in the future.
 
 - Maybe the action is easier to test if it suffers automatic dependency injection?
