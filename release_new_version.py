@@ -3,8 +3,16 @@
 """Script that releases a new version of the software."""
 
 from releaser import Releaser          # easy_install -UZ releaser
-from releaser.steps import *
-from releaser.git_steps import *
+from releaser.steps import (
+    Shell, CheckRstFiles, InteractivelyApproveDistribution,
+    InteractivelyApproveWheel, CheckTravis, SetVersionNumberInteractively,
+    PypiUpload, PypiUploadWheel, SetFutureVersion, Warn,
+)
+from releaser.git_steps import (
+    EnsureGitClean, EnsureGitBranch, GitCommitVersionNumber, GitTag, GitPush,
+    GitPushTags,
+)
+
 
 # These settings are used by multiple release steps below.
 config = dict(
