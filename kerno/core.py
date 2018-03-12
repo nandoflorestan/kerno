@@ -3,7 +3,6 @@
 from configparser import NoSectionError
 import reg
 from bag.settings import read_ini_files, resolve
-from .operation import OperationRegistry
 from .repository import RepositoryAssembler
 
 
@@ -11,7 +10,7 @@ class UtilityRegistry:
     """Mixin that contains Kerno's utility registry."""
 
     def __init__(self):
-        """Constructor section."""
+        """Construct."""
         # The registry must be local to each Kerno instance, not static.
         # This is why we define the registry inside the constructor:
         @reg.dispatch(reg.match_key('name', lambda name: name))
@@ -49,7 +48,7 @@ class UtilityRegistry:
                 'which has not been registered.'.format(component, name))
 
 
-class Kerno(UtilityRegistry, OperationRegistry, RepositoryAssembler):
+class Kerno(UtilityRegistry, RepositoryAssembler):
     """Core of an application, integrating decoupled resources."""
 
     @classmethod
@@ -58,11 +57,13 @@ class Kerno(UtilityRegistry, OperationRegistry, RepositoryAssembler):
         return cls(settings=read_ini_files(*config_files, encoding=encoding))
 
     def __init__(self, settings=None):
-        """The ``settings`` are a dict of dicts."""
+        """Construct. The ``settings`` are a dict of dicts."""
+        from .action import ActionRegistry
         if settings and not hasattr(settings, '__getitem__'):
             raise TypeError("The *settings* argument must be dict-like. "
                             "Received: {}".format(type(settings)))
         self.settings = settings
+        self.actions = ActionRegistry(kerno=self)
+
         UtilityRegistry.__init__(self)
-        OperationRegistry.__init__(self)
         RepositoryAssembler.__init__(self)

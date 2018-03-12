@@ -1,7 +1,8 @@
 """Integration between Kerno and the awesome Pyramid web framework."""
 
 from functools import wraps
-from kerno.state import Peto, Rezulto, MalbonaRezulto
+from typing import Callable
+from kerno.state import MalbonaRezulto, Rezulto
 from zope.interface import Interface
 
 
@@ -9,23 +10,21 @@ class IKerno(Interface):
     """Marker to register and retrieve a Kerno instance in a Pyramid app."""
 
 
-def kerno_view(fn):
+def kerno_view(fn: Callable):
     """Decorate Pyramid views that call Kerno actions or operations.
 
-    The view should return a Peto or a Rezulto. Then this decorator sets the
-    status_int of the response (to 200 or 201) and converts to dict.
+    The view can return a Rezulto or RAISE a MalbonaRezulto. Then this
+    decorator sets the status_int of the response (to 200 or 201) and
+    converts to dict.
     """
     @wraps(fn)
     def wrapper(request):
-        rez = fn(request)
-        if isinstance(rez, Peto):
-            rezulto = rez.rezulto
-        elif isinstance(rez, Rezulto):
-            rezulto = rez
+        rezulto = fn(request)
+        if isinstance(rezulto, Rezulto):
+            request.response.status_int = rezulto.status_int
+            return rezulto.to_dict()
         else:
-            return rez
-        request.response.status_int = rezulto.status_int
-        return rezulto.to_dict()
+            return rezulto
 
     return wrapper
 

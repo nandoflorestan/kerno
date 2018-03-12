@@ -1,14 +1,15 @@
 ========
-Concepts
+Dreams
 ========
 
-Kerno wishes to support:
+Kerno would like to support, in the future:
 
 - the storage of a log of commands (for auditing, telling us who did what);
-- live updating of a UI - for example, through WebSockets;
-- an undo feature.
+- live updating of a UI - for example, through WebSockets - by creating
+  channels which users subscribe;
+- an undo feature (but this seems very hard to achieve with SQLAlchemy).
 
-To this end, Kerno shall use the following concepts:
+To this end, Kerno might use the following concepts:
 
 **User**: The user (or system component) that performs an Operation.
 

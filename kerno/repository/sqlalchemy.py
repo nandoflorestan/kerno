@@ -1,4 +1,4 @@
-"""This module contains a base class for SQLAlchemy-based repositories."""
+"""A base class for SQLAlchemy-based repositories."""
 
 
 class BaseSQLAlchemyRepository:

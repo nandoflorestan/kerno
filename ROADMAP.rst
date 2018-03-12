@@ -5,39 +5,23 @@ Kerno roadmap
 Because Kerno is so young, this document is a mess. Do not
 read it now; I'll tidy it up in the future.
 
-- Maybe the action is easier to test if it suffers automatic dependency injection?
-- ValidatingOperation adds ValidationAction before the main action.
+- Generalize mixin composition, for applications made of multiple modules:
+  ``config.add_mixin(to_assemble='repository', MyRepositoryPart)``
 - A start procedure in which plugins (the modules of the system) are found
   and initialized. Start with the repository.
-- mixin composition, for applications made of multiple modules:
-  ``config.add_mixin(to_assemble='repository', MyRepositoryPart)``
+
 - Actions are composable: validator actions, then main actions, then logging.
 - Register schemas: ``schemas.register(action=CreateUser, MySchema, petition)``
 - Register logging functions: ``logging.register(action=CreateUser, MyLogger, petition)``
-- Actions are undoable: Command, History
-- A good scheme to communicate with the web framework of choice. This might
-  include good Exception classes, or just a convention for the returned objects.
-- Optional Pyramid integration with total decoupling. Integration could mean,
-  for instance, just something that renders our exceptions into responses.
-- action interface
-- strategies
-  - operation logging
-  - storage
-    - sqlalchemy
-      - Automatically imports modules' storage_sqlalchemy.py and composes
-      the final Repository class out of mixins.
 - app_name setting
 - app_package setting
-- The Repository strategy is a plugin and it is dependency-injected according to
-  configuration, making it easy to create a FakeRepository for fast unit testing.
 - modules_package setting (undocumented, default 'modules')
 - modules directory
-- keepluggable as a plugin?
-- burla, to register and generate URLs. Alternatively, explain to me how
+- A component to register and generate URLs. Alternatively, explain to me how
   URL generation can be left to the controller layer outside of this project.
   I don't think it can.
 - Hook documentation for the implemented actions
-- Optional SQLAlchemy integration, but at the right distance.
+- Optional SQLAlchemy transaction integration, but at the right distance.
   For instance, research if it is possible to commit the transaction
   after an action, and still return to the controller the (now harmless)
   detached entities.

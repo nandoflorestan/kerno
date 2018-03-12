@@ -86,7 +86,7 @@ In our solution, the model entities may remain in the center and circulate
 (as data holders) through all layers -- this has always been so convenient --,
 but the engine that stores and retrieves entities -- here called Repository
 (in SQLAlchemy it's the session and its queries) -- must be a
-dependency-injected layer.
+dependency-injected layer in order to make testing easy.
 
 Fowler and Robert C. Martin would have us put the SQLAlchemy models away too,
 so in the future you could more easily swap SQLAlchemy with something else,
@@ -99,28 +99,36 @@ you can instead declare tables, and then classes, and then mappers that
 map tables to the classes.  These classes need no specific base class,
 so you are free to use them as your entities.)
 
-For now, most importantly, you are able to develop a FakeRepository
-for fast unit testing of the Action layer -- or even a MemoryRepository
-that stores all entities in RAM.
+Since many large apps are assembled from smaller packages, we have devised
+a sort of plugin system that composes the final Repository class from
+mixin classes.
 
 
 SQLAlchemy strategy
 -------------------
 
-SQLAlchemy creates testability challenges since it is very hard to mock out,
-so the following rules must be followed:
+Functions are easiest to unit-test when they do not perform IO. Any IO you do
+is something that needs to be mocked in tests, and mocking is hard.
 
-- The session must be present in the Repository layer, which is
-  dependency-injected into the Action layer.  This allows you to write
-  fast unit tests for the Action layer -- by injecting a
-  FakeRepository object which never touches a RDBMS.
-- The session must NOT be present in the model layer (which defines entities).
-  For now, I think relationships (e.g. ``User.addresses``) and
-  ``object_session(self)`` can continue to exist in models normally,
-  as long as you think you can implement equivalent relationships in
-  the other repository strategies with the same API.
-- The session must NOT be imported in the Action layer (which contains
-  business rules). Really, only your Repository object can use the session.
+SQLAlchemy is even worse. It creates profound testability challenges for any
+code that uses it, because its fluent API is very hard to mock out.
+
+After struggling with the problem for years, we decided that any I/O must
+be cleanly decoupled from the Action layer, since this is the most
+important layer to be unit-tested. So we follow these rules:
+
+1. The session must be present in the Repository layer, which is
+   dependency-injected into the Action layer.  This allows you to write
+   fast unit tests for the Action layer -- by injecting a
+   FakeRepository object which never touches an RDBMS.
+2. The session must NOT be present in the model layer (which defines entities).
+   Usage of SQLAlchemy relationships (e.g. ``User.addresses``), though very
+   convenient, makes code hard to test because it is doing I/O.
+   ``object_session(self)`` also must be avoided to keep the separation.
+   For now, I think relationships can continue to exist in models normally,
+   but they must be used only in the repository.
+3. The session must NOT be imported in the Action layer (which contains
+   business rules). Really, only your Repository object can use the session.
 
 
 Using Kerno
@@ -136,8 +144,8 @@ Startup time and request time
 Kerno computes some things at startup and keeps the result in a "global" object
 which is an instance of the Kerno class. This instance is initialized with
 the app's settings and utilities (strategies) are registered on it.
-Then it is used on each request to obtain globals.
-Each request consists of a call to an Action.
+
+Then each request uses that to obtain globals and calls an Action.
 
 
 Component registration
@@ -151,9 +159,19 @@ Reg is very powerful and you don't need to create an interface for
 each component you want to register.
 
 
-Composable actions
-==================
+Actions
+=======
 
-Kerno provides a base class for actions (the service layer). If you follow
-the pattern, then you can create actions composed of other actions, which
-might be useful to you.
+You can express Kerno actions (the service layer) as functions or as classes.
+Kerno provides a base class for this purpose.
+
+
+Web framework integration
+=========================
+
+Kerno is trying to provide a good scheme to communicate with web frameworks
+in general.
+
+Integration with Pyramid is provided, but totally decoupled and optional.
+It includes an Exception class, a view that catches and renders it,
+and conventions for returned objects.

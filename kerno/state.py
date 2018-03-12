@@ -1,7 +1,5 @@
 """Classes that store state."""
 
-from datetime import datetime
-
 
 class UIMessage:
     """Represents a message to be displayed to the user in the UI."""
@@ -31,33 +29,6 @@ class UIMessage:
         return self.__dict__.copy()
 
 
-class Peto:
-    """State bag for an operation in progress.
-
-    It's the same as a *request* in a web framework. In Kerno, each
-    action in an operation may modify the *peto*. This is how an action
-    sends data to the next action.
-    """
-
-    def __init__(self, kerno, user, operation, payload: dict, when=None, **kw):
-        """Constructor.
-
-        ``kerno`` must be the Kerno instance for the current application.
-        ``user`` is the User instance requesting the current operation.
-        ``operation`` is the activity being requested by the user.
-        ``payload`` is a dictionary containing the operation parameters.
-        """
-        self.kerno = kerno
-        self.when = when or datetime.utcnow()
-        self.user = user      # the user or component requesting this action
-        self.operation = operation
-        self.dirty = payload  # dictionary containing the action parameters
-        self.clean = None     # validation converts ``dirty`` to ``clean``
-        self.rezulto = Rezulto()
-        for key, val in kw.items():
-            setattr(self, key, val)
-
-
 class Returnable:
     """Base class for Rezulto and for MalbonaRezulto.
 
@@ -65,6 +36,7 @@ class Returnable:
     """
 
     def __init__(self):
+        """Construct."""
         self.messages = []  # Grave messages for the user to read
         self.toasts = []    # Quick messages that disappear automatically
         self.debug = {}     # Not displayed to the user
@@ -118,7 +90,7 @@ class MalbonaRezulto(Returnable, Exception):
     DEFAULT_KIND = 'danger'
 
     def __init__(self, status_int: int=400, title: str=None, plain: str=None,
-                 html: str=None, kind: str='danger'):
+                 html: str=None, kind: str='danger') -> None:
         """Constructor."""
         Returnable.__init__(self)
         self.status_int = status_int
