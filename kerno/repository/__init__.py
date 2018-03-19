@@ -45,6 +45,7 @@ http://ben-morris.com/why-the-generic-repository-is-just-a-lazy-anti-pattern
 """
 
 from bag.settings import resolve
+from kerno.start import Eko
 
 
 def compose_class(name, mixins):
@@ -54,26 +55,16 @@ def compose_class(name, mixins):
     return type(name, tuple(bases), {})
 
 
-class RepositoryAssembler:
-    """Lets application modules contribute mixins to the repository class."""
+def eki(eko: Eko) -> None:
+    """At startup, add to *eko* the ``add_repository_mixin`` method."""
+    eko._repository_mixins = []
 
-    def __init__(self, mixins=None):
-        self.repository_mixins = list(mixins) if mixins else []
-        self._Repository = None
-
-    def add_repository_mixin(self, mixin):
-        """Store another mixin class that will form the final repository."""
+    def add_repository_mixin(mixin):
+        """Store one of the mixin classes to form the final repository."""
         assert isinstance(mixin, (str, type))
-        self.repository_mixins.append(mixin)
-        self._Repository = None
-
-    @property
-    def Repository(self):
-        """Return the Repository class.
-
-        On 1st access, assembles the Repository class from registered mixins.
-        """
-        if not self._Repository:
-            self._Repository = compose_class(
-                name='Repository', mixins=self.repository_mixins)
-        return self._Repository
+        eko._repository_mixins.append(mixin)
+        # When kerno.Repository is first accessed, the class will be assembled
+        # (only once) and will stay as a variable of the kerno instance:
+        eko.kerno.Repository = compose_class(
+            name='Repository', mixins=eko._repository_mixins)
+    eko.add_repository_mixin = add_repository_mixin

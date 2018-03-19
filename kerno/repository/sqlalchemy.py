@@ -32,7 +32,7 @@ class BaseSQLAlchemyRepository:
         self.sas.add(entity)
         return entity
 
-    def flush(self):
+    def flush(self) -> None:
         """Obtain IDs on new objects and update state on the database.
 
         Without committing the transaction.

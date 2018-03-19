@@ -5,10 +5,9 @@ Kerno roadmap
 Because Kerno is so young, this document is a mess. Do not
 read it now; I'll tidy it up in the future.
 
+- Provide an example app or a good example in the tests.
 - Generalize mixin composition, for applications made of multiple modules:
   ``config.add_mixin(to_assemble='repository', MyRepositoryPart)``
-- A start procedure in which plugins (the modules of the system) are found
-  and initialized. Start with the repository.
 
 - Actions are composable: validator actions, then main actions, then logging.
 - Register schemas: ``schemas.register(action=CreateUser, MySchema, petition)``

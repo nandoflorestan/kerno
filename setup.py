@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 
+"""Installer for kerno."""
+
 from sys import version_info
 # http://peak.telecommunity.com/DevCenter/setuptools#developer-s-guide
 # from distutils.core import setup
 from setuptools import setup, find_packages
 
-if version_info[:2] < (3, 4):
-    raise RuntimeError('Kerno requires Python 3.4+')
+if version_info[:2] < (3, 5):
+    raise RuntimeError('Kerno requires Python 3.5+')
 
 with open('README.rst', encoding='utf-8') as f:
     long_description = f.read()
@@ -40,7 +42,6 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         'Programming Language :: Python :: Implementation :: CPython',
