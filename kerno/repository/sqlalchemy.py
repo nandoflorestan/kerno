@@ -1,5 +1,9 @@
 """A base class for SQLAlchemy-based repositories."""
 
+from typing import TypeVar
+
+Entity = TypeVar('Entity')  # For generic functions. Can be any type.
+
 
 class BaseSQLAlchemyRepository:
     """Base class for a SQLAlchemy-based repository."""
@@ -22,6 +26,11 @@ class BaseSQLAlchemyRepository:
             return session_factory()
         else:
             return session_factory
+
+    def add(self, entity: Entity) -> Entity:
+        """Add an object to the SQLAlchemy session, then return it."""
+        self.sas.add(entity)
+        return entity
 
     def flush(self):
         """Obtain IDs on new objects and update state on the database.
