@@ -6,8 +6,9 @@ Because Kerno is so young, this document is a mess. Do not
 read it now; I'll tidy it up in the future.
 
 - Provide an example app or a good example in the tests.
+- Investigate https://antidote.readthedocs.io/en/latest/
 - Generalize mixin composition, for applications made of multiple modules:
-  ``config.add_mixin(to_assemble='repository', MyRepositoryPart)``
+  ``eko.add_mixin(to_assemble='repository', MyRepositoryPart)``
 
 - Actions are composable: validator actions, then main actions, then logging.
 - Register schemas: ``schemas.register(action=CreateUser, MySchema, petition)``
