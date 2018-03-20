@@ -51,7 +51,7 @@ class ActionRegistry:
         # when = when or datetime.utcnow()
         action = self.actions[name]
         if issubclass(cast(TypActionClass, action), Action):
-            action_instance = cast(Action, action(
+            action_instance = cast(TypActionFunction, action(
                 kerno=self.kerno, user=user, repo=repo))
             return action_instance(**kw)
         elif isinstance(action, FunctionType):
