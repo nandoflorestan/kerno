@@ -7,7 +7,6 @@ from configparser import NoSectionError
 from types import ModuleType
 from typing import Any, Callable, Dict, Iterable, Union
 from bag.settings import read_ini_files, resolve
-from .kerno import Kerno
 from .utility_registry import UtilityRegistry
 
 ResourceType = Union[str, ModuleType, Callable]
@@ -54,8 +53,7 @@ class Eko(UtilityRegistry):
         if settings and not hasattr(settings, '__getitem__'):
             raise TypeError("The *settings* argument must be dict-like. "
                             "Received: {}".format(type(settings)))
-        self.kerno = Kerno(settings)
-        UtilityRegistry.__init__(self)
+        UtilityRegistry.__init__(self, settings)
 
         try:
             main_config_section = settings['kerno']

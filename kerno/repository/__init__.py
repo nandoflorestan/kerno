@@ -57,7 +57,7 @@ def compose_class(name, mixins):
 
 def eki(eko: Eko) -> None:
     """At startup, add to *eko* the ``add_repository_mixin`` method."""
-    eko._repository_mixins = []
+    eko._repository_mixins = []  # type: ignore
 
     def add_repository_mixin(mixin):
         """Store one of the mixin classes to form the final repository."""
@@ -67,4 +67,4 @@ def eki(eko: Eko) -> None:
         # (only once) and will stay as a variable of the kerno instance:
         eko.kerno.Repository = compose_class(
             name='Repository', mixins=eko._repository_mixins)
-    eko.add_repository_mixin = add_repository_mixin
+    eko.add_repository_mixin = add_repository_mixin  # type: ignore
