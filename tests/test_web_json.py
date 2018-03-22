@@ -1,0 +1,98 @@
+"""Tests for the kerno.web.json module."""
+
+from collections import OrderedDict
+from datetime import datetime
+from unittest import TestCase
+from kerno.web.json import reuse_dict, to_dict
+
+
+class MyModel:
+    """We use this model to test the default to_dict() implementation only."""
+
+    def __init__(self):
+        """Construct."""
+        self.name = "Nando Florestan"
+        self.profession1 = "Python developer"
+        self.birth = datetime(1976, 7, 18)
+
+
+class TestDefaultToDictImplementation(TestCase):
+    """Test cases for our default to_dict() implementation."""
+
+    def test_to_dict_plainly(self):
+        entity = MyModel()
+        adict = to_dict(entity, 'default')
+        assert isinstance(adict, OrderedDict)
+        assert adict['name'] == "Nando Florestan"
+        assert adict['profession1'] == "Python developer"
+        assert adict['birth'] == '1976-07-18T00:00:00'  # a string!
+
+    def test_to_dict_with_keys(self):
+        entity = MyModel()
+        adict = to_dict(entity, 'default', keys=['name'])
+        assert isinstance(adict, OrderedDict)
+        assert adict['name'] == "Nando Florestan"
+        with self.assertRaises(KeyError):
+            adict['birth']
+
+    def test_to_dict_not_for_json(self):
+        entity = MyModel()
+        adict = to_dict(entity, 'default', for_json=False)
+        assert isinstance(adict, OrderedDict)
+        assert adict['name'] == "Nando Florestan"
+        assert adict['profession1'] == "Python developer"
+        assert adict['birth'] == datetime(1976, 7, 18)  # not a string
+        with self.assertRaises(KeyError):
+            adict['profession2']
+
+
+class MyModelSubclass(MyModel):
+    """We use this model to test 2 custom to_dict() implementations."""
+
+    def __init__(self):
+        """Construct."""
+        super().__init__()
+        self.profession2 = "Classical music composer"
+
+
+# Here are our 2 overloaded versions of to_dict():
+
+@to_dict.register(obj=MyModelSubclass, flavor='default')
+def to_dict_2(obj, flavor='default', **kw):
+    """Return a dict specific for MyModelSubclass."""
+    keys = kw.get('keys', ('name', 'profession2'))
+    return reuse_dict(obj, keys=keys, **kw)
+
+
+@to_dict.register(obj=MyModelSubclass, flavor='verbose')
+def verbose(obj, flavor='verbose', **kw):
+    """Return a VERBOSE dict specific for MyModelSubclass."""
+    amap = reuse_dict(obj, **kw)
+    # This version includes even the class name:
+    amap['__class__'] = MyModelSubclass.__name__
+    return amap
+
+
+class TestCustomToDictImplementation(TestCase):
+    """Test cases for our overloaded to_dict() implementations."""
+
+    def test_to_dict_2(self):
+        entity = MyModelSubclass()
+        adict = to_dict(entity, 'default')
+        assert isinstance(adict, OrderedDict)
+        assert adict['name'] == "Nando Florestan"
+        assert adict['profession2'] == "Classical music composer"
+        with self.assertRaises(KeyError):
+            adict['birth']  # because we defined a custom key list
+        with self.assertRaises(KeyError):
+            adict['__class__']
+
+    def test_verbose(self):
+        entity = MyModelSubclass()
+        adict = to_dict(entity, 'verbose')
+        assert isinstance(adict, OrderedDict)
+        assert adict['name'] == "Nando Florestan"
+        assert adict['profession2'] == "Classical music composer"
+        assert adict['profession1'] == "Python developer"
+        assert adict['birth'] == '1976-07-18T00:00:00'  # a string!
+        assert adict['__class__'] == 'MyModelSubclass'
