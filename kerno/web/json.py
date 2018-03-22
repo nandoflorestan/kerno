@@ -12,7 +12,7 @@ to accept a parameter that all the other as_dict() methods do not need.
 Here is the solution:
 
 By using `Reg <http://reg.readthedocs.io/en/latest/>`_ we now have a
-``to_dict(obj, flavor='default', options={})`` function that dispatches
+``to_dict(obj, flavor='default', **kw)`` function that dispatches
 on the type of ``obj`` and ``flavor``. This allows you to register
 more than one implementation (with a "flavor" name) for each of your
 model classes.
