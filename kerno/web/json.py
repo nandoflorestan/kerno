@@ -41,6 +41,10 @@ from typing import Any, Iterable, Sequence
 import reg
 
 
+def keys_from(obj: Any) -> Iterable:
+    return obj.__dict__.keys()
+
+
 def only_relevant(keys: Iterable) -> Iterable:
     """Ignore strings that start in dunder ("__") or in "_sa".
 
@@ -51,11 +55,7 @@ def only_relevant(keys: Iterable) -> Iterable:
         keys)
 
 
-def keys_from(obj: Any) -> Iterable:
-    return obj.__dict__.keys()
-
-
-def excluding(blacklist: Sequence, keys: Sequence) -> Iterable:
+def excluding(blacklist: Sequence, keys: Iterable) -> Iterable:
     return filter(lambda k: k not in blacklist, keys)
 
 
@@ -71,7 +71,7 @@ def reuse_dict(
     If the ``sort`` flag is True, sort the OrderedDict.
     """
     amap = OrderedDict()  # type: OrderedDict[str, Any]
-    kk = keys or only_relevant(keys_from(obj))
+    kk = keys or excluding(('password',), only_relevant(keys_from(obj)))
     if sort:
         kk = sorted(kk)
     for key in kk:
