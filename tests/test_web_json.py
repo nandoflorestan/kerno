@@ -14,6 +14,7 @@ class MyModel:
         self.name = "Nando Florestan"
         self.profession1 = "Python developer"
         self.birth = datetime(1976, 7, 18)
+        self.password = 'Krystian Zimerman'  # we never want passwords in JSON
 
 
 class TestDefaultToDictImplementation(TestCase):
@@ -26,6 +27,8 @@ class TestDefaultToDictImplementation(TestCase):
         assert adict['name'] == "Nando Florestan"
         assert adict['profession1'] == "Python developer"
         assert adict['birth'] == '1976-07-18T00:00:00'  # a string!
+        with self.assertRaises(KeyError):
+            adict['password']
 
     def test_to_dict_with_keys(self):
         entity = MyModel()
@@ -34,6 +37,8 @@ class TestDefaultToDictImplementation(TestCase):
         assert adict['name'] == "Nando Florestan"
         with self.assertRaises(KeyError):
             adict['birth']
+        with self.assertRaises(KeyError):
+            adict['password']
 
     def test_to_dict_not_for_json(self):
         entity = MyModel()
@@ -44,6 +49,8 @@ class TestDefaultToDictImplementation(TestCase):
         assert adict['birth'] == datetime(1976, 7, 18)  # not a string
         with self.assertRaises(KeyError):
             adict['profession2']
+        with self.assertRaises(KeyError):
+            adict['password']
 
 
 class MyModelSubclass(MyModel):
@@ -86,6 +93,8 @@ class TestCustomToDictImplementation(TestCase):
             adict['birth']  # because we defined a custom key list
         with self.assertRaises(KeyError):
             adict['__class__']
+        with self.assertRaises(KeyError):
+            adict['password']
 
     def test_verbose(self):
         entity = MyModelSubclass()
@@ -96,3 +105,5 @@ class TestCustomToDictImplementation(TestCase):
         assert adict['profession1'] == "Python developer"
         assert adict['birth'] == '1976-07-18T00:00:00'  # a string!
         assert adict['__class__'] == 'MyModelSubclass'
+        with self.assertRaises(KeyError):
+            adict['password']
