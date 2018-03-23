@@ -1,4 +1,4 @@
-"""kerno.json optionally provides flexible JSON serialization.
+"""A setup so you can have many, powerful to_dict() implementations.
 
 Our main objective is to **remove any JSON concerns from model classes**.
 These should NOT contain ``as_dict()`` implementations because the system
@@ -17,6 +17,9 @@ on the type of ``obj`` and ``flavor``. This allows you to register
 more than one implementation (with a "flavor" name) for each of your
 model classes.
 
+In order to understand this, you need to know what Reg does:
+multiple dispatch.
+
 Our to_dict() function also has a default implementation, so it can be used
 directly.
 
@@ -31,7 +34,7 @@ a very powerful version of it, that can take such arguments as
 a repository, a user object, the current date etc.
 
 Please see a usage example in
-`our tests <https://github.com/nandoflorestan/kerno/blob/master/tests/test_web_json.py>`_.
+`our tests <https://github.com/nandoflorestan/kerno/blob/master/tests/test_web_to_dict.py>`_.
 """
 
 from collections import OrderedDict

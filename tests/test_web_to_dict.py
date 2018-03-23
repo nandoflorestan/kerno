@@ -1,9 +1,9 @@
-"""Tests for the kerno.web.json module."""
+"""Tests for the kerno.web.to_dict module."""
 
 from collections import OrderedDict
 from datetime import datetime
 from unittest import TestCase
-from kerno.web.json import reuse_dict, to_dict
+from kerno.web.to_dict import reuse_dict, to_dict
 
 
 class MyModel:
@@ -15,6 +15,33 @@ class MyModel:
         self.profession1 = "Python developer"
         self.birth = datetime(1976, 7, 18)
         self.password = 'Krystian Zimerman'  # we never want passwords in JSON
+
+
+class MyModelSubclass(MyModel):
+    """We use this model to test 2 custom to_dict() implementations."""
+
+    def __init__(self):
+        """Construct."""
+        super().__init__()
+        self.profession2 = "Classical music composer"
+
+
+# Here are our 2 overloaded versions of to_dict():
+
+@to_dict.register(obj=MyModelSubclass, flavor='default')
+def to_dict_2(obj, flavor='default', **kw):
+    """Return a dict specific for MyModelSubclass."""
+    keys = kw.get('keys', ('name', 'profession2'))
+    return reuse_dict(obj, keys=keys, **kw)
+
+
+@to_dict.register(obj=MyModelSubclass, flavor='verbose')
+def verbose(obj, flavor='verbose', **kw):
+    """Return a VERBOSE dict specific for MyModelSubclass."""
+    amap = reuse_dict(obj, **kw)
+    # This version includes even the class name:
+    amap['__class__'] = MyModelSubclass.__name__
+    return amap
 
 
 class TestDefaultToDictImplementation(TestCase):
@@ -51,33 +78,6 @@ class TestDefaultToDictImplementation(TestCase):
             adict['profession2']
         with self.assertRaises(KeyError):
             adict['password']
-
-
-class MyModelSubclass(MyModel):
-    """We use this model to test 2 custom to_dict() implementations."""
-
-    def __init__(self):
-        """Construct."""
-        super().__init__()
-        self.profession2 = "Classical music composer"
-
-
-# Here are our 2 overloaded versions of to_dict():
-
-@to_dict.register(obj=MyModelSubclass, flavor='default')
-def to_dict_2(obj, flavor='default', **kw):
-    """Return a dict specific for MyModelSubclass."""
-    keys = kw.get('keys', ('name', 'profession2'))
-    return reuse_dict(obj, keys=keys, **kw)
-
-
-@to_dict.register(obj=MyModelSubclass, flavor='verbose')
-def verbose(obj, flavor='verbose', **kw):
-    """Return a VERBOSE dict specific for MyModelSubclass."""
-    amap = reuse_dict(obj, **kw)
-    # This version includes even the class name:
-    amap['__class__'] = MyModelSubclass.__name__
-    return amap
 
 
 class TestCustomToDictImplementation(TestCase):
