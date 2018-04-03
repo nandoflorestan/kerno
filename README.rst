@@ -42,12 +42,36 @@ In order to better understand why this architecture is good for medium to
 large applications, I encourage you to watch a couple of Uncle Bob Martin's
 talks on this subject -- easily found on the Internet.
 
-Anyway, good architecture is about decoupling. Now I am going to tell you
-why you should decouple 1) your web framework and 2) your data persistence.
+Good software architecture is about decoupling. The main message of the Clean
+Architecture seems to be, decouple your business logic from any dependencies,
+so your large project can survive these (swapping them with less effort).
+
+Kerno is just a set of whatever tools might have been missing for you to
+build the core of your app in that way. You can use only the parts you value.
+In fact, it doesn't matter if you use the Kerno library, what is important is
+for you to understand:
+
+- that automated testing is necessary today (non-negotiable),
+- that function purity makes automated testing possible or easy,
+- that decoupling is important for the future of your project,
+- and that finding the right abstractions can be difficult.
+
+The main inspiration for the *implementation* of Kerno is the Pyramid
+web framework because it is so well architected. It managed to avoid
+the global variables that plague Flask and Django while providing the
+best application composition method of all these frameworks. Sometimes I
+think Kerno is doing little more than bringing parts of Pyramid out of the
+web framework in a composable way.
+
+We require Python >= 3.5 because we are type annotating our functions so you
+can use mypy if you like.
 
 
 Action (or Service) layer
 =========================
+
+Now I am going to tell you why you should decouple 1) your web framework
+and 2) your data persistence.
 
 Do not conflate the core of your app -- the business rules -- with usage
 of a web framework. You may want to switch web frameworks in the future,
@@ -110,8 +134,9 @@ SQLAlchemy strategy
 Functions are easiest to unit-test when they do not perform IO. Any IO you do
 is something that needs to be mocked in tests, and mocking is hard.
 
-SQLAlchemy is even worse. It creates profound testability challenges for any
-code that uses it, because its fluent API is very hard to mock out.
+SQLAlchemy is an excellent example of this. It creates profound testability
+challenges for any code that uses it, because its fluent API is very hard
+to mock out.
 
 After struggling with the problem for years, we decided that any I/O must
 be cleanly decoupled from the Action layer, since this is the most
@@ -157,6 +182,10 @@ famous and awesome
 but we are using `Reg <http://reg.readthedocs.io/>`_ instead.
 Reg is very powerful and you don't need to create an interface for
 each component you want to register.
+
+However, there's only a certain amount of overlap on the problems solved
+by Reg and the ZCA. Reg implements multiple dispatch for functions. The ZCA
+aids you with contracts and uses these for multiple dispatch.
 
 
 Actions
