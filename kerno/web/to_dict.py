@@ -3,7 +3,7 @@
 Our main objective is to **remove any JSON concerns from model classes**.
 These should NOT contain ``as_dict()`` implementations because the system
 may need multiple converters for the same model -- for instance,
-with different fields, verbosities, levels of detail,
+with varying fields, verbosities, levels of detail,
 optional inclusion of related entities etc.
 
 **It is bad if AVerySpecificModel.as_dict() needs a different signature**
@@ -25,9 +25,9 @@ directly.
 
 This way you can create a situation in which::
 
-    to_dict(Address, flavor="default")  # calls one function, and
-    to_dict(Person, flavor="default")  # calls another function, and
-    to_dict(Person, flavor="table")   # calls yet another function.
+    to_dict(Address, flavor="default")  # calls one implementation, and
+    to_dict(Person, flavor="default")  # calls another implementation, and
+    to_dict(Person, flavor="table")   # calls yet another implementation.
 
 And because our ``to_dict()`` accepts keyword arguments, you can create
 a very powerful version of it, that can take such arguments as

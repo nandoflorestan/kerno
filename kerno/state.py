@@ -22,6 +22,7 @@ class UIMessage:
             kind = "danger"
         assert kind in self.KINDS, 'Unknown kind of message: "{0}". ' \
             "Possible kinds are {1}".format(kind, self.KINDS)
+        self.kind = kind
         self.title = title
         self.plain = plain
         self.html = html
@@ -89,8 +90,9 @@ class Returnable(metaclass=ABCMeta):
 
 
 class Rezulto(Returnable):
-    """Response object returned from a successful operation.
+    """Well-organized successful response object.
 
+    When your action succeeds you should return a Rezulto.
     Unsuccessful operations raise MalbonaRezulto instead.
     """
 
