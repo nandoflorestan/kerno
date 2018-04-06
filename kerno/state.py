@@ -30,7 +30,7 @@ class UIMessage:
     def __repr__(self) -> str:
         return '<{} "{}">'.format(self.__class__.__name__, self.title)
 
-    def to_dict(self) -> Dict:  # TODO Remove
+    def to_dict(self) -> Dict[str, Any]:  # TODO Remove
         """Convert instance to a dictionary, usually for JSON output."""
         return self.__dict__.copy()
 
@@ -72,7 +72,7 @@ class Returnable(metaclass=ABCMeta):
 
     def add_message(
         self, title: str="", kind: str="", plain: str="", html: str="",
-    ):
+    ) -> UIMessage:
         """Add to the grave messages to be displayed to the user on the UI."""
         msg = UIMessage(
             title=title, kind=kind or self.kind, plain=plain, html=html)
@@ -104,7 +104,7 @@ class Rezulto(Returnable):
         super().__init__()
         self.payload = {}  # type: Dict[str, Any]
 
-    def to_dict(self):  # TODO Remove
+    def to_dict(self) -> Dict[str, Any]:  # TODO Remove
         """Convert instance to a dictionary, usually for JSON output."""
         adict = super().to_dict()
         adict["payload"] = self.payload

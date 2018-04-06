@@ -1,5 +1,7 @@
 """The Kerno class."""
 
+from typing import Dict
+
 
 class Kerno:
     """Core of an application, integrating decoupled resources.
@@ -8,7 +10,7 @@ class Kerno:
     the "Eko" configurator.
     """
 
-    def __init__(self, settings=None):
+    def __init__(self, settings: Dict[str, Dict]) -> None:
         """Construct. The ``settings`` are a dict of dicts."""
         self.settings = settings
         # self.actions = ActionRegistry(kerno=self)

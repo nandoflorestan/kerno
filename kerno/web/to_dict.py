@@ -48,7 +48,7 @@ def keys_from(obj: Any) -> Iterable:
     return obj.__dict__.keys()
 
 
-def only_relevant(keys: Iterable) -> Iterable:
+def only_relevant(keys: Iterable[str]) -> Iterable[str]:
     """Ignore strings that start in dunder ("__") or in "_sa".
 
     These are usually keeping SQLAlchemy state.

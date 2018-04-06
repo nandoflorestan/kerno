@@ -44,7 +44,7 @@ class Eko(UtilityRegistry):
     """
 
     @classmethod
-    def from_ini(cls, *config_files, encoding='utf-8'):
+    def from_ini(cls, *config_files, encoding: str='utf-8'):
         """Return an instance after reading some INI file(s)."""
         return cls(settings=read_ini_files(*config_files, encoding=encoding))
 
@@ -85,7 +85,7 @@ class Eko(UtilityRegistry):
     ) -> None:
         """Initialize multiple app modules."""
         for resource in resources:
-            self.include(resource, throw=False)
+            self.include(resource, throw=throw)
 
 
 class ConfigurationError(Exception):
