@@ -3,6 +3,7 @@
 from cgi import escape
 import reg
 # from kerno.state import UIMessage
+from kerno.web.to_dict import to_dict
 
 
 # Dispatch depending on the value of *flavor*.
@@ -55,6 +56,8 @@ def includeme(config):
     """Make ``msg_to_html()`` available to templates in Pyramid."""
     def before_rendering_template(event):
         event['msg_to_html'] = msg_to_html
+        event['flash_msgs_as_dicts'] = lambda: [
+            to_dict(obj=f) for f in event['request'].session.pop_flash()]
 
     from pyramid.events import BeforeRender
     config.add_subscriber(before_rendering_template, BeforeRender)

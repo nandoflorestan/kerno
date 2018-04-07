@@ -2,7 +2,7 @@
 
 from functools import wraps
 from typing import Callable
-from kerno.state import MalbonaRezulto, Rezulto
+from kerno.state import MalbonaRezulto, Rezulto, to_dict
 from zope.interface import Interface
 
 
@@ -15,14 +15,14 @@ def kerno_view(fn: Callable):
 
     The view can return a Rezulto or RAISE a MalbonaRezulto. Then this
     decorator sets the status_int of the response (to 200 or 201) and
-    converts to dict.
+    converts it to a dictionary.
     """
     @wraps(fn)
     def wrapper(request):
         rezulto = fn(request)
         if isinstance(rezulto, Rezulto):
             request.response.status_int = rezulto.status_int
-            return rezulto.to_dict()
+            return to_dict(obj=rezulto)
         else:
             return rezulto
 

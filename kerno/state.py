@@ -2,12 +2,14 @@
 
 from abc import ABCMeta
 from typing import Any, Dict, List  # noqa
+from kerno.web.to_dict import to_dict, reuse_dict
 
 
 class UIMessage:
     """Represents a message to be displayed to the user in the UI."""
 
     KINDS = ["danger", "warning", "info", "success"]
+    # The default to_dict() works fine for this class.
 
     def __init__(
         self, title: str="", kind: str="danger", plain: str="", html: str="",
@@ -29,10 +31,6 @@ class UIMessage:
 
     def __repr__(self) -> str:
         return '<{} "{}">'.format(self.__class__.__name__, self.title)
-
-    def to_dict(self) -> Dict[str, Any]:  # TODO Remove
-        """Convert instance to a dictionary, usually for JSON output."""
-        return self.__dict__.copy()
 
 
 class Returnable(metaclass=ABCMeta):
@@ -62,14 +60,6 @@ class Returnable(metaclass=ABCMeta):
         return "<{} status: {}>".format(
             self.__class__.__name__, self.status_int)
 
-    def to_dict(self) -> Dict[str, Any]:  # TODO Remove
-        """Convert this to a dictionary, usually for JSON output."""
-        return dict(
-            messages=[m.to_dict() for m in self.messages],
-            toasts=[m.to_dict() for m in self.toasts],
-            debug=self.debug,
-            redirect=self.redirect)
-
     def add_message(
         self, title: str="", kind: str="", plain: str="", html: str="",
     ) -> UIMessage:
@@ -89,6 +79,16 @@ class Returnable(metaclass=ABCMeta):
         return msg
 
 
+@to_dict.register(obj=Returnable, flavor='default')
+def returnable_to_dict(obj, flavor='default', **kw):
+    """Convert instance to a dictionary, usually for JSON output."""
+    amap = reuse_dict(
+        obj=obj, keys=('kind', 'status_int', 'debug', 'redirect'), sort=False)
+    amap['messages'] = [reuse_dict(obj=m) for m in obj.messages]
+    amap['toasts'] = [reuse_dict(obj=m) for m in obj.toasts]
+    return amap
+
+
 class Rezulto(Returnable):
     """Well-organized successful response object.
 
@@ -104,11 +104,13 @@ class Rezulto(Returnable):
         super().__init__()
         self.payload = {}  # type: Dict[str, Any]
 
-    def to_dict(self) -> Dict[str, Any]:  # TODO Remove
-        """Convert instance to a dictionary, usually for JSON output."""
-        adict = super().to_dict()
-        adict["payload"] = self.payload
-        return adict
+
+@to_dict.register(obj=Rezulto, flavor='default')
+def rezulto_to_dict(obj, flavor='default', **kw):
+    """Convert instance to a dictionary, usually for JSON output."""
+    adict = returnable_to_dict(obj=obj, flavor=flavor, **kw)
+    adict["payload"] = obj.payload
+    return adict
 
 
 class MalbonaRezulto(Returnable, Exception):
