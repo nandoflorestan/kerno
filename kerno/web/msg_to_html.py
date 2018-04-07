@@ -2,7 +2,7 @@
 
 from cgi import escape
 import reg
-# from kerno.state import UIMessage
+from kerno.state import UIMessage
 from kerno.web.to_dict import to_dict
 
 
@@ -53,7 +53,10 @@ def msg_to_bootstrap3(flavor, msg, close=True):
 
 
 def includeme(config):
-    """Make ``msg_to_html()`` available to templates in Pyramid."""
+    """Make ``msg_to_html()`` available to templates in Pyramid.
+
+    Also add the ``add_flash`` request method.
+    """
     def before_rendering_template(event):
         event['msg_to_html'] = msg_to_html
         event['flash_msgs_as_dicts'] = lambda: [
@@ -61,3 +64,12 @@ def includeme(config):
 
     from pyramid.events import BeforeRender
     config.add_subscriber(before_rendering_template, BeforeRender)
+
+    config.add_request_method(add_flash, 'add_flash')
+
+
+def add_flash(request, allow_duplicate=False, **kw):
+    """Add a flash message to the user's session. For convenience."""
+    msg = UIMessage(**kw)
+    request.session.flash(msg, allow_duplicate=allow_duplicate)
+    return msg
