@@ -32,7 +32,7 @@ def kerno_view(fn: Callable):
 def malbona_view(context, request):
     """Pyramid view handler that returns a MalbonaRezulto as a dictionary."""
     request.response.status_int = context.status_int
-    return context.to_dict()
+    return to_dict(context)
 
 
 def includeme(config):

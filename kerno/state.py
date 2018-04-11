@@ -83,7 +83,9 @@ class Returnable(metaclass=ABCMeta):
 def returnable_to_dict(obj, flavor='default', **kw):
     """Convert instance to a dictionary, usually for JSON output."""
     amap = reuse_dict(
-        obj=obj, keys=('kind', 'status_int', 'debug', 'redirect'), sort=False)
+        obj=obj,
+        keys=kw.get('keys', ('kind', 'status_int', 'debug', 'redirect')),
+        sort=False)
     amap['messages'] = [reuse_dict(obj=m) for m in obj.messages]
     amap['toasts'] = [reuse_dict(obj=m) for m in obj.toasts]
     return amap
