@@ -28,8 +28,8 @@ class MyModelSubclass(MyModel):
 
 # Here are our 2 overloaded versions of to_dict():
 
-@to_dict.register(obj=MyModelSubclass, flavor='default')
-def to_dict_2(obj, flavor='default', **kw):
+@to_dict.register(obj=MyModelSubclass, flavor='')
+def to_dict_2(obj, flavor='', **kw):
     """Return a dict specific for MyModelSubclass."""
     keys = kw.get('keys', ('name', 'profession2'))
     return reuse_dict(obj, keys=keys, **kw)
@@ -49,7 +49,7 @@ class TestDefaultToDictImplementation(TestCase):
 
     def test_to_dict_plainly(self):
         entity = MyModel()
-        adict = to_dict(entity, 'default')
+        adict = to_dict(entity)
         assert isinstance(adict, OrderedDict)
         assert adict['name'] == "Nando Florestan"
         assert adict['profession1'] == "Python developer"
@@ -59,7 +59,7 @@ class TestDefaultToDictImplementation(TestCase):
 
     def test_to_dict_with_keys(self):
         entity = MyModel()
-        adict = to_dict(entity, 'default', keys=['name'])
+        adict = to_dict(entity, keys=['name'])
         assert isinstance(adict, OrderedDict)
         assert adict['name'] == "Nando Florestan"
         with self.assertRaises(KeyError):
@@ -69,7 +69,7 @@ class TestDefaultToDictImplementation(TestCase):
 
     def test_to_dict_not_for_json(self):
         entity = MyModel()
-        adict = to_dict(entity, 'default', for_json=False)
+        adict = to_dict(entity, for_json=False)
         assert isinstance(adict, OrderedDict)
         assert adict['name'] == "Nando Florestan"
         assert adict['profession1'] == "Python developer"
@@ -85,7 +85,7 @@ class TestCustomToDictImplementation(TestCase):
 
     def test_to_dict_2(self):
         entity = MyModelSubclass()
-        adict = to_dict(entity, 'default')
+        adict = to_dict(entity)
         assert isinstance(adict, OrderedDict)
         assert adict['name'] == "Nando Florestan"
         assert adict['profession2'] == "Classical music composer"
@@ -98,7 +98,7 @@ class TestCustomToDictImplementation(TestCase):
 
     def test_verbose(self):
         entity = MyModelSubclass()
-        adict = to_dict(entity, 'verbose')
+        adict = to_dict(entity, flavor='verbose')
         assert isinstance(adict, OrderedDict)
         assert adict['name'] == "Nando Florestan"
         assert adict['profession2'] == "Classical music composer"

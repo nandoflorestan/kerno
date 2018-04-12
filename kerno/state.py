@@ -79,8 +79,8 @@ class Returnable(metaclass=ABCMeta):
         return msg
 
 
-@to_dict.register(obj=Returnable, flavor='default')
-def returnable_to_dict(obj, flavor='default', **kw):
+@to_dict.register(obj=Returnable, flavor='')
+def returnable_to_dict(obj, flavor='', **kw):
     """Convert instance to a dictionary, usually for JSON output."""
     amap = reuse_dict(
         obj=obj,
@@ -107,8 +107,8 @@ class Rezulto(Returnable):
         self.payload = {}  # type: Dict[str, Any]
 
 
-@to_dict.register(obj=Rezulto, flavor='default')
-def rezulto_to_dict(obj, flavor='default', **kw):
+@to_dict.register(obj=Rezulto, flavor='')
+def rezulto_to_dict(obj, flavor='', **kw):
     """Convert instance to a dictionary, usually for JSON output."""
     adict = returnable_to_dict(obj=obj, flavor=flavor, **kw)
     adict["payload"] = obj.payload

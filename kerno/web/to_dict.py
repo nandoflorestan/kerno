@@ -12,7 +12,7 @@ to accept a parameter that all the other as_dict() methods do not need.
 Here is the solution:
 
 By using `Reg <http://reg.readthedocs.io/en/latest/>`_ we now have a
-``to_dict(obj, flavor='default', **kw)`` function that dispatches
+``to_dict(obj, flavor='', **kw)`` function that dispatches
 on the type of ``obj`` and ``flavor``. This allows you to register
 more than one implementation (with a "flavor" name) for each of your
 model classes.
@@ -25,9 +25,12 @@ directly.
 
 This way you can create a situation in which::
 
-    to_dict(Address, flavor="default")  # calls one implementation, and
-    to_dict(Person, flavor="default")  # calls another implementation, and
+    to_dict(Address, flavor="")  # calls one implementation, and
+    to_dict(Person, flavor="")  # calls another implementation, and
     to_dict(Person, flavor="table")   # calls yet another implementation.
+
+If the user code omits the *flavor* argument, the default one -- whose
+value is an empty string -- gets used.
 
 And because our ``to_dict()`` accepts keyword arguments, you can create
 a very powerful version of it, that can take such arguments as
@@ -96,7 +99,7 @@ def reuse_dict(
     reg.match_instance('obj'),
     reg.match_key('flavor', lambda obj, flavor, **kw: flavor))
 # Cannot type-annotate this function, Reg 0.11 does not support it
-def to_dict(obj, flavor='default', **kw):
+def to_dict(obj, flavor='', **kw):
     """Overloadable version of our function ``reuse_dict``.
 
     You can register your own implementations depending on *obj* and *flavor*.
