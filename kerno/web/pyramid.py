@@ -1,10 +1,9 @@
 """Integration between Kerno and the awesome Pyramid web framework."""
 
-from abc import ABCMeta
 from functools import wraps
 from typing import Callable
+from kerno.action import Action
 from kerno.state import MalbonaRezulto, Rezulto, to_dict
-from pyramid.decorator import reify
 from zope.interface import Interface
 
 
@@ -12,27 +11,15 @@ class IKerno(Interface):
     """Marker to register and retrieve a Kerno instance in a Pyramid app."""
 
 
-class KernoBaseView(metaclass=ABCMeta):
-    """Base class for Pyramid views."""
+def _from_pyramid(cls, request):
+    """Conveniently instantiate a kerno action from a Pyramid view."""
+    return cls(kerno=request.kerno,
+               user=request.user,
+               repo=request.repo)
 
-    @reify
-    def kerno(self):
-        """Find the kerno instance only once."""
-        return self.request.registry.getUtility(IKerno)
 
-    @property
-    def action_args(self):
-        """Make it more convenient to call a kerno action.
-
-        In your view you can call a kerno action like this::
-
-            result = MyAction(payload, **self.action_args)
-        """
-        return {
-            'kerno': self.kerno,
-            'user': self.request.user,
-            'repo': self.request.repo,
-        }
+# Monkeypatch the Action class so it has a ._from_pyramid(request) classmethod
+Action.from_pyramid = classmethod(_from_pyramid)  # type: ignore
 
 
 def kerno_view(fn: Callable):
@@ -77,3 +64,6 @@ def includeme(config):
         accept='application/json')
     config.add_view(
         context=MalbonaRezulto, renderer='json', view=malbona_view, xhr=True)
+    config.add_request_method(  # request.kerno is computed once per request
+        lambda request: request.registry.getUtility(IKerno),
+        'kerno', reify=True)
