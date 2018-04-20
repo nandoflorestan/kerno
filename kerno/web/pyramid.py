@@ -1,13 +1,38 @@
 """Integration between Kerno and the awesome Pyramid web framework."""
 
+from abc import ABCMeta
 from functools import wraps
 from typing import Callable
 from kerno.state import MalbonaRezulto, Rezulto, to_dict
+from pyramid.decorator import reify
 from zope.interface import Interface
 
 
 class IKerno(Interface):
     """Marker to register and retrieve a Kerno instance in a Pyramid app."""
+
+
+class KernoBaseView(metaclass=ABCMeta):
+    """Base class for Pyramid views."""
+
+    @reify
+    def kerno(self):
+        """Find the kerno instance only once."""
+        return self.request.registry.getUtility(IKerno)
+
+    @property
+    def action_args(self):
+        """Make it more convenient to call a kerno action.
+
+        In your view you can call a kerno action like this::
+
+            result = MyAction(payload, **self.action_args)
+        """
+        return {
+            'kerno': self.kerno,
+            'user': self.request.user,
+            'repo': self.request.repo,
+        }
 
 
 def kerno_view(fn: Callable):
