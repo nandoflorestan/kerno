@@ -2,7 +2,7 @@
 
 from collections import OrderedDict
 from unittest import TestCase
-from kerno.state import to_dict, UIMessage, Rezulto, MalbonaRezulto
+from kerno.state import to_dict, MalbonaRezulto, Rezulto, UICommand, UIMessage
 
 
 class TestUIMessage(TestCase):
@@ -33,12 +33,14 @@ class TestRezulto(TestCase):
     """Test cases for the Rezulto class and to_dict()."""
 
     def _make_one(self):
-        rez = Rezulto()
+        rez = Rezulto(commands=[UICommand(
+            name='add joke',
+            payload={'What does a composer do when he dies?': 'Decompose'},
+        )])
         rez.add_toast(title="Prokofiev is the best!",
                       plain="We like Prokofiev here.")
         rez.redirect = '/'
         rez.debug = {'user': 'Mr. Golden Ears'}
-        rez.payload = {"genius": "Prokofiev"}
         return rez
 
     def test_rezulto_to_dict(self):
@@ -56,7 +58,10 @@ class TestRezulto(TestCase):
         ])]
         assert adict['debug'] == {'user': 'Mr. Golden Ears'}
         assert adict['redirect'] == '/'
-        assert adict['payload'] == {"genius": "Prokofiev"}
+        assert adict['commands'] == [{
+            'name': 'add joke',
+            'payload': {'What does a composer do when he dies?': 'Decompose'},
+        }]
         with self.assertRaises(KeyError):
             adict['KINDS']
 
