@@ -147,3 +147,12 @@ class MalbonaRezulto(Returnable, Exception):
         if title or plain or html:
             self.add_message(
                 title=title, kind=kind, plain=plain, html=html)
+        self.invalid = {}  # type: Dict[str, Any]
+
+
+@to_dict.register(obj=MalbonaRezulto, flavor='')
+def malbona_to_dict(obj, flavor='', **kw):
+    """Convert a MalbonaRezulto to a dictionary."""
+    amap = returnable_to_dict(obj=obj, flavor='', **kw)
+    amap['invalid'] = obj.invalid
+    return amap
