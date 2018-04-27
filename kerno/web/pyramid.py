@@ -54,7 +54,8 @@ def includeme(config):
     just override the Pyramid view configuration. Example::
 
         config.add_view(
-            context=MalbonaRezulto, accept='text/html', view=malbona_view, renderer='yourapp:templates/malbona.jinja2')
+            context=MalbonaRezulto, accept='text/html', view=malbona_view,
+            renderer='yourapp:templates/malbona.jinja2')
     """
     config.add_view(
         context=MalbonaRezulto, accept='text/html', view=malbona_view,

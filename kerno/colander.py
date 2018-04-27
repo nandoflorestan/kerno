@@ -15,7 +15,7 @@ def validate_schema(
 ) -> Dict[str, Any]:
     """Conveniently validate a colander schema and return the clean dict.
 
-    But if colander.Invalid is raised, convert it into a MalbonaRezulto.
+    But if colander.Invalid is raised, put it inside a MalbonaRezulto.
     """
     try:
         return schema.deserialize(adict)
