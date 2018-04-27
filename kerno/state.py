@@ -78,13 +78,21 @@ class Returnable(metaclass=ABCMeta):
     kind = "danger"
     status_int = 500  # HTTP response code indicating server bug/failure
 
-    def __init__(self, commands: List[UICommand] = None) -> None:
+    def __init__(
+        self,
+        commands: List[UICommand] = None,
+        debug: Dict[str, Any] = None,
+        redirect: str = '',
+        **kw
+    ) -> None:
         """Construct."""
         self.messages = []              # type: List[UIMessage]
         self.toasts = []                # type: List[UIMessage]
-        self.commands = commands or []  # type: List[UICommand]
-        self.debug = {}                 # type: Dict[str, Any]
-        self.redirect = None
+        self.commands = commands or []
+        self.debug = debug or {}
+        self.redirect = redirect
+        for k, v in kw.items():
+            setattr(self, k, v)
 
     def __repr__(self) -> str:
         return "<{} status: {}>".format(
