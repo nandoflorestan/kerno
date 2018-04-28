@@ -1,6 +1,7 @@
 """Integration between Kerno and the awesome Pyramid web framework."""
 
 from functools import wraps
+import inspect
 from typing import Callable
 from kerno.action import Action
 from kerno.state import MalbonaRezulto, Rezulto, to_dict
@@ -22,17 +23,32 @@ def _from_pyramid(cls, request):
 Action.from_pyramid = classmethod(_from_pyramid)  # type: ignore
 
 
-def kerno_view(fn: Callable):
+def kerno_view(fn: Callable) -> Callable:
     """Decorate Pyramid views that call Kerno actions or operations.
 
     The view can return a Rezulto or RAISE a MalbonaRezulto. Then this
     decorator sets the status_int of the response (to 200 or 201) and
     converts it to a dictionary.
     """
+    args = inspect.getargspec(fn).args
+    if len(args) == 1 and 'self' == args[0]:       # view signature #1: self
+        def get_request(args):
+            return args[0].request
+    elif len(args) == 1 and 'request' == args[0]:  # view signature #2: request
+        def get_request(args):
+            return args[0]
+    elif len(args) == 2 and 'request' == args[1]:  # view signature #3:
+        def get_request(args):                     # context, request
+            return args[1]
+    else:
+        raise RuntimeError('The kerno_view decorator found an '
+                           'unexpected signature in {}'.format(fn))
+
     @wraps(fn)
-    def wrapper(request):
-        rezulto = fn(request)
+    def wrapper(*args):
+        rezulto = fn(*args)
         if isinstance(rezulto, Rezulto):
+            request = get_request(args)
             request.response.status_int = rezulto.status_int
             return to_dict(obj=rezulto)
         else:
