@@ -33,7 +33,7 @@ setup(
         'pyramid', 'sqlalchemy', 'service layer', 'action',
         'Clean Architecture'
     ],
-    classifiers=[  # http://pypi.python.org/pypi?:action=list_classifiers
+    classifiers=[  # https://pypi.org/pypi?:action=list_classifiers
         "Development Status :: 3 - Alpha",
         # "Development Status :: 4 - Beta",
         # "Development Status :: 5 - Production/Stable",
