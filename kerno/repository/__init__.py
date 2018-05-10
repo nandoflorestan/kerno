@@ -44,11 +44,12 @@ I also recommend against building generic repositories. See
 http://ben-morris.com/why-the-generic-repository-is-just-a-lazy-anti-pattern
 """
 
+from typing import Iterable
 from bag.settings import resolve
 from kerno.start import Eko
 
 
-def compose_class(name, mixins):
+def compose_class(name: str, mixins: Iterable) -> type:
     """Return a class called ``name``, made of the bases ``mixins``."""
     bases = (resolve(mixin) if isinstance(mixin, str) else mixin
              for mixin in mixins)

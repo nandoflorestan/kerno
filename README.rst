@@ -19,7 +19,7 @@ Defense of the architecture
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This is the first such project in the entire Python community, which
-seems so addicted to the insufficient MVC or MVT offered by common
+seems so addicted to the insufficient MVC or MVT proposed by common
 web frameworks. Kerno does not replace these frameworks, but facilitates
 creation of the top layers of an architecture that contains,
 from center to border:

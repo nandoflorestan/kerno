@@ -1,6 +1,8 @@
 """A base class for SQLAlchemy-based repositories."""
 
-from typing import TypeVar
+from typing import Any, TypeVar
+
+from kerno.kerno import Kerno
 
 Entity = TypeVar('Entity')  # For generic functions. Can be any type.
 
@@ -8,7 +10,7 @@ Entity = TypeVar('Entity')  # For generic functions. Can be any type.
 class BaseSQLAlchemyRepository:
     """Base class for a SQLAlchemy-based repository."""
 
-    def __init__(self, kerno, session_factory):
+    def __init__(self, kerno: Kerno, session_factory: Any) -> None:
         """Construct a SQLAlchemy repository instance to serve ONE request.
 
         - ``kerno`` is the Kerno instance for the current application.

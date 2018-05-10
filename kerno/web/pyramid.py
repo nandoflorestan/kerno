@@ -2,7 +2,8 @@
 
 from functools import wraps
 import inspect
-from typing import Callable
+from typing import Any, Callable, Dict
+
 from kerno.action import Action
 from kerno.state import MalbonaRezulto, Rezulto, to_dict
 from zope.interface import Interface
@@ -57,13 +58,13 @@ def kerno_view(fn: Callable) -> Callable:
     return wrapper
 
 
-def malbona_view(context, request):
+def malbona_view(context, request) -> Dict[str, Any]:
     """Pyramid view handler that returns a MalbonaRezulto as a dictionary."""
     request.response.status_int = context.status_int
     return to_dict(context)
 
 
-def includeme(config):
+def includeme(config) -> None:
     """Add our views to a Pyramid app so it will display our exceptions.
 
     For the HTML version, if you'd like to change our template to your own,

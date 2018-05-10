@@ -68,7 +68,7 @@ def includeme(config):
     config.add_request_method(add_flash, 'add_flash')
 
 
-def add_flash(request, allow_duplicate=False, **kw):
+def add_flash(request, allow_duplicate: bool=False, **kw) -> UIMessage:
     """Add a flash message to the user's session. For convenience."""
     msg = UIMessage(**kw)
     request.session.flash(msg, allow_duplicate=allow_duplicate)
