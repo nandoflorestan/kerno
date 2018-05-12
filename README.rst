@@ -54,6 +54,8 @@ for you to understand:
 - that automated testing is necessary today (non-negotiable),
 - that function purity makes automated testing possible or easy,
 - that decoupling is important for the future of your project,
+- that global variables (module-level attributes) make testing difficult
+  and error prone, limit concurrency, and increase implementation complexity,
 - and that finding the right abstractions can be difficult.
 
 The main inspiration for the *implementation* of Kerno is the Pyramid

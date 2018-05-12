@@ -5,6 +5,7 @@ Kerno roadmap
 Because Kerno is so young, this document is a mess. Do not
 read it now; I'll tidy it up in the future.
 
+- Require Python 3.6 and use the pydantic library to validate configuration
 - Figure out how to create a WebSockets server that doesn't open many database
   connections. Maybe have a WebSockets middleware and continue to use Pyramid.
 - Provide an example app or a good example in the tests.
