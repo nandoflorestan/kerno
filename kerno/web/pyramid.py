@@ -48,7 +48,10 @@ def kerno_view(fn: Callable) -> Callable:
     @wraps(fn)
     def wrapper(*args):
         rezulto = fn(*args)
-        if isinstance(rezulto, Rezulto):
+        if rezulto is None:
+            raise RuntimeError("Error: None returned by view {}()".format(
+                fn.__qualname__))
+        elif isinstance(rezulto, Rezulto):
             request = get_request(args)
             request.response.status_int = rezulto.status_int
             return to_dict(obj=rezulto)
