@@ -13,7 +13,7 @@ class UIMessage:
     # The default to_dict() works fine for this class.
 
     def __init__(
-        self, title: str="", kind: str="danger", plain: str="", html: str="",
+        self, kind: str="danger", title: str="", plain: str="", html: str="",
     ) -> None:
         """Constructor.
 
@@ -98,23 +98,23 @@ class Returnable(metaclass=ABCMeta):
         return "<{} status: {}>".format(
             self.__class__.__name__, self.status_int)
 
-    def add_message(
-        self, title: str="", kind: str="", plain: str="", html: str="",
-    ) -> UIMessage:
+    def add_message(self, kind: str="", **kw) -> UIMessage:
         """Add to the grave messages to be displayed to the user on the UI."""
-        msg = UIMessage(
-            title=title, kind=kind or self.kind, plain=plain, html=html)
+        msg = UIMessage(kind=kind or self.kind, **kw)
         self.messages.append(msg)
         return msg
 
-    def add_toast(
-        self, title: str="", kind: str="", plain: str="", html: str="",
-    ) -> UIMessage:
+    def add_toast(self, kind: str="", **kw) -> UIMessage:
         """Add to the quick messages to be displayed to the user on the UI."""
-        msg = UIMessage(
-            title=title, kind=kind or self.kind, plain=plain, html=html)
+        msg = UIMessage(kind=kind or self.kind, **kw)
         self.toasts.append(msg)
         return msg
+
+    def add_command(self, **kw) -> UICommand:
+        """Add to the commands for the UI to perform."""
+        cmd = UICommand(**kw)
+        self.commands.append(cmd)
+        return cmd
 
 
 @to_dict.register(obj=Returnable, flavor='')
