@@ -148,9 +148,9 @@ class MalbonaRezulto(Returnable, Exception):
     status_int = 400  # HTTP response code indicating invalid request
 
     def __init__(self, status_int: int=400, title: str="", plain: str="",
-                 html: str="", kind: str="danger") -> None:
+                 html: str="", kind: str="danger", **kw) -> None:
         """Constructor."""
-        Returnable.__init__(self)
+        Returnable.__init__(self, **kw)
         self.status_int = status_int
         if title or plain or html:
             self.add_message(
