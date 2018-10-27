@@ -2,7 +2,7 @@
 
 from abc import ABCMeta
 from collections import OrderedDict
-from typing import Any, Dict, List  # noqa
+from typing import Any, Dict, List, Optional  # noqa
 from kerno.web.to_dict import to_dict, reuse_dict
 
 
@@ -147,15 +147,18 @@ class MalbonaRezulto(Returnable, Exception):
     kind = "danger"
     status_int = 400  # HTTP response code indicating invalid request
 
-    def __init__(self, status_int: int=400, title: str="", plain: str="",
-                 html: str="", kind: str="danger", **kw) -> None:
+    def __init__(
+        self, status_int: int=400, title: str="", plain: str="",
+        html: str="", kind: str="danger",
+        invalid: Optional[Dict[str, Any]]=None, **kw
+    ) -> None:
         """Constructor."""
         Returnable.__init__(self, **kw)
         self.status_int = status_int
+        self.invalid = invalid or {}
         if title or plain or html:
             self.add_message(
                 title=title, kind=kind, plain=plain, html=html)
-        self.invalid = {}  # type: Dict[str, Any]
 
 
 @to_dict.register(obj=MalbonaRezulto, flavor='')
