@@ -2,10 +2,13 @@
 
 from functools import wraps
 import inspect
+from json import dumps
 from typing import Any, Callable, Dict
 
+from bag.web.exceptions import Problem
 from kerno.action import Action
 from kerno.state import MalbonaRezulto, Rezulto, to_dict
+from pyramid.httpexceptions import HTTPError
 from zope.interface import Interface
 
 
@@ -47,7 +50,18 @@ def kerno_view(fn: Callable) -> Callable:
 
     @wraps(fn)
     def wrapper(*args):
-        rezulto = fn(*args)
+        try:
+            rezulto = fn(*args)
+        except Problem as e:
+            adict = e.to_dict()
+            raise MalbonaRezulto(
+                # content_type='application/json',
+                status_int=e.status_int,
+                invalid=dumps(adict),
+                title=e.error_title or "Server error",
+                plain=e.error_msg,  # could be shown to end users
+                debug=e.error_debug,  # not displayed to end users
+            )
         if rezulto is None:
             raise RuntimeError("Error: None returned by view {}()".format(
                 fn.__qualname__))
