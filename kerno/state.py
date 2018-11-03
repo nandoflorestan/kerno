@@ -157,7 +157,7 @@ class MalbonaRezulto(Returnable, Exception):
         self.status_int = status_int
         self.invalid = invalid or {}
         if title or plain or html:
-            self.add_message(
+            self.add_toast(
                 title=title, kind=kind, plain=plain, html=html)
 
 
