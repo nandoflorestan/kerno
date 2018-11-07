@@ -10,7 +10,7 @@ class TestUIMessage(TestCase):
 
     def _make_one(self):
         return UIMessage(title="Prokofiev is the best!",
-                         plain="We like Prokofiev here.", kind="error")
+                         plain="We like Prokofiev here.", level="error")
 
     def test_ui_message_to_dict(self):
         examined = self._make_one()
@@ -20,7 +20,7 @@ class TestUIMessage(TestCase):
         assert adict['plain'] == "We like Prokofiev here."
         assert adict['html'] == ""
         with self.assertRaises(KeyError):
-            adict['KINDS']
+            adict['LEVELS']
 
     def test_ui_message_repr(self):
         examined = self._make_one()
@@ -48,11 +48,11 @@ class TestRezulto(TestCase):
         adict = to_dict(examined)
         assert isinstance(adict, OrderedDict)
         assert adict['status_int'] == 200
-        assert adict['kind'] == 'success'
+        assert adict['level'] == 'success'
         assert adict['messages'] == []
         assert adict['toasts'] == [OrderedDict([
             ('html', ''),
-            ('kind', 'success'),
+            ('level', 'success'),
             ('plain', 'We like Prokofiev here.'),
             ('title', 'Prokofiev is the best!'),
         ])]
@@ -63,7 +63,7 @@ class TestRezulto(TestCase):
             'payload': {'What does a composer do when he dies?': 'Decompose'},
         }]
         with self.assertRaises(KeyError):
-            adict['KINDS']
+            adict['LEVELS']
 
     def test_rezulto_repr(self):
         examined = self._make_one()
@@ -87,11 +87,11 @@ class TestMalbonaRezulto(TestCase):
         adict = to_dict(examined)
         assert isinstance(adict, OrderedDict)
         assert adict['status_int'] == 400
-        assert adict['kind'] == 'danger'
-        assert adict['toasts'] == []
-        assert adict['messages'] == [OrderedDict([
+        assert adict['level'] == 'danger'
+        assert adict['messages'] == []
+        assert adict['toasts'] == [OrderedDict([
             ('html', ''),
-            ('kind', 'danger'),
+            ('level', 'danger'),
             ('plain', 'We like Prokofiev here.'),
             ('title', 'Prokofiev is the best!'),
         ])]

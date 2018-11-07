@@ -41,9 +41,9 @@ def msg_to_bootstrap3(flavor, msg, close=True):
     If using Pyramid you can store UIMessage instances as flash messages
     in the user's session, then use this to render them as bootstrap alerts.
     """
-    return '<div class="alert alert-{kind}{cls} fade in">{close}' \
+    return '<div class="alert alert-{level}{cls} fade in">{close}' \
         '{body}</div>\n'.format(
-            kind=escape(msg.kind),
+            level=escape(msg.level),
             cls=' alert-block' if msg.html else '',
             close='<button type="button" class="close" data-dismiss="alert" '
                   'aria-label="Close"><span aria-hidden="true">×</span>'

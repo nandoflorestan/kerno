@@ -9,23 +9,23 @@ from kerno.web.to_dict import to_dict, reuse_dict
 class UIMessage:
     """Represents a message to be displayed to the user in the UI."""
 
-    KINDS = ["danger", "warning", "info", "success"]
+    LEVELS = ["danger", "warning", "info", "success"]
     # The default to_dict() works fine for this class.
 
     def __init__(
-        self, kind: str="danger", title: str="", plain: str="", html: str="",
+        self, level: str="danger", title: str="", plain: str="", html: str="",
     ) -> None:
         """Constructor.
 
-        ``kind`` must be one of ("danger", "warning", "info", "success").
+        ``level`` must be one of ("danger", "warning", "info", "success").
         """
         args_are_valid = (plain and not html) or (html and not plain)
         assert args_are_valid
-        if kind == "error":
-            kind = "danger"
-        assert kind in self.KINDS, 'Unknown kind of message: "{0}". ' \
-            "Possible kinds are {1}".format(kind, self.KINDS)
-        self.kind = kind
+        if level == "error":
+            level = "danger"
+        assert level in self.LEVELS, 'Unknown message level: "{0}". ' \
+            "Possible levels are {1}".format(level, self.LEVELS)
+        self.level = level
         self.title = title
         self.plain = plain
         self.html = html
@@ -72,10 +72,10 @@ class Returnable(metaclass=ABCMeta):
     - debug: A dict with information that is not displayed to the end user.
     - redirect: URL or screen to redirect to.
 
-    Subclasses overload the ``status_int`` and ``kind`` static variables.
+    Subclasses overload the ``status_int`` and ``level`` static variables.
     """
 
-    kind = "danger"
+    level = "danger"
     status_int = 500  # HTTP response code indicating server bug/failure
 
     def __init__(
@@ -98,15 +98,15 @@ class Returnable(metaclass=ABCMeta):
         return "<{} status: {}>".format(
             self.__class__.__name__, self.status_int)
 
-    def add_message(self, kind: str="", **kw) -> UIMessage:
+    def add_message(self, level: str="", **kw) -> UIMessage:
         """Add to the grave messages to be displayed to the user on the UI."""
-        msg = UIMessage(kind=kind or self.kind, **kw)
+        msg = UIMessage(level=level or self.level, **kw)
         self.messages.append(msg)
         return msg
 
-    def add_toast(self, kind: str="", **kw) -> UIMessage:
+    def add_toast(self, level: str="", **kw) -> UIMessage:
         """Add to the quick messages to be displayed to the user on the UI."""
-        msg = UIMessage(kind=kind or self.kind, **kw)
+        msg = UIMessage(level=level or self.level, **kw)
         self.toasts.append(msg)
         return msg
 
@@ -122,7 +122,7 @@ def returnable_to_dict(obj, flavor='', **kw):
     """Convert instance to a dictionary, usually for JSON output."""
     amap = reuse_dict(
         obj=obj,
-        keys=kw.get('keys', ('kind', 'status_int', 'debug', 'redirect')),
+        keys=kw.get('keys', ('level', 'status_int', 'debug', 'redirect')),
         sort=False)
     amap['messages'] = [reuse_dict(obj=msg) for msg in obj.messages]
     amap['toasts'] = [reuse_dict(obj=msg) for msg in obj.toasts]
@@ -137,19 +137,19 @@ class Rezulto(Returnable):
     Unsuccessful operations raise MalbonaRezulto instead.
     """
 
-    kind = "success"
+    level = "success"
     status_int = 200  # HTTP response code indicating success
 
 
 class MalbonaRezulto(Returnable, Exception):
     """Base class for exceptions raised by actions."""
 
-    kind = "danger"
+    level = "danger"
     status_int = 400  # HTTP response code indicating invalid request
 
     def __init__(
         self, status_int: int=400, title: str="", plain: str="",
-        html: str="", kind: str="danger",
+        html: str="", level: str="danger",
         invalid: Optional[Dict[str, Any]]=None, **kw
     ) -> None:
         """Constructor."""
@@ -158,7 +158,7 @@ class MalbonaRezulto(Returnable, Exception):
         self.invalid = invalid or {}
         if title or plain or html:
             self.add_toast(
-                title=title, kind=kind, plain=plain, html=html)
+                title=title, level=level, plain=plain, html=html)
 
 
 @to_dict.register(obj=MalbonaRezulto, flavor='')
