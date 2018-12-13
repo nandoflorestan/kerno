@@ -8,7 +8,6 @@ from typing import Any, Callable, Dict
 from bag.web.exceptions import Problem
 from kerno.action import Action
 from kerno.state import MalbonaRezulto, Rezulto, to_dict
-from pyramid.httpexceptions import HTTPError
 from zope.interface import Interface
 
 
@@ -34,7 +33,7 @@ def kerno_view(fn: Callable) -> Callable:
     decorator sets the status_int of the response (to 200 or 201) and
     converts it to a dictionary.
     """
-    args = inspect.getargspec(fn).args
+    args = [str(name) for name in inspect.signature(fn).parameters.keys()]
     if len(args) == 1 and 'self' == args[0]:       # view signature #1: self
         def get_request(args):
             return args[0].request
