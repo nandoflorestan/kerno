@@ -1,6 +1,6 @@
 """A registry for ways to convert an UIMessage to HTML code."""
 
-from cgi import escape
+from html import escape
 import reg
 from kerno.state import UIMessage
 from kerno.web.to_dict import to_dict
