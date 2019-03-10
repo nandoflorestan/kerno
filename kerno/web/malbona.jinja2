@@ -49,6 +49,18 @@
 				{% endif %}
 				<hr />
 			{% endfor %}
+			{% for msg in toasts %}
+				<h3>{$ msg.title $}</h3>
+				{% if msg.html %}
+				<div class="error-content">
+					{$ msg.html | safe $}
+				</div>
+				{% endif %}
+				{% if msg.plain %}
+					<p class="error-content">{$ msg.plain $}</p>
+				{% endif %}
+				<hr />
+			{% endfor %}
 			</div>
 		{% endblock %}
 
