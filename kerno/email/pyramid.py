@@ -11,5 +11,5 @@ class PyramidEmail:
     @reify
     def html(self):
         """Return the rich text version of the email message."""
-        html = render(self.HTML_TEMPLATE, self.context)
+        html = render(self.HTML_TEMPLATE, self.adict)
         return premailer.transform(html)  # Inline CSS styles

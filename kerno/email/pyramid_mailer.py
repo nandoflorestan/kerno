@@ -27,5 +27,5 @@ class EmailMessage(EmailMessageBase):
             sender=env['sender'] or self.mailer_settings["default_sender"],
             cc=env['cc'],
             bcc=env['bcc'],
-            reply_to=env['reply_to'],
+            extra_headers={'reply_to': env['reply_to']},
         )
