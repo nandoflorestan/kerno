@@ -32,7 +32,7 @@ class EmailMessage(EmailMessageBase):
             'bcc': env['bcc'],
         }
         if env['reply_to']:
-            args['extra_headers'] = {'Reply-To': env['reply_to']},
+            args['extra_headers'] = ('Reply-To', env['reply_to']),
         return args
 
     def to_message(self) -> Message:
