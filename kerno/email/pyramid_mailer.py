@@ -22,7 +22,7 @@ class EmailMessage(EmailMessageBase):
         """
         adict = self.to_dict()
         env = adict['envelope']
-        return {
+        args = {
             'subject': adict['subject'],
             'html': adict['html'],
             'body': adict['plain'],
@@ -30,9 +30,12 @@ class EmailMessage(EmailMessageBase):
             'sender': env['sender'] or self.mailer_settings["default_sender"],
             'cc': env['cc'],
             'bcc': env['bcc'],
-            'extra_headers': {'reply_to': env['reply_to']},
         }
+        if env['reply_to']:
+            args['extra_headers'] = {'Reply-To': env['reply_to']},
+        return args
 
     def to_message(self) -> Message:
         """Convert this instance into a pyramid_mailer Message."""
-        return Message(**self.to_message_args())
+        margs = self.to_message_args()
+        return Message(**margs)

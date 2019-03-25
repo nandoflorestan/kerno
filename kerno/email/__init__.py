@@ -54,11 +54,11 @@ class Envelope:
     def to_dict(self) -> Dict[str, Any]:
         """Return dict with Python primitive types within."""
         return {
-            'recipients': [r.to_mailer() for r in self.recipients],
-            'cc': [r.to_mailer() for r in self.cc],
-            'bcc': [r.to_mailer() for r in self.bcc],
-            'reply_to': self.reply_to.to_mailer() if self.reply_to else None,
-            'sender': self.sender.to_mailer() if self.sender else None,
+            'recipients': [str(r) for r in self.recipients],
+            'cc': [str(r) for r in self.cc],
+            'bcc': [str(r) for r in self.bcc],
+            'reply_to': str(self.reply_to) if self.reply_to else None,
+            'sender': str(self.sender) if self.sender else None,
         }
 
 
