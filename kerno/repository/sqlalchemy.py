@@ -33,6 +33,10 @@ class BaseSQLAlchemyRepository:
         self.sas.add(entity)
         return entity
 
+    def delete(self, entity: Entity) -> None:
+        """Delete an ``entity`` from the database."""
+        self.sas.delete(entity)
+
     def flush(self) -> None:
         """Obtain IDs on new objects and update state on the database.
 
