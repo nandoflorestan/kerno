@@ -1,9 +1,8 @@
 """A base class for SQLAlchemy-based repositories."""
 
-from typing import Any, Generic, Iterable, List, Optional, TypeVar
+from typing import Any, Generic, Iterable, List, Optional
 from kerno.kerno import Kerno
-
-Entity = TypeVar('Entity')  # For generic functions. Can be any type.
+from kerno.typing import Entity
 
 
 class BaseSQLAlchemyRepository:
