@@ -1,6 +1,7 @@
 """A base class for SQLAlchemy-based repositories."""
 
 from typing import Any, Generic, Iterable, List, Optional
+
 from kerno.kerno import Kerno
 from kerno.typing import Entity
 
@@ -8,18 +9,25 @@ from kerno.typing import Entity
 class BaseSQLAlchemyRepository:
     """Base class for a SQLAlchemy-based repository."""
 
-    def __init__(self, kerno: Kerno, session_factory: Any) -> None:
+    SAS = 'session factory'  # name of the SQLAlchemy session utility
+
+    def __init__(self, kerno: Kerno, session_factory: Any = None):
         """Construct a SQLAlchemy repository instance to serve ONE request.
 
         - ``kerno`` is the Kerno instance for the current application.
         - ``session_factory`` is a function that returns a
           SQLAlchemy session to be used in this request -- scoped or not.
+          If not provided as an argument, get it from the
+          kerno utility registry (under the "session factory" name.
         """
         self.kerno = kerno
-        self.sas = self.new_sas(session_factory)
+        self.sas = self.new_sas(
+            session_factory or kerno.get_utility(self.SAS))  # type: ignore
+        assert self.sas
 
     def new_sas(self, session_factory):
         """Obtain a new SQLAlchemy session instance."""
+        assert session_factory is not None
         is_scoped_session = hasattr(session_factory, 'query')
         # Because we don't want to depend on SQLAlchemy:
         if callable(session_factory) and not is_scoped_session:

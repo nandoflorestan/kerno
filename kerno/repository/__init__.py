@@ -45,7 +45,9 @@ http://ben-morris.com/why-the-generic-repository-is-just-a-lazy-anti-pattern
 """
 
 from typing import Iterable
+
 from bag.settings import resolve
+
 from kerno.start import Eko
 
 
@@ -57,7 +59,12 @@ def compose_class(name: str, mixins: Iterable) -> type:
 
 
 def eki(eko: Eko) -> None:
-    """At startup, add to *eko* the ``add_repository_mixin`` method."""
+    """Make repository functionality available.
+
+    - *eko* gets the ``add_repository_mixin(cls)`` method which is used to
+      gradually build the ``kerno.Repository`` class from modular classes.
+    - *kerno* gets a ``new_repo()`` method which instantiates a Repository.
+    """
     eko._repository_mixins = []  # type: ignore
 
     def add_repository_mixin(mixin):
@@ -69,3 +76,6 @@ def eki(eko: Eko) -> None:
         eko.kerno.Repository = compose_class(
             name='Repository', mixins=eko._repository_mixins)
     eko.add_repository_mixin = add_repository_mixin  # type: ignore
+
+    eko.kerno.new_repo = (  # type: ignore
+        lambda: eko.kerno.Repository(kerno=eko.kerno))  # type: ignore
