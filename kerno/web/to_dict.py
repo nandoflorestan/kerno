@@ -76,7 +76,7 @@ def reuse_dict(
 
     If the ``sort`` flag is True, sort the OrderedDict.
     """
-    amap = OrderedDict()  # type: OrderedDict[str, Any]
+    amap: OrderedDict[str, Any] = OrderedDict()
     kk = keys or excluding(('password',), only_relevant(keys_from(obj)))
     if sort:
         kk = sorted(kk)

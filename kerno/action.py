@@ -2,7 +2,8 @@
 
 from abc import ABCMeta
 from typing import Any
-from .kerno import Kerno
+
+from kerno.kerno import Kerno
 
 
 class Action(metaclass=ABCMeta):
@@ -19,8 +20,7 @@ class Action(metaclass=ABCMeta):
                 ...
     """
 
-    def __init__(self, kerno: Kerno, user: Any, repo: Any) -> None:
-        """Construct."""
+    def __init__(self, kerno: Kerno, user: Any, repo: Any) -> None:  # noqa
         self.kerno = kerno
         self.user = user
         self.repo = repo

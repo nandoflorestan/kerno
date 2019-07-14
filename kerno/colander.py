@@ -1,18 +1,19 @@
 """Convenience to use colander with kerno."""
 
-from typing import Any, Dict
 import colander as c
-from .state import MalbonaRezulto
+
+from kerno.state import MalbonaRezulto
+from kerno.typing import DictStr
 
 _ = str  # TODO add i18n
 
 
 def validate_schema(
     schema: c.SchemaType,
-    adict: Dict[str, Any],
+    adict: DictStr,
     mal_title: str = _("Validation error"),
     mal_plain: str = _("The data does not pass server validation."),
-) -> Dict[str, Any]:
+) -> DictStr:
     """Conveniently validate a colander schema and return the clean dict.
 
     But if colander.Invalid is raised, put it inside a MalbonaRezulto.

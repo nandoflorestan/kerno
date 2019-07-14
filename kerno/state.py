@@ -2,7 +2,9 @@
 
 from abc import ABCMeta
 from collections import OrderedDict
-from typing import Any, Dict, List, Optional  # noqa
+from typing import Any, Dict, List, Optional
+
+from kerno.typing import DictStr
 from kerno.web.to_dict import to_dict, reuse_dict
 
 
@@ -39,7 +41,7 @@ class UICommand:
 
     __slots__ = ('name', 'payload')
 
-    def __init__(self, name: str, payload: Dict[str, Any]) -> None:
+    def __init__(self, name: str, payload: DictStr) -> None:
         """Construct a message to the UI.
 
         ``name`` is the name of a command to be performed in the UI.
@@ -81,7 +83,7 @@ class Returnable(metaclass=ABCMeta):
     def __init__(
         self,
         commands: List[UICommand] = None,
-        debug: Dict[str, Any] = None,
+        debug: DictStr = None,
         redirect: str = '',
         **kw
     ) -> None:
@@ -150,7 +152,7 @@ class MalbonaRezulto(Returnable, Exception):
     def __init__(
         self, status_int: int=400, title: str="", plain: str="",
         html: str="", level: str="danger",
-        invalid: Optional[Dict[str, Any]]=None, **kw
+        invalid: Optional[DictStr]=None, **kw
     ) -> None:
         """Constructor."""
         Returnable.__init__(self, **kw)

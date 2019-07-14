@@ -5,6 +5,7 @@ from typing import Any, Dict
 from pyramid_mailer.message import Message
 
 from kerno.email import EmailMessageBase
+from kerno.typing import DictStr
 
 
 class EmailMessage(EmailMessageBase):
@@ -15,7 +16,7 @@ class EmailMessage(EmailMessageBase):
         super().__init__(**kw)
         self.mailer_settings = mailer_settings
 
-    def to_message_args(self) -> Dict[str, Any]:
+    def to_message_args(self) -> DictStr:
         """Convert this into a dict to instantiate a pyramid_mailer Message.
 
         This is useful because Celery likes to use JSON serialization.

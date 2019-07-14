@@ -5,9 +5,12 @@ It works much like initial configuration of a Pyramid app.
 
 from configparser import NoSectionError
 from types import ModuleType
-from typing import Any, Callable, Dict, Iterable, Union
+from typing import Callable, Iterable, Union
+
 from bag.settings import read_ini_files, resolve
-from .utility_registry import UtilityRegistry
+
+from kerno.typing import DictStr
+from kerno.utility_registry import UtilityRegistry
 
 ResourceType = Union[str, ModuleType, Callable]
 
@@ -48,7 +51,7 @@ class Eko(UtilityRegistry):
         """Return an instance after reading some INI file(s)."""
         return cls(settings=read_ini_files(*config_files, encoding=encoding))
 
-    def __init__(self, settings: Dict[str, Any]={}) -> None:
+    def __init__(self, settings: DictStr={}) -> None:
         """Construct."""
         if settings and not hasattr(settings, '__getitem__'):
             raise TypeError("The *settings* argument must be dict-like. "

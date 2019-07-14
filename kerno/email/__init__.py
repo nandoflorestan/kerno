@@ -7,11 +7,13 @@ emails can be plugged at the end.
 """
 
 from abc import ABCMeta, abstractmethod
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 from bag.email_validator import EmailValidator
 from bag.reify import reify
 from bs4 import BeautifulSoup
+
+from kerno.typing import DictStr
 
 
 class EmailAddress:
@@ -51,7 +53,7 @@ class Envelope:
         self.reply_to = reply_to
         self.sender = sender
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> DictStr:
         """Return dict with Python primitive types within."""
         return {
             'recipients': [str(r) for r in self.recipients],
@@ -76,7 +78,7 @@ class EmailMessageBase(metaclass=ABCMeta):
     """
 
     def __init__(
-        self, adict: Dict[str, Any], envelope: Envelope,
+        self, adict: DictStr, envelope: Envelope,
     ) -> None:
         """:param adict: dictionary for use in templates."""
         self.adict = adict
@@ -106,7 +108,7 @@ class EmailMessageBase(metaclass=ABCMeta):
         """Autogenerate the plain text version from the rich version."""
         return BeautifulSoup(self.html, 'html.parser').get_text()
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> DictStr:
         """Return a dict containing the computed parts of this message."""
         assert self.subject
         assert self.plain or self.html
