@@ -9,13 +9,14 @@ from typing import Callable, Iterable, List, Union
 
 from bag.settings import read_ini_files, resolve
 
+from kerno.kerno import Kerno
 from kerno.typing import DictStr
-from kerno.utility_registry import UtilityRegistry
+from kerno.utility_registry import ConfigurationError, UtilityRegistryBuilder
 
 ResourceType = Union[str, ModuleType, Callable]
 
 
-class Eko(UtilityRegistry):
+class Eko:
     r"""At startup builds the Kerno instance for the app.
 
     In the Esperanto language, Eko is a noun that means "a start".
@@ -35,9 +36,9 @@ class Eko(UtilityRegistry):
         eko.settings  # lets you access the merged settings from INI files
         eko.kerno  # is the Kerno instance that will be the core of the app
 
-        eko.register_utility('mailer', 'some.package:mailer_function')
+        eko.utilities.register('mailer', 'some.package:mailer_function')
         # ...and later you can retrieve *mailer_function* by doing:
-        # kerno.get_utility('mailer')
+        # kerno.utilities['mailer']
 
         # This finds the function some.extension.package:eki() and runs it,
         # passing it the eko configurator object:
@@ -67,9 +68,10 @@ class Eko(UtilityRegistry):
         if settings and not hasattr(settings, '__getitem__'):
             raise TypeError("The *settings* argument must be dict-like. "
                             "Received: {}".format(type(settings)))
-        UtilityRegistry.__init__(self, settings)
 
         self._included_modules: List[ModuleType] = []
+        self.kerno = Kerno(settings)
+        self.utilities = UtilityRegistryBuilder(kerno=self.kerno)
 
         try:
             main_config_section = settings['kerno']
@@ -113,7 +115,3 @@ class Eko(UtilityRegistry):
         """Initialize multiple app modules."""
         for resource in resources:
             self.include(resource, throw=throw)
-
-
-class ConfigurationError(Exception):
-    """Represents an error during application startup."""

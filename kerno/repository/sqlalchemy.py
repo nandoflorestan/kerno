@@ -22,7 +22,7 @@ class BaseSQLAlchemyRepository:
         """
         self.kerno = kerno
         self.sas = self.new_sas(
-            session_factory or kerno.get_utility(self.SAS))  # type: ignore
+            session_factory or kerno.utilities[self.SAS])
         assert self.sas
 
     def new_sas(self, session_factory):

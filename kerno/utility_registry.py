@@ -1,60 +1,53 @@
-"""Eko mixin that builds Kerno's utility registry."""
+"""A registry to store various utilities in an application."""
 
 from configparser import NoSectionError
+from types import MappingProxyType  # behaves like a FrozenDict / frozendict
 from typing import Any
 
 from bag.settings import resolve
-import reg
 
 from kerno.kerno import Kerno
 from kerno.typing import DictStr
 
 
-class UtilityRegistry:  # TODO kerno.utilities instead of inheritance
-    """Eko mixin that builds Kerno's utility registry."""
+class ConfigurationError(Exception):
+    """Represents an error during application startup."""
 
-    def __init__(self, settings: DictStr) -> None:
-        """Construct."""
-        self.kerno = Kerno(settings)
 
-        # The registry must be local to each Kerno instance, not static.
-        # This is why we define the registry inside this constructor:
+class UtilityRegistryBuilder:
+    """Gradually builds Kerno's utility registry, which is immutable."""
 
-        @reg.dispatch(reg.match_key('name', lambda name: name))
-        def get_utility(name):
-            """Return a utility class, or None, according to configuration."""
-            return None  # when ``name`` not registered.
-        self.kerno.get_utility = get_utility  # type: ignore
-        self.set_up_utilities()
-
-    def set_up_utilities(self) -> None:
+    def __init__(self, kerno: Kerno):
         """Read the config section "kerno utilites"; register each utility."""
+        self.kerno = kerno
+        self._utilities: DictStr = {}
+        self.kerno.utilities = MappingProxyType(self._utilities)
+
         try:
-            section = self.kerno.settings['kerno utilities']
+            section = kerno.settings['kerno utilities']
         except (NoSectionError, KeyError):
             return
-        for key, val in section.items():
-            self.register_utility(key, val)
+        for name, utility in section.items():
+            self.register(name, utility)
 
-    def register_utility(self, name: str, utility: Any) -> None:
+    def register(self, name: str, utility: Any) -> Any:
         """Register ``utility`` under ``name`` at startup for later use."""
         obj = resolve(utility)
         # print('Registering ', name, utility, obj)
-        self.kerno.get_utility.register(  # type: ignore
-            lambda name: obj, name=name)
+        self._utilities[name] = obj
+        return obj
 
-    def set_default_utility(self, name: str, utility: Any) -> None:
+    def set_default(self, name: str, utility: Any) -> Any:
         """Register ``utility`` as ``name`` only if name not yet registered."""
-        if self.kerno.get_utility.by_args(  # type: ignore
-                name).component is None:
-            self.register_utility(name, utility)
+        if self._utilities.get(name) is None:
+            return self.register(name, utility)
+        else:
+            return None
 
-    def ensure_utility(
-        self, name: str, component: str='The application',
-    ) -> None:
+    def ensure(self, name: str, component: str='The application') -> None:
         """Raise if no utility has been registered under ``name``."""
-        if self.kerno.get_utility.by_args(  # type: ignore
-                name).component is None:
-            raise RuntimeError(
-                'Configuration error: {} needs a utility called "{}" '
-                'which has not been registered.'.format(component, name))
+        if self._utilities.get(name) is None:
+            raise ConfigurationError(
+                f'{component} needs a utility called "{name}", '
+                'which has not been registered.'
+            )
