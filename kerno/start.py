@@ -63,8 +63,7 @@ class Eko:
         """Return an instance after reading some INI file(s)."""
         return cls(settings=read_ini_files(*config_files, encoding=encoding))
 
-    def __init__(self, settings: DictStr={}) -> None:
-        """Construct."""
+    def __init__(self, settings: DictStr={}):  # noqa
         if settings and not hasattr(settings, '__getitem__'):
             raise TypeError("The *settings* argument must be dict-like. "
                             "Received: {}".format(type(settings)))

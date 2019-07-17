@@ -38,14 +38,13 @@ class EmailAddress:
 class Envelope:
     """Represents the envelope of an email message."""
 
-    def __init__(
+    def __init__(  # noqa
         self, recipients: List[EmailAddress],
         cc: Optional[List[EmailAddress]] = None,
         bcc: Optional[List[EmailAddress]] = None,
         reply_to: Optional[EmailAddress] = None,
         sender: Optional[EmailAddress] = None,
     ):
-        """Instantiate."""
         assert recipients
         self.recipients = recipients
         self.cc = cc or []
@@ -54,7 +53,7 @@ class Envelope:
         self.sender = sender
 
     def to_dict(self) -> DictStr:
-        """Return dict with Python primitive types within."""
+        """Return a dict with Python primitive types within."""
         return {
             'recipients': [str(r) for r in self.recipients],
             'cc': [str(r) for r in self.cc],
@@ -77,9 +76,7 @@ class EmailMessageBase(metaclass=ABCMeta):
             HTML_TEMPLATE = 'path/to/template.jinja2'
     """
 
-    def __init__(
-        self, adict: DictStr, envelope: Envelope,
-    ) -> None:
+    def __init__(self, adict: DictStr, envelope: Envelope):
         """:param adict: dictionary for use in templates."""
         self.adict = adict
         self.envelope = envelope

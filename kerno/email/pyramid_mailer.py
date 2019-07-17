@@ -1,6 +1,6 @@
 """A complement to our email module, for those who use pyramid_mailer."""
 
-from typing import Any, Dict
+from typing import Dict
 
 from pyramid_mailer.message import Message
 
@@ -11,8 +11,7 @@ from kerno.typing import DictStr
 class EmailMessage(EmailMessageBase):
     """Abstract base class with methods that depend on pyramid_mailer."""
 
-    def __init__(self, mailer_settings: Dict[str, str], **kw):
-        """Constructor."""
+    def __init__(self, mailer_settings: Dict[str, str], **kw):  # noqa
         super().__init__(**kw)
         self.mailer_settings = mailer_settings
 

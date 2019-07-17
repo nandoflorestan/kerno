@@ -12,7 +12,7 @@ class TestUIMessage(TestCase):
         return UIMessage(title="Prokofiev is the best!",
                          plain="We like Prokofiev here.", level="error")
 
-    def test_ui_message_to_dict(self):
+    def test_ui_message_to_dict(self):  # noqa
         examined = self._make_one()
         adict = to_dict(examined)
         assert isinstance(adict, OrderedDict)
@@ -22,7 +22,7 @@ class TestUIMessage(TestCase):
         with self.assertRaises(KeyError):
             adict['LEVELS']
 
-    def test_ui_message_repr(self):
+    def test_ui_message_repr(self):  # noqa
         examined = self._make_one()
         astr = repr(examined)
         assert isinstance(astr, str)
@@ -43,7 +43,7 @@ class TestRezulto(TestCase):
         rez.debug = {'user': 'Mr. Golden Ears'}
         return rez
 
-    def test_rezulto_to_dict(self):
+    def test_rezulto_to_dict(self):  # noqa
         examined = self._make_one()
         adict = to_dict(examined)
         assert isinstance(adict, OrderedDict)
@@ -65,7 +65,7 @@ class TestRezulto(TestCase):
         with self.assertRaises(KeyError):
             adict['LEVELS']
 
-    def test_rezulto_repr(self):
+    def test_rezulto_repr(self):  # noqa
         examined = self._make_one()
         astr = repr(examined)
         assert isinstance(astr, str)
@@ -82,7 +82,7 @@ class TestMalbonaRezulto(TestCase):
         rez.debug = {'user': 'Mr. Golden Ears'}
         return rez
 
-    def test_malbona_to_dict(self):
+    def test_malbona_to_dict(self):  # noqa
         examined = self._make_one()
         adict = to_dict(examined)
         assert isinstance(adict, OrderedDict)
@@ -100,7 +100,7 @@ class TestMalbonaRezulto(TestCase):
         with self.assertRaises(KeyError):
             adict['payload']
 
-    def test_malbona_repr(self):
+    def test_malbona_repr(self):  # noqa
         examined = self._make_one()
         astr = repr(examined)
         assert isinstance(astr, str)

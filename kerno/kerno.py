@@ -11,7 +11,7 @@ class Kerno:
     the "Eko" configurator.
     """
 
-    def __init__(self, settings: Dict[str, Dict]) -> None:
+    def __init__(self, settings: Dict[str, Dict]):
         """Construct. The ``settings`` are a dict of dicts."""
         self.settings = settings
         self.utilities: MappingProxyType[str, Any] = MappingProxyType({})

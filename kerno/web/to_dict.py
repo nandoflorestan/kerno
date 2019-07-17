@@ -48,6 +48,7 @@ import reg
 
 
 def keys_from(obj: Any) -> Iterable:
+    """Return the names of the instance variables of ``obj``."""
     return obj.__dict__.keys()
 
 
@@ -61,7 +62,7 @@ def only_relevant(keys: Iterable[str]) -> Iterable[str]:
         keys)
 
 
-def excluding(blacklist: Sequence, keys: Iterable) -> Iterable:
+def excluding(blacklist: Sequence, keys: Iterable) -> Iterable:  # noqa
     return filter(lambda k: k not in blacklist, keys)
 
 

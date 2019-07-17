@@ -2,7 +2,7 @@
 
 from abc import ABCMeta
 from collections import OrderedDict
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 
 from kerno.typing import DictStr
 from kerno.web.to_dict import to_dict, reuse_dict
@@ -86,10 +86,9 @@ class Returnable(metaclass=ABCMeta):
         debug: DictStr = None,
         redirect: str = '',
         **kw
-    ) -> None:
-        """Construct."""
-        self.messages = []              # type: List[UIMessage]
-        self.toasts = []                # type: List[UIMessage]
+    ):  # noqa
+        self.messages: List[UIMessage] = []
+        self.toasts: List[UIMessage] = []
         self.commands = commands or []
         self.debug = debug or {}
         self.redirect = redirect
@@ -153,8 +152,7 @@ class MalbonaRezulto(Returnable, Exception):
         self, status_int: int=400, title: str="", plain: str="",
         html: str="", level: str="danger",
         invalid: Optional[DictStr]=None, **kw
-    ) -> None:
-        """Constructor."""
+    ):  # noqa
         Returnable.__init__(self, **kw)
         self.status_int = status_int
         self.invalid = invalid or {}

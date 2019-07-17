@@ -20,7 +20,7 @@ TypAction = Union[TypActionClass, TypActionFunction]  # either of these
 class ActionRegistry:
     """A registry for all the business operations of an application."""
 
-    def __init__(self, kerno: Kerno) -> None:
+    def __init__(self, kerno: Kerno):
         """Construct.
 
         ``kerno`` must be the Kerno instance for the current application.
