@@ -5,7 +5,7 @@ It works much like initial configuration of a Pyramid app.
 
 from configparser import NoSectionError
 from types import ModuleType
-from typing import Callable, Iterable, Union
+from typing import Callable, Iterable, List, Union
 
 from bag.settings import read_ini_files, resolve
 
@@ -16,12 +16,19 @@ ResourceType = Union[str, ModuleType, Callable]
 
 
 class Eko(UtilityRegistry):
-    """At startup builds the Kerno instance for the app.
+    r"""At startup builds the Kerno instance for the app.
 
     In the Esperanto language, Eko is a noun that means "a start".
     And "eki" is a verb that means "to start".
 
-    Example::
+    The Eko class can build an application core from multiple Python modules,
+    much like the Configurator in Pyramid.
+
+    If the same module is included twice, Eko will raise
+    ``kerno.start.ConfigurationError``, helping you ensure
+    your startup code stays clean.
+
+    Usage example::
 
         from kerno.start import Eko
         eko = Eko.from_ini('main_config.ini', 'production.ini')
@@ -44,6 +51,10 @@ class Eko(UtilityRegistry):
         # After this, the first time you access ``kerno.Repository``,
         # the Repository class is assembled from the mixin classes,
         # and stored for usage as kerno.Repository.
+
+    If you need to debug the order in which modules got included, you can::
+
+        print(*eko._included_modules, sep='\n')
     """
 
     @classmethod
@@ -58,6 +69,8 @@ class Eko(UtilityRegistry):
                             "Received: {}".format(type(settings)))
         UtilityRegistry.__init__(self, settings)
 
+        self._included_modules: List[ModuleType] = []
+
         try:
             main_config_section = settings['kerno']
         except (NoSectionError, KeyError):
@@ -66,9 +79,20 @@ class Eko(UtilityRegistry):
             self.include(extension)
 
     def include(self, resource: ResourceType, throw: bool=True) -> None:
-        """Execute a configuration callable for imperative extension."""
+        """Execute a configuration callable for imperative extension.
+
+        If the argument ``throw`` is True (which is the default)
+        and ``resource`` does not have an ``eki()`` function,
+        raise ConfigurationError.  Otherwise, ignore the current module
+        and return without an error.
+        """
         # TODO log.debug('Including {}'.format(module))
         obj = resolve(resource) if isinstance(resource, str) else resource
+        if obj in self._included_modules:
+            raise ConfigurationError(f"{obj} has already been included!")
+        else:
+            self._included_modules.append(obj)
+
         if isinstance(obj, ModuleType):
             try:
                 fn = getattr(obj, 'eki')

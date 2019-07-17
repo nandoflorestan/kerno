@@ -2,15 +2,18 @@
 
 from configparser import NoSectionError
 from typing import Any
-import reg
+
 from bag.settings import resolve
-from .kerno import Kerno
+import reg
+
+from kerno.kerno import Kerno
+from kerno.typing import DictStr
 
 
-class UtilityRegistry:
+class UtilityRegistry:  # TODO kerno.utilities instead of inheritance
     """Eko mixin that builds Kerno's utility registry."""
 
-    def __init__(self, settings) -> None:
+    def __init__(self, settings: DictStr) -> None:
         """Construct."""
         self.kerno = Kerno(settings)
 
