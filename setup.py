@@ -7,8 +7,8 @@ from sys import version_info
 # from distutils.core import setup
 from setuptools import setup, find_packages
 
-if version_info[:2] < (3, 5):
-    raise RuntimeError('Kerno requires Python 3.5+')
+if version_info[:2] < (3, 6):
+    raise RuntimeError('Kerno requires Python 3.6+')
 
 with open('README.rst', encoding='utf-8') as f:
     long_description = f.read()
@@ -42,9 +42,9 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         "Framework :: Pyramid",

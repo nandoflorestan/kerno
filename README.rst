@@ -65,7 +65,7 @@ best application composition method of all these frameworks. Sometimes I
 think Kerno is doing little more than bringing parts of Pyramid out of the
 web framework in a composable way.
 
-We require Python >= 3.5 because we are type annotating our functions so you
+We require Python >= 3.6 because we are type annotating our functions so you
 can use mypy if you like.
 
 
