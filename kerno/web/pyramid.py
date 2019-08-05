@@ -93,7 +93,7 @@ class IKerno(Interface):
 
 
 def includeme(config) -> None:
-    """Integrate kerno with Pyramid.
+    r"""Integrate kerno with Pyramid.
 
     - Make ``request.kerno`` available.
     - Make ``request.repo`` available.
@@ -104,11 +104,24 @@ def includeme(config) -> None:
 
     Usage example::
 
-        # You have already instantiated an Eko (variable "eko")
-        # and now you are doing Pyramid configuration (variable "config").
-        from kerno.web.pyramid import IKerno
-        config.registry.registerUtility(eko.kerno, IKerno)
-        config.include('kerno.web.pyramid')
+        from kerno.web.pyramid import IKerno, Kerno
+
+        def init_kerno(config_path: str) -> Kerno:
+            \"\"\"Return initialized kerno, separate from web frameworks.\"\"\"
+            from kerno.start import Eko
+            eko = Eko.from_ini(config_path)
+            # ...more kerno initialization code here, then...
+            return eko.kerno
+
+        def main(global_config, **settings):
+            \"\"\"Return a Pyramid WSGI application.\"\"\"
+            from pyramid.config import Configurator
+            with Configurator(settings=settings) as config:
+                kerno = init_kerno(global_config['__file__'])
+                config.registry.registerUtility(kerno, IKerno)
+                config.include('kerno.web.pyramid')
+                # ...more Pyramid configuration code here, then at the end...
+            return config.make_wsgi_app()
 
     For the HTML version, if you'd like to change our template to your own,
     just override the Pyramid view configuration. Example::
