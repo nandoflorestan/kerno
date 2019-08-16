@@ -3,7 +3,7 @@
 from typing import Any, Generic, Iterable, List, Optional
 
 from kerno.kerno import Kerno
-from kerno.typing import Entity
+from kerno.typing import DictStr, Entity
 
 
 class BaseSQLAlchemyRepository:
@@ -50,6 +50,44 @@ class BaseSQLAlchemyRepository:
         Without committing the transaction.
         """
         self.sas.flush()
+
+    def _get_or_add(self, cls: type, **filters):
+        """Retrieve or add an entity with ``filters``; return the entity.
+
+        The entity will have a transient ``_is_new`` flag telling you whether
+        it already existed.
+
+        This is a helper for the implementation of repository methods and
+        should not be used elsewhere.
+        """
+        entity = self.sas.query(cls).filter_by(**filters).first()
+        if entity is None:
+            entity = cls(**filters)
+            self.add(entity=entity)
+            is_new = True
+        else:
+            is_new = False
+        assert not hasattr(entity, '_is_new')
+        entity._is_new = is_new
+        return entity
+
+    def _update_or_add(self, cls: type, props: DictStr = {}, **filters):
+        """Load and modify entity if it exists, else create one.
+
+        First obtain either an existing object or a new one, based on
+        ``filters``. Then apply ``props`` and return the entity.
+
+        The entity will have a transient ``_is_new`` flag telling you whether
+        it already existed.
+
+        This is a helper for the implementation of repository methods and
+        should not be used elsewhere.
+        """
+        assert '_is_new' not in props
+        entity = self._get_or_add(cls, **filters)
+        for key, val in props.items():
+            setattr(entity, key, val)
+        return entity
 
 
 class Query(Iterable, Generic[Entity]):
