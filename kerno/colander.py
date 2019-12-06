@@ -12,7 +12,7 @@ def validate_schema(
     schema: c.SchemaType,
     adict: DictStr,
     mal_title: str = _("Validation error"),
-    mal_plain: str = _("The data does not pass server validation."),
+    mal_plain: str = _("The data do not pass server validation."),
 ) -> DictStr:
     """Conveniently validate a colander schema and return the clean dict.
 
