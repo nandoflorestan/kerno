@@ -1,18 +1,9 @@
-"""Integration between Kerno and the awesome Pyramid web framework.
-
-After importing this module, every kerno Action class has a ``from_pyramid``
-factory method::
-
-    action = CreateUserAction.from_pyramid(request)
-    # The above is much more convenient to use than the normal constructor:
-    action = CreateUserAction(
-        kerno=request.kerno, repo=request.repo, user=request.user)
-"""
+"""Integration between Kerno and the awesome Pyramid web framework."""
 
 from functools import wraps
 import inspect
 from json import dumps
-from typing import Callable
+from typing import Callable, Type, TypeVar
 
 from bag.web.exceptions import Problem
 from zope.interface import Interface
@@ -22,14 +13,24 @@ from kerno.kerno import Kerno
 from kerno.state import MalbonaRezulto, Rezulto, to_dict
 from kerno.typing import DictStr
 
-
-def _from_pyramid(cls, request):
-    """Conveniently instantiate a kerno action from a Pyramid view."""
-    return cls(kerno=request.kerno, user=request.user, repo=request.repo)
+# A generic variable that can be PyramidAction or any subclass
+AnAction = TypeVar('AnAction', bound='PyramidAction')
 
 
-# Monkeypatch the Action class so it has a .from_pyramid(request) classmethod
-Action.from_pyramid = classmethod(_from_pyramid)  # type: ignore
+class PyramidAction(Action):
+    """A base Action class with a ``from_pyramid`` factory method.
+
+    Example usage::
+
+        action = CreateUserAction.from_pyramid(request)
+        # The above is much more convenient to use than the normal constructor:
+        action = CreateUserAction(
+            kerno=request.kerno, repo=request.repo, user=request.user)
+    """
+    @classmethod
+    def from_pyramid(cls: Type[AnAction], request) -> AnAction:
+        """Conveniently instantiate a kerno action from a Pyramid view."""
+        return cls(kerno=request.kerno, user=request.user, repo=request.repo)
 
 
 def kerno_view(fn: Callable) -> Callable:
