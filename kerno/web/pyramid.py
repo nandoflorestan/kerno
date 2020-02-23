@@ -25,9 +25,7 @@ from kerno.typing import DictStr
 
 def _from_pyramid(cls, request):
     """Conveniently instantiate a kerno action from a Pyramid view."""
-    return cls(kerno=request.kerno,
-               user=request.user,
-               repo=request.repo)
+    return cls(kerno=request.kerno, user=request.user, repo=request.repo)
 
 
 # Monkeypatch the Action class so it has a .from_pyramid(request) classmethod
@@ -42,18 +40,25 @@ def kerno_view(fn: Callable) -> Callable:
     converts it to a dictionary.
     """
     args = [str(name) for name in inspect.signature(fn).parameters.keys()]
-    if len(args) == 1 and 'self' == args[0]:       # view signature #1: self
+    if len(args) == 1 and "self" == args[0]:  # view signature #1: self
+
         def get_request(args):
             return args[0].request
-    elif len(args) == 1 and 'request' == args[0]:  # view signature #2: request
+
+    elif len(args) == 1 and "request" == args[0]:  # view signature #2: request
+
         def get_request(args):
             return args[0]
-    elif len(args) == 2 and 'request' == args[1]:  # view signature #3:
-        def get_request(args):                     # context, request
+
+    elif len(args) == 2 and "request" == args[1]:  # view signature #3:
+
+        def get_request(args):  # context, request
             return args[1]
+
     else:
-        raise RuntimeError('The kerno_view decorator found an '
-                           'unexpected signature in {}'.format(fn))
+        raise RuntimeError(
+            f"The kerno_view decorator found an unexpected signature in {fn}"
+        )
 
     @wraps(fn)
     def wrapper(*args):
@@ -70,8 +75,9 @@ def kerno_view(fn: Callable) -> Callable:
                 debug=e.error_debug,  # not displayed to end users
             )
         if rezulto is None:
-            raise RuntimeError("Error: None returned by view {}()".format(
-                fn.__qualname__))
+            raise RuntimeError(
+                "Error: None returned by view {}()".format(fn.__qualname__)
+            )
         elif isinstance(rezulto, Rezulto):
             request = get_request(args)
             request.response.status_int = rezulto.status_int
@@ -132,24 +138,35 @@ def includeme(config) -> None:
     """
     kerno = config.registry.queryUtility(IKerno, default=None)
     if not isinstance(kerno, Kerno):
-        raise RuntimeError("A Kerno instance must be registered with Pyramid "
-                           "before including 'kerno.web.pyramid'.")
+        raise RuntimeError(
+            "A Kerno instance must be registered with Pyramid "
+            "before including 'kerno.web.pyramid'."
+        )
 
     config.add_request_method(  # request.kerno is computed once per request
         lambda request: request.registry.getUtility(IKerno),
-        'kerno', reify=True)
+        "kerno",
+        reify=True,
+    )
 
     config.add_request_method(  # request.repo is computed once per request
-        lambda request: request.kerno.new_repo(),
-        'repo', reify=True)
+        lambda request: request.kerno.new_repo(), "repo", reify=True
+    )
 
     config.registry.registerUtility(kerno, IKerno)
 
     config.add_view(
-        context=MalbonaRezulto, accept='text/html', view=malbona_view,
-        renderer='kerno:web/malbona.jinja2')
+        context=MalbonaRezulto,
+        accept="text/html",
+        view=malbona_view,
+        renderer="kerno:web/malbona.jinja2",
+    )
     config.add_view(
-        context=MalbonaRezulto, renderer='json', view=malbona_view,
-        accept='application/json')
+        context=MalbonaRezulto,
+        renderer="json",
+        view=malbona_view,
+        accept="application/json",
+    )
     config.add_view(
-        context=MalbonaRezulto, renderer='json', view=malbona_view, xhr=True)
+        context=MalbonaRezulto, renderer="json", view=malbona_view, xhr=True
+    )

@@ -9,11 +9,12 @@ from .core import Kerno
 from .state import Rezulto
 
 from typing import TYPE_CHECKING, Any, Callable, Union, Type, cast
+
 if TYPE_CHECKING:
     from typing import Dict  # noqa
 
 TypActionFunction = Callable[..., Rezulto]  # a function that returns a Rezulto
-TypActionClass = Type[Action]               # a subclass of Action
+TypActionClass = Type[Action]  # a subclass of Action
 TypAction = Union[TypActionClass, TypActionFunction]  # either of these
 
 
@@ -33,8 +34,10 @@ class ActionRegistry:
         # assert callable(action)
         if name in self.actions:
             raise ValueError(
-                'An action with the name {} is already registered.'.format(
-                    name))
+                "An action with the name {} is already registered.".format(
+                    name
+                )
+            )
         self.actions[name] = action
 
     def remove(self, name: str) -> None:
@@ -51,11 +54,14 @@ class ActionRegistry:
         # when = when or datetime.utcnow()
         action = self.actions[name]
         if issubclass(cast(TypActionClass, action), Action):
-            action_instance = cast(TypActionFunction, action(
-                kerno=self.kerno, user=user, repo=repo))
+            action_instance = cast(
+                TypActionFunction,
+                action(kerno=self.kerno, user=user, repo=repo),
+            )
             return action_instance(**kw)
         elif isinstance(action, FunctionType):
             return action(kerno=self.kerno, user=user, repo=repo, **kw)
         else:
             raise TypeError(
-                '"{}" is not a function or an Action subclass!'.format(action))
+                '"{}" is not a function or an Action subclass!'.format(action)
+            )

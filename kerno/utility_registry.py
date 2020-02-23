@@ -24,7 +24,7 @@ class UtilityRegistryBuilder:
         self.kerno.utilities = MappingProxyType(self._utilities)
 
         try:
-            section = kerno.settings['kerno utilities']
+            section = kerno.settings["kerno utilities"]
         except (NoSectionError, KeyError):
             return
         for name, utility in section.items():
@@ -44,10 +44,10 @@ class UtilityRegistryBuilder:
         else:
             return None
 
-    def ensure(self, name: str, component: str='The application') -> None:
+    def ensure(self, name: str, component: str = "The application") -> None:
         """Raise if no utility has been registered under ``name``."""
         if self._utilities.get(name) is None:
             raise ConfigurationError(
                 f'{component} needs a utility called "{name}", '
-                'which has not been registered.'
+                "which has not been registered."
             )

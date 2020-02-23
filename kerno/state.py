@@ -15,7 +15,11 @@ class UIMessage:
     # The default to_dict() works fine for this class.
 
     def __init__(
-        self, level: str="danger", title: str="", plain: str="", html: str="",
+        self,
+        level: str = "danger",
+        title: str = "",
+        plain: str = "",
+        html: str = "",
     ) -> None:
         """Constructor.
 
@@ -25,8 +29,10 @@ class UIMessage:
         assert args_are_valid
         if level == "error":
             level = "danger"
-        assert level in self.LEVELS, 'Unknown message level: "{0}". ' \
+        assert level in self.LEVELS, (
+            'Unknown message level: "{0}". '
             "Possible levels are {1}".format(level, self.LEVELS)
+        )
         self.level = level
         self.title = title
         self.plain = plain
@@ -39,7 +45,7 @@ class UIMessage:
 class UICommand:
     """Represents a message telling the UI to do something."""
 
-    __slots__ = ('name', 'payload')
+    __slots__ = ("name", "payload")
 
     def __init__(self, name: str, payload: DictStr) -> None:
         """Construct a message to the UI.
@@ -54,13 +60,10 @@ class UICommand:
         return '<UICommand "{}">'.format(self.name)
 
 
-@to_dict.register(obj=UICommand, flavor='')
-def uicommand_to_dict(obj, flavor='', **kw):
+@to_dict.register(obj=UICommand, flavor="")
+def uicommand_to_dict(obj, flavor="", **kw):
     """Convert to dict a UICommand instance."""
-    return OrderedDict((
-        ('name', obj.name),
-        ('payload', obj.payload)
-    ))
+    return OrderedDict((("name", obj.name), ("payload", obj.payload)))
 
 
 class Returnable(metaclass=ABCMeta):
@@ -84,8 +87,8 @@ class Returnable(metaclass=ABCMeta):
         self,
         commands: List[UICommand] = None,
         debug: DictStr = None,
-        redirect: str = '',
-        **kw
+        redirect: str = "",
+        **kw,
     ):  # noqa
         self.messages: List[UIMessage] = []
         self.toasts: List[UIMessage] = []
@@ -97,15 +100,16 @@ class Returnable(metaclass=ABCMeta):
 
     def __repr__(self) -> str:
         return "<{} status: {}>".format(
-            self.__class__.__name__, self.status_int)
+            self.__class__.__name__, self.status_int
+        )
 
-    def add_message(self, level: str="", **kw) -> UIMessage:
+    def add_message(self, level: str = "", **kw) -> UIMessage:
         """Add to the grave messages to be displayed to the user on the UI."""
         msg = UIMessage(level=level or self.level, **kw)
         self.messages.append(msg)
         return msg
 
-    def add_toast(self, level: str="", **kw) -> UIMessage:
+    def add_toast(self, level: str = "", **kw) -> UIMessage:
         """Add to the quick messages to be displayed to the user on the UI."""
         msg = UIMessage(level=level or self.level, **kw)
         self.toasts.append(msg)
@@ -118,16 +122,17 @@ class Returnable(metaclass=ABCMeta):
         return cmd
 
 
-@to_dict.register(obj=Returnable, flavor='')
-def returnable_to_dict(obj, flavor='', **kw):
+@to_dict.register(obj=Returnable, flavor="")
+def returnable_to_dict(obj, flavor="", **kw):
     """Convert instance to a dictionary, usually for JSON output."""
     amap = reuse_dict(
         obj=obj,
-        keys=kw.get('keys', ('level', 'status_int', 'debug', 'redirect')),
-        sort=False)
-    amap['messages'] = [reuse_dict(obj=msg) for msg in obj.messages]
-    amap['toasts'] = [reuse_dict(obj=msg) for msg in obj.toasts]
-    amap['commands'] = [to_dict(uicommand) for uicommand in obj.commands]
+        keys=kw.get("keys", ("level", "status_int", "debug", "redirect")),
+        sort=False,
+    )
+    amap["messages"] = [reuse_dict(obj=msg) for msg in obj.messages]
+    amap["toasts"] = [reuse_dict(obj=msg) for msg in obj.toasts]
+    amap["commands"] = [to_dict(uicommand) for uicommand in obj.commands]
     return amap
 
 
@@ -149,21 +154,25 @@ class MalbonaRezulto(Returnable, Exception):
     status_int = 400  # HTTP response code indicating invalid request
 
     def __init__(
-        self, status_int: int=400, title: str="", plain: str="",
-        html: str="", level: str="danger",
-        invalid: Optional[DictStr]=None, **kw
+        self,
+        status_int: int = 400,
+        title: str = "",
+        plain: str = "",
+        html: str = "",
+        level: str = "danger",
+        invalid: Optional[DictStr] = None,
+        **kw,
     ):  # noqa
         Returnable.__init__(self, **kw)
         self.status_int = status_int
         self.invalid = invalid or {}
         if title or plain or html:
-            self.add_toast(
-                title=title, level=level, plain=plain, html=html)
+            self.add_toast(title=title, level=level, plain=plain, html=html)
 
 
-@to_dict.register(obj=MalbonaRezulto, flavor='')
-def malbona_to_dict(obj, flavor='', **kw):
+@to_dict.register(obj=MalbonaRezulto, flavor="")
+def malbona_to_dict(obj, flavor="", **kw):
     """Convert a MalbonaRezulto to a dictionary."""
-    amap = returnable_to_dict(obj=obj, flavor='', **kw)
-    amap['invalid'] = obj.invalid
+    amap = returnable_to_dict(obj=obj, flavor="", **kw)
+    amap["invalid"] = obj.invalid
     return amap

@@ -59,27 +59,29 @@ class Eko:
     """
 
     @classmethod
-    def from_ini(cls, *config_files, encoding: str='utf-8'):
+    def from_ini(cls, *config_files, encoding: str = "utf-8"):
         """Return an instance after reading some INI file(s)."""
         return cls(settings=read_ini_files(*config_files, encoding=encoding))
 
-    def __init__(self, settings: DictStr={}):  # noqa
-        if settings and not hasattr(settings, '__getitem__'):
-            raise TypeError("The *settings* argument must be dict-like. "
-                            "Received: {}".format(type(settings)))
+    def __init__(self, settings: DictStr = {}):  # noqa
+        if settings and not hasattr(settings, "__getitem__"):
+            raise TypeError(
+                "The *settings* argument must be dict-like. "
+                "Received: {}".format(type(settings))
+            )
 
         self._included_modules: List[ModuleType] = []
         self.kerno = Kerno(settings)
         self.utilities = UtilityRegistryBuilder(kerno=self.kerno)
 
         try:
-            main_config_section = settings['kerno']
+            main_config_section = settings["kerno"]
         except (NoSectionError, KeyError):
             return
-        for extension in main_config_section.get('includes', []):
+        for extension in main_config_section.get("includes", []):
             self.include(extension)
 
-    def include(self, resource: ResourceType, throw: bool=True) -> None:
+    def include(self, resource: ResourceType, throw: bool = True) -> None:
         """Execute a configuration callable for imperative extension.
 
         If the argument ``throw`` is True (which is the default)
@@ -96,12 +98,14 @@ class Eko:
 
         if isinstance(obj, ModuleType):
             try:
-                fn = getattr(obj, 'eki')
+                fn = getattr(obj, "eki")
             except AttributeError:
                 if throw:
                     raise ConfigurationError(
                         "The module {} has no function called 'eki'.".format(
-                            obj.__name__))
+                            obj.__name__
+                        )
+                    )
                 else:
                     return
         else:
@@ -109,7 +113,7 @@ class Eko:
         fn(self)
 
     def include_many(
-        self, resources: Iterable[ResourceType], throw: bool=True,
+        self, resources: Iterable[ResourceType], throw: bool = True
     ) -> None:
         """Initialize multiple app modules."""
         for resource in resources:

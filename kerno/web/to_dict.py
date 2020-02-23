@@ -58,8 +58,9 @@ def only_relevant(keys: Iterable[str]) -> Iterable[str]:
     These are usually keeping SQLAlchemy state.
     """
     return filter(
-        lambda key: not key.startswith('__') and not key.startswith('_sa_'),
-        keys)
+        lambda key: not key.startswith("__") and not key.startswith("_sa_"),
+        keys,
+    )
 
 
 def excluding(blacklist: Sequence, keys: Iterable) -> Iterable:  # noqa
@@ -67,7 +68,11 @@ def excluding(blacklist: Sequence, keys: Iterable) -> Iterable:  # noqa
 
 
 def reuse_dict(
-    obj: Any, keys: Iterable=(), for_json: bool=True, sort: bool=True, **kw
+    obj: Any,
+    keys: Iterable = (),
+    for_json: bool = True,
+    sort: bool = True,
+    **kw,
 ) -> OrderedDict:
     """Dump the instance variables of ``obj`` into an OrderedDict.
 
@@ -78,7 +83,7 @@ def reuse_dict(
     If the ``sort`` flag is True, sort the OrderedDict.
     """
     amap: OrderedDict[str, Any] = OrderedDict()
-    kk = keys or excluding(('password',), only_relevant(keys_from(obj)))
+    kk = keys or excluding(("password",), only_relevant(keys_from(obj)))
     if sort:
         kk = sorted(kk)
     for key in kk:
@@ -88,8 +93,9 @@ def reuse_dict(
             amap[key] = val.isoformat()
         elif for_json and isinstance(val, Decimal):
             amap[key] = float(str(val))
-        elif for_json and not isinstance(val, (
-                str, int, float, list, dict, bool, type(None))):
+        elif for_json and not isinstance(
+            val, (str, int, float, list, dict, bool, type(None))
+        ):
             continue
         else:
             amap[key] = val
@@ -97,10 +103,11 @@ def reuse_dict(
 
 
 @reg.dispatch(  # Dispatch on type of *obj* and value of *flavor*.
-    reg.match_instance('obj'),
-    reg.match_key('flavor', lambda obj, flavor, **kw: flavor))
+    reg.match_instance("obj"),
+    reg.match_key("flavor", lambda obj, flavor, **kw: flavor),
+)
 # Cannot type-annotate this function, Reg 0.11 does not support it
-def to_dict(obj, flavor='', **kw):
+def to_dict(obj, flavor="", **kw):
     """Overloadable version of our function ``reuse_dict``.
 
     You can register your own implementations depending on *obj* and *flavor*.
@@ -108,7 +115,7 @@ def to_dict(obj, flavor='', **kw):
     return reuse_dict(obj, **kw)
 
 
-'''
+"""
 Ideas
 -----
 
@@ -147,4 +154,4 @@ https://pypi.python.org/pypi/jsonpickle/
 https://pypi.python.org/pypi/json-model/1.0.1
 https://pypi.python.org/pypi/json-delta/2.0
 https://pypi.python.org/pypi/json-merger/0.4.0
-'''
+"""

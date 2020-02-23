@@ -7,7 +7,7 @@ from kerno.web.to_dict import to_dict
 
 
 # Dispatch depending on the value of *flavor*.
-@reg.dispatch(reg.match_key('flavor', lambda flavor, msg, close: flavor))
+@reg.dispatch(reg.match_key("flavor", lambda flavor, msg, close: flavor))
 # Cannot type-annotate this function, Reg 0.11 does not support it:
 def msg_to_html(flavor, msg, close=True):
     """Render ``msg`` (an UIMessage instance) as HTML markup.
@@ -33,7 +33,7 @@ def msg_to_html(flavor, msg, close=True):
     raise NotImplementedError()
 
 
-@msg_to_html.register(flavor='bootstrap3')
+@msg_to_html.register(flavor="bootstrap3")
 # Cannot type-annotate this function, Reg 0.11 does not support it:
 def msg_to_bootstrap3(flavor, msg, close=True):
     """Render the UIMessage ``msg`` as bootstrap 3 compatible HTML.
@@ -41,15 +41,19 @@ def msg_to_bootstrap3(flavor, msg, close=True):
     If using Pyramid you can store UIMessage instances as flash messages
     in the user's session, then use this to render them as bootstrap alerts.
     """
-    return '<div class="alert alert-{level}{cls} fade in">{close}' \
-        '{body}</div>\n'.format(
+    return (
+        '<div class="alert alert-{level}{cls} fade in">{close}'
+        "{body}</div>\n".format(
             level=escape(msg.level),
-            cls=' alert-block' if msg.html else '',
+            cls=" alert-block" if msg.html else "",
             close='<button type="button" class="close" data-dismiss="alert" '
-                  'aria-label="Close"><span aria-hidden="true">×</span>'
-                  '</button>' if close else '',
+            'aria-label="Close"><span aria-hidden="true">×</span>'
+            "</button>"
+            if close
+            else "",
             body=msg.html or escape(msg.plain),
         )
+    )
 
 
 def includeme(config):
@@ -57,18 +61,21 @@ def includeme(config):
 
     Also add the ``add_flash`` request method.
     """
+
     def before_rendering_template(event):
-        event['msg_to_html'] = msg_to_html
-        event['flash_msgs_as_dicts'] = lambda: [
-            to_dict(obj=f) for f in event['request'].session.pop_flash()]
+        event["msg_to_html"] = msg_to_html
+        event["flash_msgs_as_dicts"] = lambda: [
+            to_dict(obj=f) for f in event["request"].session.pop_flash()
+        ]
 
     from pyramid.events import BeforeRender
+
     config.add_subscriber(before_rendering_template, BeforeRender)
 
-    config.add_request_method(add_flash, 'add_flash')
+    config.add_request_method(add_flash, "add_flash")
 
 
-def add_flash(request, allow_duplicate: bool=False, **kw) -> UIMessage:
+def add_flash(request, allow_duplicate: bool = False, **kw) -> UIMessage:
     """Add a flash message to the user's session. For convenience."""
     msg = UIMessage(**kw)
     request.session.flash(msg, allow_duplicate=allow_duplicate)
