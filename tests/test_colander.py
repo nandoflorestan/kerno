@@ -10,7 +10,7 @@ class TestInvalidToMalbona(TestCase):
     """Test cases for the InvalidToMalbona context manager."""
 
     def test_no_exception(self):  # noqa
-        with InvalidToMalbona(title="The title", plain="Plain text"):
+        with InvalidToMalbona():
             1
 
     def test_invalid_converts_to_malbona(self):
