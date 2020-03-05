@@ -27,6 +27,32 @@ def validate_schema(
         raise malbona
 
 
+class InvalidToMalbona:
+    """Context manager that wraps colander's Invalid in a MalbonaRezulto."""
+
+    def __init__(
+        self,
+        title: str = _("Validation error"),
+        plain: str = _("The data do not pass server validation."),
+        html: str = "",
+    ) -> None:  # noqa
+        self.title = title
+        self.plain = plain
+        self.html = html
+
+    def __enter__(self):
+        pass
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if isinstance(exc_val, c.Invalid):
+            malbona = MalbonaRezulto()
+            malbona.add_toast(
+                title=self.title, plain=self.plain, html=self.html
+            )
+            malbona.invalid = exc_val.asdict()
+            raise malbona
+
+
 class NumLines:
     """Colander validator that checks the number of lines in text."""
 
