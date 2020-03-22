@@ -28,7 +28,7 @@ setup(
     long_description=long_description,
     zip_safe=False,
     test_suite='tests',
-    install_requires=['bag', 'reg==0.11'],
+    install_requires=['bag>=3.0', 'reg==0.11'],
     keywords=[
         'pyramid', 'sqlalchemy', 'service layer', 'action',
         'Clean Architecture'
