@@ -18,7 +18,7 @@ setup(
     url="https://github.com/nandoflorestan/kerno",
     name="kerno",
     author="Nando Florestan",
-    version="0.3.2.dev1",
+    version="0.4.0",
     license="MIT",
     # https://setuptools.readthedocs.io/en/latest/setuptools.html#using-find-packages
     packages=find_packages(exclude=["tests.*", "tests"]),
