@@ -4,9 +4,9 @@ It is a work in progress that currently brings no benefit to your app.
 """
 
 from types import FunctionType
-from .action import Action
-from .core import Kerno
-from .state import Rezulto
+from kerno.action import Action
+from kerno.kerno import Kerno
+from kerno.state import Rezulto
 
 from typing import TYPE_CHECKING, Any, Callable, Union, Type, cast
 

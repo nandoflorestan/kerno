@@ -53,7 +53,7 @@ def get_version_number(path=''):
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
-    'sphinx_autodoc_typehints',
+    # 'sphinx_autodoc_typehints',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -72,7 +72,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'kerno'
-copyright = '2016-2018, Nando Florestan'
+copyright = '2016-2020 by Nando Florestan'
 author = 'Nando Florestan'
 
 # The version info for the project you're documenting, acts as replacement for

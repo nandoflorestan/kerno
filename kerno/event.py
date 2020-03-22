@@ -2,7 +2,7 @@
 
 Stolen from https://stackoverflow.com/questions/1092531/event-system-in-python
 
-Typical usage:
+Typical usage::
 
     my_kerno_instance.my_event = Event()
     my_kerno_instance.my_event.append(my_subscriber)
