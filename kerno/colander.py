@@ -76,3 +76,14 @@ class NumLines:
         if self.max > -1 and num_lines > self.max:
             # err = _(self.max_err, mapping={"max": self.max})
             raise c.Invalid(node, self.max_err.format(max=self.max))
+
+
+class IsWeb:
+    """Colander validator: ensure starts with "http://" or "https://"."""
+
+    def __init__(self, msg: str = 'Must start with "http://" or "https://".'):
+        self.msg = msg
+
+    def __call__(self, node, value) -> None:  # noqa
+        if not (value.startswith("http://") or value.startswith("https://")):
+            raise c.Invalid(node, self.msg)
