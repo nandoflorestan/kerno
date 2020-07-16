@@ -53,7 +53,7 @@ def keys_from(obj: Any) -> Iterable:
 
 
 def only_relevant(keys: Iterable[str]) -> Iterable[str]:
-    """Ignore strings that start in dunder ("__") or in "_sa".
+    """Ignore strings that start in dunder ("__") or in "_sa_".
 
     These are usually keeping SQLAlchemy state.
     """
