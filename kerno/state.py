@@ -1,4 +1,7 @@
-"""Classes that store state."""
+"""Classes that store outgoing state.
+
+These are typically returned by *action* layer code to controllers.
+"""
 
 from abc import ABCMeta
 from collections import OrderedDict
