@@ -1,9 +1,8 @@
 """An abstract base for class-based actions."""
 
 from abc import ABCMeta
-from typing import Any
 
-from kerno.kerno import Kerno
+from kerno.peto import Peto
 
 
 class Action(metaclass=ABCMeta):
@@ -20,7 +19,20 @@ class Action(metaclass=ABCMeta):
                 ...
     """
 
-    def __init__(self, kerno: Kerno, user: Any, repo: Any) -> None:  # noqa
-        self.kerno = kerno
-        self.user = user
-        self.repo = repo
+    def __init__(self, peto: Peto):  # noqa
+        self.peto = peto
+
+    @property
+    def kerno(self):
+        """Return the global application object."""
+        return self.peto.kerno
+
+    @property
+    def repo(self):
+        """Return a repository instance for the current request."""
+        return self.peto.repo
+
+    @property
+    def user(self):
+        """Return the current user or None."""
+        return self.peto.user
