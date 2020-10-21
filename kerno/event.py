@@ -1,47 +1,54 @@
 """A tiny event library.
 
-Stolen from https://stackoverflow.com/questions/1092531/event-system-in-python
-
 Typical usage::
 
-    my_kerno_instance.my_event = Event()
-    my_kerno_instance.my_event.append(my_subscriber)
-    my_kerno_instance.my_event(**kwargs)
+    # First a library defines an event class to contain event data:
+
+    from kerno.event import KernoEvent
+
+    class EventUserLoggedIn(KernoEvent):
+        def __init__(self, peto):
+            self.peto = peto
+            # ...and other data that user code might find important.
+
+    # The library can trigger the example event by doing:
+    EventUserLoggedIn(peto).broadcast()  # call all subscribers
+
+    # Elsewhere, user code will import the event class and write a handler:
+    from example_library import EventUserLoggedIn
+
+    @EventUserLoggedIn.subscribe
+    def when_user_logs_in(event):
+        print(event.peto)
+
+    # Instead of the decorator you can subscribe imperatively:
+    def when_user_logs_in(event):
+        print(event.peto)
+    EventUserLoggedIn.subscribe(when_user_logs_in)
+
+    # Sometimes it is necessary to avoid leaks by unsubscribing:
+    EventUserLoggedIn.unsubscribe(when_user_logs_in)
 """
 
+from typing import Callable, List
 
-class Event(list):
-    """Event subscription.
 
-    A list of callable objects. Calling an instance of this will cause a
-    call to each item in the list in ascending order by index.
+class KernoEvent:
+    """A tiny event class.  Should be subclassed to put data in constructor."""
 
-    Example usage::
+    _subscribers: List[Callable] = []
 
-        >>> def f(x):
-        ...     print 'f(%s)' % x
-        >>> def g(x):
-        ...     print 'g(%s)' % x
-        >>> e = Event()
-        >>> e()
-        >>> e.append(f)
-        >>> e(123)
-        f(123)
-        >>> e.remove(f)
-        >>> e()
-        >>> e += (f, g)
-        >>> e(10)
-        f(10)
-        g(10)
-        >>> del e[0]
-        >>> e(2)
-        g(2)
-    """
+    def broadcast(self):
+        for fn in self._subscribers:
+            fn(self)
 
-    def __call__(self, *args, **kwargs) -> None:
-        """Broadcast this event to the subscribers in the list."""
-        for fn in self:
-            fn(*args, **kwargs)
+    @classmethod
+    def subscribe(cls, fn):
+        """Subscribe a function to this event."""
+        cls._subscribers.append(fn)
+        return fn
 
-    def __repr__(self) -> str:
-        return "Event(%s)" % list.__repr__(self)
+    @classmethod
+    def unsubscribe(cls, fn):
+        """Remove a subscriber function."""
+        cls._subscribers.remove(fn)
