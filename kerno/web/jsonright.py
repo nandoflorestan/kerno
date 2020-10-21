@@ -111,28 +111,28 @@ def jsonright(obj: Any, peto: Peto, features=(), **kw) -> Any:
 @jsonright.register(float)
 @jsonright.register(bool)
 @jsonright.register(type(None))
-def _(obj, peto: Peto, features=(), **kw) -> Any:
+def _a(obj, peto: Peto, features=(), **kw) -> Any:
     return obj
 
 
 @jsonright.register(bytes)
-def _(obj, peto: Peto, features=(), **kw) -> Any:
+def _b(obj, peto: Peto, features=(), **kw) -> Any:
     return obj.decode(kw.get("encoding", "utf-8"))
 
 
 @jsonright.register(Decimal)
-def _(obj, peto: Peto, features=(), **kw) -> float:
+def _c(obj, peto: Peto, features=(), **kw) -> float:
     return float(str(obj))
 
 
 @jsonright.register(datetime)
 @jsonright.register(date)
-def _(obj, peto: Peto, features=(), **kw) -> str:
+def _d(obj, peto: Peto, features=(), **kw) -> str:
     return obj.isoformat()
 
 
 @jsonright.register(dict)
-def _(obj, peto: Peto, features=(), **kw) -> DictStr:
+def _e(obj, peto: Peto, features=(), **kw) -> DictStr:
     return {
         str(key): jsonright(val, peto, features, **kw)
         for (key, val) in obj.items()
@@ -157,7 +157,7 @@ primitive_types = (
 @jsonright.register(tuple)
 @jsonright.register(set)
 @jsonright.register(frozenset)
-def _(obj, peto: Peto, features=(), **kw) -> Sequence:
+def _s(obj, peto: Peto, features=(), **kw) -> Sequence:
     if len(obj) == 0:
         return []
     first_item = first(obj)
