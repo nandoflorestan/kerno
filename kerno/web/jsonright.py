@@ -38,7 +38,8 @@ in JSON. It pivots the table so it grows to the right:
         ["email", "ex@am.pl", "sagan@nasa.gov"],
     ]
 
-Of course objects are easily reassembled in Javascript.
+Of course objects are easily reassembled in Javascript.  The function that
+does that is in the file kerno.js.
 
 Usage
 =====
