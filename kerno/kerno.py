@@ -3,6 +3,7 @@
 from types import MappingProxyType  # which behaves like a FrozenDict
 from typing import Any, Dict, Optional
 
+from kerno.event import EventHub
 from kerno.typing import DictStr
 
 
@@ -20,4 +21,4 @@ class Kerno:
         self.settings = settings
         self.utilities: MappingProxyType[str, Any] = MappingProxyType({})
         self.const = const or {}  # The app should put global constants here
-        # self.actions = ActionRegistry(kerno=self)
+        self.events = EventHub()

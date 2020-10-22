@@ -1,54 +1,72 @@
-"""A tiny event library.
+"""A tiny event hub.
 
-Typical usage::
+``kerno.events`` will be an instance of EventHub, however you can also
+use the EventHub class in other circumstances if you want to.
 
-    # First a library defines an event class to contain event data:
+First a library defines an event class to contain event data::
 
-    from kerno.event import KernoEvent
-
-    class EventUserLoggedIn(KernoEvent):
+    class EventUserLoggedIn:
         def __init__(self, peto):
             self.peto = peto
             # ...and other data that user code might find important.
 
-    # The library can trigger the example event by doing:
-    EventUserLoggedIn(peto).broadcast()  # call all subscribers
+Elsewhere, user code will import the event class and write a handler::
 
-    # Elsewhere, user code will import the event class and write a handler:
     from example_library import EventUserLoggedIn
 
-    @EventUserLoggedIn.subscribe
-    def when_user_logs_in(event):
+    def when_user_logs_in(event: EventUserLoggedIn):
         print(event.peto)
 
-    # Instead of the decorator you can subscribe imperatively:
-    def when_user_logs_in(event):
-        print(event.peto)
-    EventUserLoggedIn.subscribe(when_user_logs_in)
+Finally, in setup code::
 
-    # Sometimes it is necessary to avoid leaks by unsubscribing:
-    EventUserLoggedIn.unsubscribe(when_user_logs_in)
+    kerno.events.subscribe(EventUserLoggedIn, when_user_logs_in)
+
+Sometimes it is necessary to avoid leaks by unsubscribing:
+
+    kerno.events.unsubscribe(EventUserLoggedIn, when_user_logs_in)
+
+One of the advantages of having the event hub as a separate object is
+that, instead of unsubscribing many handlers, sometimes you can just
+throw away the hub, replacing its instance.
+
+The library fires the event by doing::
+
+    kerno.events.broadcast(EventUserLoggedIn(peto=peto))
 """
 
-from typing import Callable, List
+from typing import Callable, Dict, List
 
 
-class KernoEvent:
-    """A tiny event class.  Should be subclassed to put data in constructor."""
+class EventHub:
+    """A hub for events to be subscribed, fired and removed."""
 
-    _subscribers: List[Callable] = []
+    def __init__(self):  # noqa
+        self._events: Dict[type, List[Callable]] = {}
 
-    def broadcast(self):
-        for fn in self._subscribers:
-            fn(self)
+    def subscribe(self, event_cls: type, function: Callable) -> Callable:
+        """Subscribe a handler ``function`` to the ``event_cls``."""
+        handlers: List[Callable] = self._events.setdefault(event_cls, [])
+        if function in handlers:
+            raise RuntimeError(
+                f"This function is already subscribed to {event_cls}."
+            )
+        handlers.append(function)
+        return function
 
-    @classmethod
-    def subscribe(cls, fn):
-        """Subscribe a function to this event."""
-        cls._subscribers.append(fn)
-        return fn
+    def unsubscribe(self, event_cls: type, function: Callable) -> bool:
+        """Remove a function.  Return True if it really was subscribed."""
+        handlers: List[Callable] = self._events.setdefault(event_cls, [])
+        ret = function in handlers
+        if ret:
+            handlers.remove(function)
+        return ret
 
-    @classmethod
-    def unsubscribe(cls, fn):
-        """Remove a subscriber function."""
-        cls._subscribers.remove(fn)
+    def broadcast(self, event):
+        """Trigger/fire ``event`` -- execute its subscribers.
+
+        The type of ``event`` must be an exact match: inheritance
+        is not supported.
+        """
+        handlers: List[Callable] = self._events.setdefault(type(event), [])
+        for fn in handlers:
+            fn(event)
