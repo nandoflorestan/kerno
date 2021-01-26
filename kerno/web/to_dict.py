@@ -44,7 +44,15 @@ from collections import OrderedDict
 from datetime import date, datetime
 from decimal import Decimal
 from typing import Any, Iterable, Sequence
+from warnings import warn
+
 import reg
+
+warn(
+    "to_dict will be removed in a future version of kerno. "
+    "Use jsonright instead.",
+    DeprecationWarning,
+)
 
 
 def keys_from(obj: Any) -> Iterable:
