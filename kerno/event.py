@@ -21,7 +21,7 @@ Finally, in setup code::
 
     kerno.events.subscribe(EventUserLoggedIn, when_user_logs_in)
 
-Sometimes it is necessary to avoid leaks by unsubscribing:
+Sometimes it is necessary to avoid leaks by unsubscribing::
 
     kerno.events.unsubscribe(EventUserLoggedIn, when_user_logs_in)
 

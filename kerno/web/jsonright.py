@@ -5,7 +5,9 @@ What problems does this solve?
 1. Python model classes do not need to implement ``as_dict()``. Instead, you
 implement a variation of a ``jsonright()`` function in a separate step,
 which could even be in a separate package, totally decoupled. This does
-[single dispatch](https://docs.python.org/3/library/functools.html#functools.singledispatch) -- please learn about this.
+`single dispatch`_ -- please learn about this.
+
+.. _`single dispatch`: https://docs.python.org/3/library/functools.html#functools.singledispatch
 
 2. When we send objects through the wire, different detail levels are
 commonly needed -- for instance, first we only want the names of users to be
@@ -31,7 +33,7 @@ How are data organized to save bandwidth?
 =========================================
 
 jsonright avoids repeating key names when outputting sequences of entities
-in JSON. It pivots the table so it grows to the right:
+in JSON. It pivots the table so it grows to the right::
 
     [
         ["id", 1, 2],
