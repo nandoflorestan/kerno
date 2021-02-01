@@ -49,16 +49,16 @@ Releaser(
     EnsureGitClean,  # There are no uncommitted changes in tracked files.
     EnsureGitBranch,  # I must be in the branch specified in config
     # InteractivelyEnsureChangesDocumented,     # Did you update CHANGES.rst?
-    InteractivelyApproveDistribution,  # Generate sdist, let user verify it
-    InteractivelyApproveWheel,  # Let user verify a temp wheel
     # CheckTravis,  # We run this late, so travis-ci has more time to build
     # ======================  All checks pass. RELEASE!  ======================
     SetVersionNumberInteractively,  # Ask for version and write to source code
     Shell("./build_sphinx_documentation.sh"),  # You can write it easily
     GitCommitVersionNumber,
     GitTag,  # Locally tag the current commit with the new version number
-    PypiUpload,  # Make and upload a source .tar.gz to https://pypi.python.org
-    PypiUploadWheel,  # Make and upload source wheel to https://pypi.python.org
+    InteractivelyApproveDistribution,  # Generate sdist, let user verify it
+    InteractivelyApproveWheel,         # Generate wheel, let user verify it
+    PypiUpload,  # Make and upload a source .tar.gz to https://pypi.org
+    PypiUploadWheel,  # Make and upload source wheel to https://pypi.org
     # ===========  Post-release: set development version and push  ============
     SetFutureVersion,  # Writes incremented version, now with 'dev' suffix
     GitCommitVersionNumber(
