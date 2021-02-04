@@ -1,6 +1,6 @@
 """A base class for SQLAlchemy-based repositories."""
 
-from typing import Any, Generic, Iterable, List, Optional
+from typing import Any, Generic, Iterable, List, Optional, Sequence
 
 from kerno.kerno import Kerno
 from kerno.typing import DictStr, Entity
@@ -9,7 +9,7 @@ from kerno.typing import DictStr, Entity
 class BaseSQLAlchemyRepository:
     """Base class for a SQLAlchemy-based repository."""
 
-    SAS = 'session factory'  # name of the SQLAlchemy session utility
+    SAS = "session factory"  # name of the SQLAlchemy session utility
 
     def __init__(self, kerno: Kerno, session_factory: Any = None):
         """Construct a SQLAlchemy repository instance to serve ONE request.
@@ -21,14 +21,13 @@ class BaseSQLAlchemyRepository:
           kerno utility registry (under the "session factory" name.
         """
         self.kerno = kerno
-        self.sas = self.new_sas(
-            session_factory or kerno.utilities[self.SAS])
+        self.sas = self.new_sas(session_factory or kerno.utilities[self.SAS])
         assert self.sas
 
     def new_sas(self, session_factory):
         """Obtain a new SQLAlchemy session instance."""
         assert session_factory is not None
-        is_scoped_session = hasattr(session_factory, 'query')
+        is_scoped_session = hasattr(session_factory, "query")
         # Because we don't want to depend on SQLAlchemy:
         if callable(session_factory) and not is_scoped_session:
             return session_factory()
@@ -39,6 +38,10 @@ class BaseSQLAlchemyRepository:
         """Add an object to the SQLAlchemy session, then return it."""
         self.sas.add(entity)
         return entity
+
+    def add_all(self, entities: Sequence[Entity]):
+        """Add model instances to the SQLAlchemy session."""
+        self.sas.add_all(entities)
 
     def delete(self, entity: Entity) -> None:
         """Delete an ``entity`` from the database."""
@@ -67,7 +70,7 @@ class BaseSQLAlchemyRepository:
             is_new = True
         else:
             is_new = False
-        assert not hasattr(entity, '_is_new')
+        assert not hasattr(entity, "_is_new")
         entity._is_new = is_new
         return entity
 
@@ -83,7 +86,7 @@ class BaseSQLAlchemyRepository:
         This is a helper for the implementation of repository methods and
         should not be used elsewhere.
         """
-        assert '_is_new' not in props
+        assert "_is_new" not in props
         entity = self._get_or_add(cls, **filters)
         for key, val in props.items():
             setattr(entity, key, val)
@@ -104,11 +107,22 @@ class Query(Iterable, Generic[Entity]):
     https://github.com/dropbox/sqlalchemy-stubs/blob/master/sqlalchemy-stubs/orm/query.pyi
     """
 
-    def all(self) -> List[Entity]: ...  # noqa
-    def count(self) -> int: ...  # noqa
+    def all(self) -> List[Entity]:  # noqa
+        ...
+
+    def count(self) -> int:  # noqa
+        ...
+
     # def exists(self): ...  # noqa
-    def first(self) -> Optional[Entity]: ...  # noqa
-    def get(self, ident) -> Optional[Entity]: ...  # noqa
-    def one(self) -> Entity: ...  # noqa
+    def first(self) -> Optional[Entity]:  # noqa
+        ...
+
+    def get(self, ident) -> Optional[Entity]:  # noqa
+        ...
+
+    def one(self) -> Entity:  # noqa
+        ...
+
     # def slice(self, start: int, stop: Optional[int]): ...  # noqa
-    def yield_per(self, count: int) -> List[Entity]: ...  # noqa
+    def yield_per(self, count: int) -> List[Entity]:  # noqa
+        ...
