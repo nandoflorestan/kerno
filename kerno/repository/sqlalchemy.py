@@ -113,6 +113,9 @@ class Query(Iterable, Generic[Entity]):
     def count(self) -> int:  # noqa
         ...
 
+    def delete(self) -> None:  # noqa
+        ...
+
     # def exists(self): ...  # noqa
     def first(self) -> Optional[Entity]:  # noqa
         ...
