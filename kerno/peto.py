@@ -1,3 +1,5 @@
+# noqa
+
 from dataclasses import dataclass
 from typing import Any, Optional, Type, TypeVar
 
@@ -30,7 +32,7 @@ class Peto:
 
     @classmethod
     def from_pyramid(cls: Type[APeto], request, json=False) -> APeto:
-        """Integration with the *pyramid* web framework.
+        r"""Integration with the *pyramid* web framework.
 
         This comes free of any pyramid imports.
 
