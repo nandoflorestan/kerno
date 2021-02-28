@@ -43,8 +43,15 @@ class RegistryStub:  # zope/interface/registry.py
     def queryUtility(self, provided, name='', default=None):
         """Retrieve a Pyramid utility."""
 
-    def notify(*arg, **kw):  # TODO Fill arguments better
+    def notify(self, *arg, **kw):  # TODO Fill arguments better
         """Broadcast a Pyramid event."""
+
+
+class PyramidSession:
+    """Typing stub for a Pyramid session object."""
+
+    def invalidate(self) -> None:  # noqa
+        ...
 
 
 class PyramidResponse:
@@ -63,7 +70,12 @@ class PyramidRequest:
     """Typing stub for pure Pyramid request objects."""
 
     method: str
+
     path: str
+    path_info: str
+    path_qs: str
+    path_url: str
+
     context: Any
     effective_principals: List[str]
     exception: Optional[Exception]
@@ -80,7 +92,7 @@ class PyramidRequest:
     body: bytes
     accept_language: Any
     cookies: DictStr
-    session: object  # so we can stub this later when mypy complains
+    session: PyramidSession
 
     def route_path(self, route_name: str, *elements, **kw) -> str:
         """Generate a relative URL for a named Pyramid route."""
