@@ -47,6 +47,13 @@ class RegistryStub:  # zope/interface/registry.py
         """Broadcast a Pyramid event."""
 
 
+class PyramidResponse:
+    """Typing stub for Pyramid response objects."""
+
+    headers: DictStr
+    body: bytes
+
+
 class PyramidRequest:
     """Typing stub for pure Pyramid request objects."""
 
@@ -60,7 +67,7 @@ class PyramidRequest:
     params: MultiDictStub
     matchdict: DictStr
 
-    response: object  # so we can stub this later when mypy complains
+    response: PyramidResponse
     registry: RegistryStub
 
     body: bytes
