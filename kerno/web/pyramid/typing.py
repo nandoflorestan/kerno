@@ -50,6 +50,11 @@ class RegistryStub:  # zope/interface/registry.py
 class PyramidResponse:
     """Typing stub for Pyramid response objects."""
 
+    charset: str
+    status: str
+    status_int: int
+    content_length: int
+    content_type: str
     headers: DictStr
     body: bytes
 
