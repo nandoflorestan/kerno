@@ -75,6 +75,7 @@ class PyramidRequest:
     path_info: str
     path_qs: str
     path_url: str
+    url: str
 
     context: Any
     effective_principals: List[str]
