@@ -1,6 +1,6 @@
 """Pyramid typing stubs so we can write annotated views."""
 
-from typing import Any, List, Union
+from typing import Any, List, Optional, Union
 
 from kerno.kerno import Kerno
 from kerno.repository.sqlalchemy import BaseSQLAlchemyRepository
@@ -65,6 +65,8 @@ class PyramidRequest:
     method: str
     path: str
     context: Any
+    effective_principals: List[str]
+    exception: Optional[Exception]
 
     json_body: JSON_primitives
     GET: MultiDictStub
@@ -98,5 +100,5 @@ class KRequest(PyramidRequest):
     repo: BaseSQLAlchemyRepository
     user: Any
 
-    def add_flash(request, allow_duplicate: bool = False, **kw) -> UIMessage:
+    def add_flash(self, **kw) -> UIMessage:
         """Add a flash message to the current Pyramid session."""
