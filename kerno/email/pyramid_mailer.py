@@ -21,18 +21,18 @@ class EmailMessage(EmailMessageBase):
         This is useful because Celery likes to use JSON serialization.
         """
         adict = self.to_dict()
-        env = adict['envelope']
+        env = adict["envelope"]
         args = {
-            'subject': adict['subject'],
-            'html': adict['html'],
-            'body': adict['plain'],
-            'recipients': env['recipients'],
-            'sender': env['sender'] or self.mailer_settings["default_sender"],
-            'cc': env['cc'],
-            'bcc': env['bcc'],
+            "subject": adict["subject"],
+            "html": adict["html"],
+            "body": adict["plain"],
+            "recipients": env["recipients"],
+            "sender": env["sender"] or self.mailer_settings["default_sender"],
+            "cc": env["cc"],
+            "bcc": env["bcc"],
         }
-        if env['reply_to']:
-            args['extra_headers'] = ('Reply-To', env['reply_to']),
+        if env["reply_to"]:
+            args["extra_headers"] = (("Reply-To", env["reply_to"]),)
         return args
 
     def to_message(self) -> Message:
