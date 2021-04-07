@@ -14,7 +14,7 @@ from bag.email_validator import EmailValidator
 from bag.reify import reify
 from bs4 import BeautifulSoup
 
-from kerno.typing import TEmailAddress, DictStr
+from kerno.typing import DictStr, TEmailAddress, TPersonsName
 
 
 @dataclass(frozen=True)
@@ -23,13 +23,15 @@ class EmailAddress:
 
     email_validator = EmailValidator()
     email: TEmailAddress
-    name: str
+    name: TPersonsName
 
-    def __init__(self, email: TEmailAddress, name: str = ""):
+    def __init__(
+        self, email: TEmailAddress, name: TPersonsName = TPersonsName("")
+    ):
         """Validate *email* and instantiate."""
         self.email_validator.validate_or_raise(email)
-        self.__dict__['email'] = email  # avoid frozen dataclass error
-        self.__dict__['name'] = name  # avoid frozen dataclass error
+        self.__dict__["email"] = email  # avoid frozen dataclass error
+        self.__dict__["name"] = name  # avoid frozen dataclass error
 
     def to_mailer(self) -> Union[str, Tuple[str, str]]:
         """Return either email or a 2-tuple (name, email)."""

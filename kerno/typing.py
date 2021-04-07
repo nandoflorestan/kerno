@@ -11,3 +11,4 @@ DictInt = Dict[int, Any]
 
 # Add a semantic layer to strings and integers
 TEmailAddress = NewType("TEmailAddress", str)
+TPersonsName = NewType("TPersonsName", str)
