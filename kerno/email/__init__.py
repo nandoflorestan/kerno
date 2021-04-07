@@ -7,25 +7,29 @@ emails can be plugged at the end.
 """
 
 from abc import ABCMeta, abstractmethod
+from dataclasses import dataclass
 from typing import List, Optional, Tuple, Union
 
 from bag.email_validator import EmailValidator
 from bag.reify import reify
 from bs4 import BeautifulSoup
 
-from kerno.typing import DictStr
+from kerno.typing import TEmailAddress, DictStr
 
 
+@dataclass(frozen=True)
 class EmailAddress:
     """Represents an email address, optionally with the person's name."""
 
     email_validator = EmailValidator()
+    email: TEmailAddress
+    name: str
 
-    def __init__(self, email: str, name: str = ''):
+    def __init__(self, email: TEmailAddress, name: str = ""):
         """Validate *email* and instantiate."""
         self.email_validator.validate_or_raise(email)
-        self.email = email
-        self.name = name
+        self.__dict__['email'] = email  # avoid frozen dataclass error
+        self.__dict__['name'] = name  # avoid frozen dataclass error
 
     def to_mailer(self) -> Union[str, Tuple[str, str]]:
         """Return either email or a 2-tuple (name, email)."""
@@ -39,7 +43,8 @@ class Envelope:
     """Represents the envelope of an email message."""
 
     def __init__(  # noqa
-        self, recipients: List[EmailAddress],
+        self,
+        recipients: List[EmailAddress],
         cc: Optional[List[EmailAddress]] = None,
         bcc: Optional[List[EmailAddress]] = None,
         reply_to: Optional[EmailAddress] = None,
@@ -55,11 +60,11 @@ class Envelope:
     def to_dict(self) -> DictStr:
         """Return a dict with Python primitive types within."""
         return {
-            'recipients': [str(r) for r in self.recipients],
-            'cc': [str(r) for r in self.cc],
-            'bcc': [str(r) for r in self.bcc],
-            'reply_to': str(self.reply_to) if self.reply_to else None,
-            'sender': str(self.sender) if self.sender else None,
+            "recipients": [str(r) for r in self.recipients],
+            "cc": [str(r) for r in self.cc],
+            "bcc": [str(r) for r in self.bcc],
+            "reply_to": str(self.reply_to) if self.reply_to else None,
+            "sender": str(self.sender) if self.sender else None,
         }
 
 
@@ -103,15 +108,15 @@ class EmailMessageBase(metaclass=ABCMeta):
     @reify
     def plain(self) -> str:
         """Autogenerate the plain text version from the rich version."""
-        return BeautifulSoup(self.html, 'html.parser').get_text()
+        return BeautifulSoup(self.html, "html.parser").get_text()
 
     def to_dict(self) -> DictStr:
         """Return a dict containing the computed parts of this message."""
         assert self.subject
         assert self.plain or self.html
         return {
-            'envelope': self.envelope.to_dict(),
-            'subject': self.subject,
-            'html': self.html,
-            'plain': self.plain,
+            "envelope": self.envelope.to_dict(),
+            "subject": self.subject,
+            "html": self.html,
+            "plain": self.plain,
         }
