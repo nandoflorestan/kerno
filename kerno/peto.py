@@ -5,6 +5,7 @@ from typing import Any, Optional, Type, TypeVar
 
 from kerno.kerno import Kerno
 from kerno.repository.sqlalchemy import BaseSQLAlchemyRepository
+from kerno.state import MalbonaRezulto
 from kerno.typing import DictStr
 
 # A generic variable that can be Peto or any subclass
@@ -53,9 +54,22 @@ class Peto:
                 return get_audits(
                     peto=Peto.from_pyramid(request), **request.json_body)
         """
+        if json:
+            try:
+                raw = request.json_body  # may raise ValueError
+                # A JSON payload can have other types, but we want only dict
+                assert isinstance(raw, dict)  # other types are a bad practice
+            except Exception as e:
+                raise MalbonaRezulto(
+                    title="Malformed request!",
+                    plain="The server could not decode the request as JSON!",
+                    error_debug=str(e),
+                )
+        else:
+            raw = None
         return cls(
             kerno=request.kerno,
             repo=request.repo,
             user=request.user,
-            raw=request.json_body if json else None,
+            raw=raw,
         )
