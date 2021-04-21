@@ -6,6 +6,30 @@ from kerno.kerno import Kerno
 from kerno.typing import DictStr, Entity
 
 
+class SpyRepo:
+    """Nice test double, can be inspected at the end of a test."""
+
+    def __init__(self, **kw) -> None:  # noqa
+        self.new: List[Any] = []
+        self.deleted: List[Any] = []
+        self.flushed = False
+        for key, val in kw.items():
+            setattr(self, key, val)
+
+    def add(self, entity: Entity) -> Entity:  # noqa
+        self.new.append(entity)
+        return entity
+
+    def add_all(self, entities: Sequence[Entity]) -> None:  # noqa
+        self.new.extend(entities)
+
+    def delete(self, entity) -> None:  # noqa
+        self.deleted.append(entity)
+
+    def flush(self) -> None:  # noqa
+        self.flushed = True
+
+
 class BaseSQLAlchemyRepository:
     """Base class for a SQLAlchemy-based repository."""
 
@@ -39,7 +63,7 @@ class BaseSQLAlchemyRepository:
         self.sas.add(entity)
         return entity
 
-    def add_all(self, entities: Sequence[Entity]):
+    def add_all(self, entities: Sequence[Entity]) -> None:
         """Add model instances to the SQLAlchemy session."""
         self.sas.add_all(entities)
 
