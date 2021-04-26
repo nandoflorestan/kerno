@@ -1,7 +1,7 @@
 # noqa
 
-from dataclasses import dataclass
-from typing import Any, Optional, Type, TypeVar
+from dataclasses import dataclass, field
+from typing import Any, Type, TypeVar
 
 from kerno.kerno import Kerno
 from kerno.repository.sqlalchemy import BaseSQLAlchemyRepository
@@ -29,7 +29,7 @@ class Peto:
     kerno: Kerno  # the global application object
     repo: BaseSQLAlchemyRepository  # data access layer
     user: Any = None  # the current user requesting an operation
-    raw: Optional[DictStr] = None  # dictionary of operation-specific data
+    raw: DictStr = field(default_factory=lambda: {})  # operation-specific data
 
     @classmethod
     def from_pyramid(cls: Type[APeto], request, json=False) -> APeto:
@@ -66,7 +66,7 @@ class Peto:
                     error_debug=str(e),
                 )
         else:
-            raw = None
+            raw = {}
         return cls(
             kerno=request.kerno,
             repo=request.repo,
