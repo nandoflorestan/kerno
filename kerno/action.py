@@ -2,7 +2,7 @@
 
 from abc import ABCMeta
 
-from kerno.peto import Peto
+from kerno.peto import AbstractPeto
 
 
 class Action(metaclass=ABCMeta):
@@ -19,7 +19,7 @@ class Action(metaclass=ABCMeta):
                 ...
     """
 
-    def __init__(self, peto: Peto):  # noqa
+    def __init__(self, peto: AbstractPeto):  # noqa
         self.peto = peto
 
     @property
