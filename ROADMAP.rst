@@ -5,8 +5,6 @@ Kerno roadmap
 Because Kerno is so young, this document is a mess. Do not
 read it now; I'll tidy it up in the future.
 
-- Create a UserPeto subclass to avoid having an Optional *user* variable.
-
 - Use the pydantic library to validate configuration
 - Figure out how to create a WebSockets server that doesn't open many database
   connections. Maybe have a WebSockets middleware and continue to use Pyramid.
