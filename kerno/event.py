@@ -45,6 +45,8 @@ class EventHub:
 
     def subscribe(self, event_cls: type, function: Callable) -> Callable:
         """Subscribe a handler ``function`` to the ``event_cls``."""
+        assert isinstance(event_cls, type)
+        assert callable(function)
         handlers: List[Callable] = self._events.setdefault(event_cls, [])
         if function in handlers:
             raise RuntimeError(
