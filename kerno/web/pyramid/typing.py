@@ -78,6 +78,9 @@ class PyramidRequest:
     url: str
 
     context: Any
+    identity: Any  # Pyramid 2.0+
+    unauthenticated_userid: Union[int, str]  # deprecated in 2.0
+    authenticated_userid: Union[int, str]  # deprecated in 2.0
     effective_principals: List[str]
     exception: Optional[Exception]
 
