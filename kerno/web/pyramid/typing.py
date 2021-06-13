@@ -40,7 +40,7 @@ class RegistryStub:  # zope/interface/registry.py
     def getUtility(self, provided, name=""):
         """Retrieve a Pyramid utility."""
 
-    def queryUtility(self, provided, name='', default=None):
+    def queryUtility(self, provided, name="", default=None):
         """Retrieve a Pyramid utility."""
 
     def notify(self, *arg, **kw):  # TODO Fill arguments better
@@ -51,6 +51,14 @@ class PyramidSession:
     """Typing stub for a Pyramid session object."""
 
     def invalidate(self) -> None:  # noqa
+        ...
+
+    def flash(
+        self, msg, queue: str = "", allow_duplicate: bool = True
+    ) -> None:  # noqa
+        ...
+
+    def pop_flash(self) -> List[Any]:  # noqa
         ...
 
 

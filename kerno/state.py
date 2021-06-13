@@ -2,10 +2,11 @@
 
 These are typically returned by *action* layer code to controllers.
 """
-
+from __future__ import annotations  # allows forward references; python 3.7+
 from abc import ABCMeta
 from collections import OrderedDict
-from typing import List, Optional
+from copy import copy
+from typing import Any, List, Optional, Union
 
 from kerno.typing import DictStr
 from kerno.web.to_dict import to_dict, reuse_dict
@@ -32,9 +33,10 @@ class UIMessage:
         assert args_are_valid
         if level == "error":
             level = "danger"
-        assert level in self.LEVELS, (
-            'Unknown message level: "{0}". '
-            "Possible levels are {1}".format(level, self.LEVELS)
+        assert (
+            level in self.LEVELS
+        ), 'Unknown message level: "{0}". ' "Possible levels are {1}".format(
+            level, self.LEVELS
         )
         self.level = level
         self.title = title
@@ -43,6 +45,16 @@ class UIMessage:
 
     def __repr__(self) -> str:
         return '<{} "{}">'.format(self.__class__.__name__, self.title)
+
+    def to_dict(self) -> DictStr:  # noqa
+        return copy(self.__dict__)
+
+    @classmethod
+    def from_payload(cls, payload: Union[str, DictStr]) -> UIMessage:  # noqa
+        if isinstance(payload, str):
+            return cls(plain=payload)
+        else:
+            return cls(**payload)
 
 
 class UICommand:
@@ -64,7 +76,9 @@ class UICommand:
 
 
 @to_dict.register(obj=UICommand, flavor="")
-def uicommand_to_dict(obj, flavor="", **kw):
+def uicommand_to_dict(
+    obj: UICommand, flavor: str = "", **kw
+) -> OrderedDict[str, Any]:
     """Convert to dict a UICommand instance."""
     return OrderedDict((("name", obj.name), ("payload", obj.payload)))
 
@@ -174,7 +188,7 @@ class MalbonaRezulto(Returnable, Exception):
 
 
 @to_dict.register(obj=MalbonaRezulto, flavor="")
-def malbona_to_dict(obj, flavor="", **kw):
+def malbona_to_dict(obj: MalbonaRezulto, flavor: str = "", **kw) -> DictStr:
     """Convert a MalbonaRezulto to a dictionary."""
     amap = returnable_to_dict(obj=obj, flavor="", **kw)
     amap["invalid"] = obj.invalid
