@@ -87,3 +87,9 @@ class IsWeb:
     def __call__(self, node, value) -> None:  # noqa
         if not (value.startswith("http://") or value.startswith("https://")):
             raise c.Invalid(node, self.msg)
+
+
+def no_scripts(node, val: str) -> None:
+    """Colander validator: forbid script tags in the value."""
+    if "<script" in val:
+        raise c.Invalid(node=node, value=val, msg="No scripts are allowed!")
