@@ -2,7 +2,7 @@
 
 """Script that releases a new version of the software."""
 
-from releaser import Releaser  # easy_install -UZ releaser
+from releaser import Releaser  # pip install releaser
 from releaser.steps import (
     Shell,
     CheckRstFiles,
