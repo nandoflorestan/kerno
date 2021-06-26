@@ -5,7 +5,6 @@
 from sys import version_info
 
 # http://peak.telecommunity.com/DevCenter/setuptools#developer-s-guide
-# from distutils.core import setup
 from setuptools import setup, find_packages
 
 if version_info[:2] < (3, 6):
