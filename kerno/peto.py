@@ -111,7 +111,7 @@ class AbstractPeto(AbsUserlessPeto[TRepo], Generic[TRepo, TUser]):
                 return get_audits(
                     peto=Peto.from_pyramid(request), **request.json_body)
         """
-        user = request.user
+        user = request.identity  # from a Pyramid 2.0+ security policy
         assert user is not None
         return cls(user=user, **_pyramid_args(request, json))
 
