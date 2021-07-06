@@ -87,9 +87,9 @@ class PyramidRequest:
 
     context: Any
     identity: Any  # Pyramid 2.0+
-    unauthenticated_userid: Union[int, str]  # deprecated in 2.0
-    authenticated_userid: Union[int, str]  # deprecated in 2.0
-    effective_principals: List[str]
+    # unauthenticated_userid: Union[int, str]  # deprecated in Pyramid 2.0
+    # authenticated_userid: Union[int, str]  # deprecated in Pyramid 2.0
+    # effective_principals: List[str]  # deprecated in Pyramid 2.0
     exception: Optional[Exception]
 
     json_body: JSON_primitives
