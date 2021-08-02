@@ -10,7 +10,7 @@ from zope.interface import Interface
 
 from kerno.kerno import Kerno
 from kerno.state import MalbonaRezulto, Rezulto, to_dict
-from kerno.typing import DictStr
+from .typing import DictStr, KRequest
 
 
 def kerno_view(fn: Callable) -> Callable:
@@ -73,6 +73,30 @@ def malbona_view(context, request) -> DictStr:
     """Pyramid view handler that returns a MalbonaRezulto as a dictionary."""
     request.response.status_int = context.status_int
     return to_dict(context)
+
+
+def raise_if_not_authenticated(request: KRequest) -> None:
+    """Return 418 if the client is not authenticated.
+
+    The code 401 is for missing HTTP Basic Authentication and comes with
+    related expectations, therefore we abuse "418 I'm a teapot"
+    which was spent in a joke and therefore is never used.
+
+    This is better than Pyramid's ``is_authenticated=True`` view predicate,
+    which returns 404.
+
+    The response includes a UIMessage and a command to show the login form.
+    """
+    if request.identity:
+        return
+    args = {
+        "title": "Not authenticated",
+        "plain": "The resource requires that you be logged in.",
+    }
+    malbona = MalbonaRezulto(status_int=418, **args)
+    malbona.add_command(name="allowLogin", payload=None)  # show login form
+    malbona.add_message(level="danger", **args)
+    raise malbona
 
 
 class IKerno(Interface):
