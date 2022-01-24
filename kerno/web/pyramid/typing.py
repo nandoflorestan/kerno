@@ -53,9 +53,7 @@ class PyramidSession:
     def invalidate(self) -> None:  # noqa
         ...
 
-    def flash(
-        self, msg, queue: str = "", allow_duplicate: bool = True
-    ) -> None:  # noqa
+    def flash(self, msg, queue: str = "", allow_duplicate: bool = True) -> None:  # noqa
         ...
 
     def pop_flash(self) -> List[Any]:  # noqa
@@ -90,6 +88,7 @@ class PyramidRequest:
     # unauthenticated_userid: Union[int, str]  # deprecated in Pyramid 2.0
     # authenticated_userid: Union[int, str]  # deprecated in Pyramid 2.0
     # effective_principals: List[str]  # deprecated in Pyramid 2.0
+    remote_addr: str
     exception: Optional[Exception]
 
     json_body: JSON_primitives
