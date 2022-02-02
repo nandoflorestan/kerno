@@ -88,7 +88,7 @@ class PyramidRequest:
     # unauthenticated_userid: Union[int, str]  # deprecated in Pyramid 2.0
     # authenticated_userid: Union[int, str]  # deprecated in Pyramid 2.0
     # effective_principals: List[str]  # deprecated in Pyramid 2.0
-    remote_addr: str
+    client_addr: str
     exception: Optional[Exception]
 
     json_body: JSON_primitives
