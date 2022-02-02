@@ -116,6 +116,92 @@ class BaseSQLAlchemyRepository:
             setattr(entity, key, val)
         return entity
 
+    def update_association(
+        self,
+        cls: type,
+        field: str,
+        ids: Sequence[int],
+        filters: DictStr,
+        synchronize_session=None,
+    ) -> List[Entity]:
+        """Update a many-to-many relationship.  Return only NEW associations."""
+        return update_association(
+            cls=cls,
+            field=field,
+            ids=ids,
+            filters=filters,
+            sas=self.sas,
+            synchronize_session=synchronize_session,
+        )
+
+
+def update_association(
+    cls: type,
+    field: str,
+    ids: Sequence[int],
+    filters: DictStr,
+    sas,
+    synchronize_session=None,
+) -> List[Entity]:
+    """Update a many-to-many relationship.  Return only NEW associations.
+
+    When you have a many-to-many relationship, there is an association
+    table between 2 main tables. The problem of setting the data in
+    this case is a recurring one and it is solved here.
+    Existing associations might be deleted and some might be created.
+
+    Example usage::
+
+        user = session.query(User).get(1)
+        # Suppose there's a many-to-many relationship to Address,
+        # through an entity in the middle named UserAddress which contains
+        # just the columns user_id and address_id.
+        new_associations = update_association(
+            cls=UserAddress,      # the association class
+            field='address_id'     # name of the remote foreign key
+            ids=[5, 42, 89],        # the IDs of the user's addresses
+            filters={"user": user},  # to load existing associations
+            sas=my_sqlalchemy_session,
+        )
+        for item in new_associations:
+            print(item)
+
+    This method returns a list of any new association instances
+    because you might want to finish the job by doing something
+    more with them (e. g. setting other attributes).
+
+    A new query is needed to retrieve the totality of the associations.
+    """
+    # Fetch eventually existing association IDs
+    existing_ids = frozenset(
+        [o[0] for o in sas.query(getattr(cls, field)).filter_by(**filters)]
+    )
+
+    # Delete association rows that we no longer want
+    desired_ids = frozenset(ids)
+    to_remove = existing_ids - desired_ids
+    if to_remove:
+        q_remove = (
+            sas.query(cls)
+            .filter_by(**filters)
+            .filter(getattr(cls, field).in_(to_remove))
+        )
+        if synchronize_session is not None:
+            q_remove.delete(synchronize_session=synchronize_session)
+        else:
+            for entity in q_remove:
+                sas.delete(entity)
+
+    # Create desired associations that do not yet exist
+    to_create = desired_ids - existing_ids
+    new_associations = []
+    for id in to_create:
+        association = cls(**filters)
+        setattr(association, field, id)
+        new_associations.append(association)
+    sas.add_all(new_associations)
+    return new_associations
+
 
 class Query(Iterable, Generic[Entity]):
     """Typing stub for a returned SQLAlchemy query.
