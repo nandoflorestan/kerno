@@ -2,13 +2,8 @@
 
 """Installer for kerno."""
 
-from sys import version_info
-
 # http://peak.telecommunity.com/DevCenter/setuptools#developer-s-guide
 from setuptools import setup, find_packages
-
-if version_info[:2] < (3, 8):
-    raise RuntimeError("Kerno requires Python 3.8+")
 
 with open("README.rst", encoding="utf-8") as f:
     long_description = f.read()
