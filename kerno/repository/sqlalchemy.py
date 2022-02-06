@@ -1,6 +1,6 @@
 """A base class for SQLAlchemy-based repositories."""
 
-from typing import Any, Generic, Iterable, List, Optional, Sequence
+from typing import Any, Generic, Iterable, List, Optional, Sequence, Tuple
 
 from kerno.kerno import Kerno
 from kerno.typing import DictStr, Entity
@@ -133,6 +133,31 @@ class BaseSQLAlchemyRepository:
             sas=self.sas,
             synchronize_session=synchronize_session,
         )
+
+    def get_or_create(self, cls: type, **filters) -> Tuple[Any, bool]:
+        """Retrieve or add object; return a tuple ``(object, is_new)``.
+
+        ``is_new`` is False if the object already existed in the database.
+        """
+        instance = self.sas.query(cls).filter_by(**filters).first()
+        is_new = not instance
+        if is_new:
+            instance = cls(**filters)
+            self.sas.add(instance)
+        return instance, is_new
+
+    def create_or_update(
+        self, cls: type, values: DictStr = {}, **filters
+    ) -> Tuple[Any, bool]:
+        """Load and update entity if it exists, else create one.
+
+        First obtain either an existing object or a new one, based on ``filters``.
+        Then apply ``values`` and return a tuple ``(object, is_new)``.
+        """
+        instance, is_new = self.get_or_create(cls, **filters)
+        for k, v in values.items():
+            setattr(instance, k, v)
+        return instance, is_new
 
 
 def update_association(
