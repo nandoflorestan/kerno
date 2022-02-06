@@ -7,8 +7,8 @@ from sys import version_info
 # http://peak.telecommunity.com/DevCenter/setuptools#developer-s-guide
 from setuptools import setup, find_packages
 
-if version_info[:2] < (3, 6):
-    raise RuntimeError("Kerno requires Python 3.6+")
+if version_info[:2] < (3, 8):
+    raise RuntimeError("Kerno requires Python 3.8+")
 
 with open("README.rst", encoding="utf-8") as f:
     long_description = f.read()
@@ -28,7 +28,7 @@ setup(
     long_description=long_description,
     zip_safe=False,
     test_suite="tests",
-    install_requires=["bag>=3.0", "reg==0.12"],
+    install_requires=["bag>=5.0", "reg==0.12"],
     keywords=[
         "pyramid",
         "sqlalchemy",
@@ -45,9 +45,9 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
         "Framework :: Pyramid",
