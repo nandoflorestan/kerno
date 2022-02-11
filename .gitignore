@@ -25,6 +25,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+poetry.lock
 
 # Installer logs
 pip-log.txt
