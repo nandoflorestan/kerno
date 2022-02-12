@@ -7,37 +7,38 @@
 	repository = "https://github.com/nandoflorestan/kerno"
 	documentation = "http://docs.nando.audio/kerno/latest/"
 	classifiers = [
-        "Development Status :: 4 - Beta",
-        # "Development Status :: 5 - Production/Stable",
-        "Intended Audience :: Developers",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
-        "Programming Language :: Python :: Implementation :: CPython",
-        "Programming Language :: Python :: Implementation :: PyPy",
-        "Framework :: Pyramid",
-        "Topic :: Database",
-        "Topic :: Internet :: WWW/HTTP",
-        "Topic :: Internet :: WWW/HTTP :: WSGI",
-        "Topic :: Software Development :: Libraries",
-        "Topic :: Software Development :: Libraries :: Application Frameworks",
+		# https://pypi.org/pypi?:action=list_classifiers
+		"Development Status :: 4 - Beta",
+		# "Development Status :: 5 - Production/Stable",
+		"Intended Audience :: Developers",
+		"License :: OSI Approved :: MIT License",
+		"Operating System :: OS Independent",
+		"Programming Language :: Python",
+		"Programming Language :: Python :: 3",
+		"Programming Language :: Python :: 3.8",
+		"Programming Language :: Python :: 3.9",
+		"Programming Language :: Python :: 3.10",
+		"Programming Language :: Python :: Implementation :: CPython",
+		"Programming Language :: Python :: Implementation :: PyPy",
+		"Framework :: Pyramid",
+		"Topic :: Database",
+		"Topic :: Internet :: WWW/HTTP",
+		"Topic :: Internet :: WWW/HTTP :: WSGI",
+		"Topic :: Software Development :: Libraries",
+		"Topic :: Software Development :: Libraries :: Application Frameworks",
 	]
 	# A list of keywords (max: 5) that the package is related to
 	keywords = [
-        "Clean Architecture",
-        "service layer",
-        "action",
-        "pyramid",
-        "sqlalchemy",
-    ]
+		"Clean Architecture",
+		"service layer",
+		"action",
+		"pyramid",
+		"sqlalchemy",
+	]
 
 [tool.poetry.dependencies]
 	python = "^3.8"
-	# https://pypi.org/pypi?:action=list_classifiers
+	# https://python-poetry.org/docs/dependency-specification/
 	bag = ">=5.0"
 	reg = "0.12"
 
