@@ -1,2 +1,0 @@
-include kerno/web/*.js
-include kerno/web/*.jinja2
