@@ -76,9 +76,7 @@ class UICommand:
 
 
 @to_dict.register(obj=UICommand, flavor="")
-def uicommand_to_dict(
-    obj: UICommand, flavor: str = "", **kw
-) -> OrderedDict[str, Any]:
+def uicommand_to_dict(obj: UICommand, flavor: str = "", **kw) -> OrderedDict[str, Any]:
     """Convert to dict a UICommand instance."""
     return OrderedDict((("name", obj.name), ("payload", obj.payload)))
 
@@ -116,9 +114,7 @@ class Returnable(metaclass=ABCMeta):
             setattr(self, k, v)
 
     def __repr__(self) -> str:
-        return "<{} status: {}>".format(
-            self.__class__.__name__, self.status_int
-        )
+        return "<{} status: {}>".format(self.__class__.__name__, self.status_int)
 
     def add_message(self, level: str = "", **kw) -> UIMessage:
         """Add to the grave messages to be displayed to the user on the UI."""
@@ -193,3 +189,40 @@ def malbona_to_dict(obj: MalbonaRezulto, flavor: str = "", **kw) -> DictStr:
     amap = returnable_to_dict(obj=obj, flavor="", **kw)
     amap["invalid"] = obj.invalid
     return amap
+
+
+class ApiRezulto:
+    """Convenient protocol between Action and View for the simplest cases."""
+
+    def __init__(self, status_int: int, payload: DictStr, **kw):
+        self.status_int = status_int
+        self.payload = payload
+        for k, v in kw.items():
+            setattr(self, k, v)
+
+    @classmethod
+    def error(cls, status_int: int, **kw) -> ApiRezulto:
+        """Convenient constructor for very simple error JSON responses.
+
+        Avoids nesting when instantiating an ApiRezulto in the action layer.
+
+        Example::
+
+            return ApiRezulto.error(
+                400,
+                title="Missing email variable",
+                plain="An email must be given in the request JSON object.",
+            )
+        """
+        return cls(status_int, kw)
+
+    @property
+    def ok(self) -> bool:
+        return self.status_int > 199 and self.status_int < 300
+
+    def to_dict(self) -> DictStr:
+        """Convert to dict for JSON consumption from other applications.
+
+        The JSON payload will either contain an *ok* object or an *error* object.
+        """
+        return {"ok": self.payload} if self.ok else {"error": self.payload}
