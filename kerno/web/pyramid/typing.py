@@ -125,3 +125,6 @@ class KRequest(PyramidRequest):
 
     def add_flash(self, **kw) -> UIMessage:
         """Add a flash message to the current Pyramid session."""
+
+    def get_flash_msgs(self) -> List[UIMessage]:
+        """Return the UIMessages currently stored in the HTTP session."""
