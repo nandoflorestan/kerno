@@ -24,11 +24,11 @@ def get_version_number(path=''):
         r'(\d+\.\d+[0123456789\-\.\(\)abcdefghijklmnopqrstuvwxyz]*)["\']\s*')
     current_dir = os.path.realpath(os.path.curdir)
     if current_dir.endswith('docs/source'):
-        setup_path = '../../setup.py'
+        setup_path = '../../pyproject.toml'
     elif current_dir.endswith('docs'):
-        setup_path = '../setup.py'
+        setup_path = '../pyproject.toml'
     else:
-        setup_path = 'setup.py'
+        setup_path = 'pyproject.toml'
     with codecs.open(setup_path, 'r', encoding='utf-8') as stream:
         text = stream.read()
     match = VERSION_LINE.search(text)
