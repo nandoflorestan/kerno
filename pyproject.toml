@@ -1,6 +1,6 @@
 [tool.poetry]
 	name = "kerno"
-	version = "0.8.0"
+	version = "0.8.1.dev1"
 	description = "Framework for the application service layer."
 	readme = "README.rst"
 	authors = ["Nando Florestan <nandoflorestan@gmail.com>"]
