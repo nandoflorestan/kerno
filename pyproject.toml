@@ -2,6 +2,7 @@
 	name = "kerno"
 	version = "0.7.1.dev1"
 	description = "Framework for the application service layer."
+	readme = "README.rst"
 	authors = ["Nando Florestan <nandoflorestan@gmail.com>"]
 	license = "MIT"
 	repository = "https://github.com/nandoflorestan/kerno"
