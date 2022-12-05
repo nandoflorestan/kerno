@@ -97,7 +97,7 @@ class AbstractPeto(AbsUserlessPeto[TRepo], Generic[TRepo, TUser]):
 
             peto = Peto.from_pyramid(request, json=True)
             # Call your action/service layer, which returns a Rezulto instance:
-            rezulto = create_user(peto)
+            rezulto = some_action(peto)
             return rezulto
 
         When invoked with ``json=True``, ``peto.raw`` contains a dict
@@ -110,16 +110,22 @@ class AbstractPeto(AbsUserlessPeto[TRepo], Generic[TRepo, TUser]):
                 "\""Return audit data to be displayed to a superuser."\""
                 return get_audits(
                     peto=Peto.from_pyramid(request), **request.json_body)
+
+        This class should be used only when there is a user object, so
+        this class method raises Forbidden if request.identity is None.
+        You can use Pyramid to catch Forbidden and do something else --
+        usually forward the user to the login form.
         """
         user = request.identity  # from a Pyramid 2.0+ security policy
-        assert user is not None
+        if user is None:
+            from pyramid.exceptions import Forbidden
+
+            raise Forbidden(
+                detail="You need to log in before you can access that resource."
+            )
         return cls(user=user, **_pyramid_args(request, json))
 
     @classmethod
-    def from_userless(
-        cls: Type[APeto], upeto: AbsUserlessPeto, user: TUser
-    ) -> APeto:
+    def from_userless(cls: Type[APeto], upeto: AbsUserlessPeto, user: TUser) -> APeto:
         """Get a Peto instance from a UserlessPeto and a user object."""
-        return cls(
-            kerno=upeto.kerno, repo=upeto.repo, raw=upeto.raw, user=user
-        )
+        return cls(kerno=upeto.kerno, repo=upeto.repo, raw=upeto.raw, user=user)
