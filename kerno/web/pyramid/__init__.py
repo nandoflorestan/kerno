@@ -72,6 +72,7 @@ def kerno_view(fn: Callable) -> Callable:
 def malbona_view(context, request) -> DictStr:
     """Pyramid view handler that returns a MalbonaRezulto as a dictionary."""
     request.response.status_int = context.status_int
+    request.response.headers.update(context.headers)
     return to_dict(context)
 
 

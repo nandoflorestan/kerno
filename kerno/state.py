@@ -89,6 +89,7 @@ class Returnable(metaclass=ABCMeta):
     - messages: Grave UI messages.
     - toasts: UI messages that disappear automatically after a while.
     - commands: messages to the UI, e. g., add an entity to your models
+    - headers: HTTP headers to be added to the response.
     - debug: A dict with information that is not displayed to the end user.
     - redirect: URL or screen to redirect to.
 
@@ -103,11 +104,13 @@ class Returnable(metaclass=ABCMeta):
         commands: List[UICommand] = None,
         debug: DictStr = None,
         redirect: str = "",
+        headers: DictStr = None,
         **kw,
     ):  # noqa
         self.messages: List[UIMessage] = []
         self.toasts: List[UIMessage] = []
         self.commands = commands or []
+        self.headers = headers or {}  # HTTP headers
         self.debug = debug or {}
         self.redirect = redirect
         for k, v in kw.items():
@@ -161,7 +164,11 @@ class Rezulto(Returnable):
 
 
 class MalbonaRezulto(Returnable, Exception):
-    """Base class for exceptions raised by actions."""
+    """Base class for exceptions raised by actions of web apps.
+
+    Contains enough information to be translated, in the view layer,
+    to an exception specific to a web framework.
+    """
 
     level = "danger"
     status_int = 400  # HTTP response code indicating invalid request

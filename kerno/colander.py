@@ -89,6 +89,12 @@ class IsWeb:
             raise c.Invalid(node, self.msg)
 
 
+class ListOfPositiveIntegers(c.SequenceSchema):
+    """Colander validator that accepts a list of positive integers."""
+
+    number = c.SchemaNode(c.Int(), validator=c.Range(min=0))
+
+
 def no_scripts(node, val: str) -> None:
     """Colander validator: forbid script tags in the value."""
     if "<script" in val:
