@@ -99,3 +99,15 @@ def no_scripts(node, val: str) -> None:
     """Colander validator: forbid script tags in the value."""
     if "<script" in val:
         raise c.Invalid(node=node, value=val, msg="No scripts are allowed!")
+
+
+def email_domain_must_exist(node, val: str) -> None:
+    """Colander validator that ensures existence of the domain in an email address.
+
+    To use this you need your project to depend on the pyisemail library.
+    """
+    from pyisemail import is_email
+
+    answer = is_email(val, diagnose=True, check_dns=True)
+    if answer.diagnosis_type != "VALID":
+        raise c.Invalid(node=node, value=val, msg=answer.message)
