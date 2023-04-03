@@ -15,6 +15,7 @@ In your application you should subclass them like this::
     UserlessPeto = AbsUserlessPeto[Repo]  # using the concrete Repo type
     Peto = AbstractPeto[Repo, User]  # with the concrete User type
 
+Now you can use the above Peto and UserlessPeto classes in your application.
 """
 
 from dataclasses import dataclass
