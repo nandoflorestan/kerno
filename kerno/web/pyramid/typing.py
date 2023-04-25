@@ -89,11 +89,13 @@ class PyramidRequest:
     # authenticated_userid: Union[int, str]  # deprecated in Pyramid 2.0
     # effective_principals: List[str]  # deprecated in Pyramid 2.0
     client_addr: str
+    remote_addr: str
     exception: Optional[Exception]
 
     json_body: JSON_primitives
     GET: MultiDictStub
     POST: MultiDictStub
+    headers: DictStr
     params: MultiDictStub
     matchdict: DictStr
 
