@@ -56,7 +56,7 @@ from functools import singledispatch
 from typing import Any, Iterable, Sequence
 
 from bag import first
-from kerno.peto import AbstractPeto
+from kerno.peto import AbsUserlessPeto
 from kerno.typing import DictStr
 
 
@@ -76,9 +76,7 @@ def only_relevant(keys: Iterable[str]) -> Iterable[str]:
     )
 
 
-def excluding(
-    blacklist: Sequence[str], keys: Iterable[str]
-) -> Iterable[str]:  # noqa
+def excluding(blacklist: Sequence[str], keys: Iterable[str]) -> Iterable[str]:  # noqa
     return filter(lambda k: k not in blacklist, keys)
 
 
@@ -97,7 +95,7 @@ def entity2dict(
 
 
 @singledispatch
-def jsonright(obj: Any, peto: AbstractPeto, features=(), **kw) -> Any:
+def jsonright(obj: Any, peto: AbsUserlessPeto, features=(), **kw) -> Any:
     """Overloadable function to encode entities for sending through the wire.
 
     You can register your own implementations which get called depending
@@ -113,31 +111,30 @@ def jsonright(obj: Any, peto: AbstractPeto, features=(), **kw) -> Any:
 @jsonright.register(float)
 @jsonright.register(bool)
 @jsonright.register(type(None))
-def _a(obj, peto: AbstractPeto, features=(), **kw) -> Any:
+def _a(obj, peto: AbsUserlessPeto, features=(), **kw) -> Any:
     return obj
 
 
 @jsonright.register(bytes)
-def _b(obj, peto: AbstractPeto, features=(), **kw) -> Any:
+def _b(obj, peto: AbsUserlessPeto, features=(), **kw) -> Any:
     return obj.decode(kw.get("encoding", "utf-8"))
 
 
 @jsonright.register(Decimal)
-def _c(obj, peto: AbstractPeto, features=(), **kw) -> float:
+def _c(obj, peto: AbsUserlessPeto, features=(), **kw) -> float:
     return float(str(obj))
 
 
 @jsonright.register(datetime)
 @jsonright.register(date)
-def _d(obj, peto: AbstractPeto, features=(), **kw) -> str:
+def _d(obj, peto: AbsUserlessPeto, features=(), **kw) -> str:
     return obj.isoformat()
 
 
 @jsonright.register(dict)
-def _e(obj, peto: AbstractPeto, features=(), **kw) -> DictStr:
+def _e(obj, peto: AbsUserlessPeto, features=(), **kw) -> DictStr:
     return {
-        str(key): jsonright(val, peto, features, **kw)
-        for (key, val) in obj.items()
+        str(key): jsonright(val, peto, features, **kw) for (key, val) in obj.items()
     }
 
 
@@ -159,7 +156,7 @@ primitive_types = (
 @jsonright.register(tuple)
 @jsonright.register(set)
 @jsonright.register(frozenset)
-def _s(obj, peto: AbstractPeto, features=(), **kw) -> Sequence:
+def _s(obj, peto: AbsUserlessPeto, features=(), **kw) -> Sequence:
     if len(obj) == 0:
         return []
     first_item = first(obj)

@@ -101,10 +101,10 @@ class Returnable(metaclass=ABCMeta):
 
     def __init__(
         self,
-        commands: List[UICommand] = None,
-        debug: DictStr = None,
+        commands: Optional[List[UICommand]] = None,
+        debug: Optional[DictStr] = None,
         redirect: str = "",
-        headers: DictStr = None,
+        headers: Optional[DictStr] = None,
         **kw,
     ):  # noqa
         self.messages: List[UIMessage] = []

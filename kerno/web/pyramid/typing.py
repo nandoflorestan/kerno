@@ -14,10 +14,10 @@ JSON_primitives = Union[DictStr, List[Any], str, int, float]
 class MultiDictStub(dict):
     """Typing stub for webob.multidict.MultiDict."""
 
-    def getall(self, key: str) -> List[JSON_primitives]:
+    def getall(self, key: str) -> List[JSON_primitives]:  # type: ignore[empty-body]
         """Return a list of all values matching key (may be an empty list)."""
 
-    def getone(self, key: str) -> JSON_primitives:
+    def getone(self, key: str) -> JSON_primitives:  # type: ignore[empty-body]
         """Get one value matching the key. May raise KeyError."""
 
 
@@ -34,29 +34,32 @@ class RegistryStub:  # zope/interface/registry.py
         info="",
         event=True,
         factory=None,
-    ):
+    ):  # type: ignore[empty-body]
         """Register a Pyramid utility."""
 
-    def getUtility(self, provided, name=""):
+    def getUtility(self, provided, name=""):  # type: ignore[empty-body]
         """Retrieve a Pyramid utility."""
 
-    def queryUtility(self, provided, name="", default=None):
+    def queryUtility(self, provided, name="", default=None):  # type: ignore[empty-body]
         """Retrieve a Pyramid utility."""
 
-    def notify(self, *arg, **kw):  # TODO Fill arguments better
+    def notify(self, *arg, **kw):  # type: ignore[empty-body]
         """Broadcast a Pyramid event."""
+        # TODO Fill arguments better
 
 
 class PyramidSession:
     """Typing stub for a Pyramid session object."""
 
-    def invalidate(self) -> None:  # noqa
+    def invalidate(self) -> None:  # type: ignore[empty-body]
         ...
 
-    def flash(self, msg, queue: str = "", allow_duplicate: bool = True) -> None:  # noqa
+    def flash(
+        self, msg, queue: str = "", allow_duplicate: bool = True
+    ) -> None:  # type: ignore[empty-body]
         ...
 
-    def pop_flash(self) -> List[Any]:  # noqa
+    def pop_flash(self) -> List[Any]:  # type: ignore[empty-body]
         ...
 
 
@@ -107,10 +110,12 @@ class PyramidRequest:
     cookies: DictStr
     session: PyramidSession
 
-    def route_path(self, route_name: str, *elements, **kw) -> str:
+    def route_path(  # type: ignore[empty-body]
+        self, route_name: str, *elements, **kw
+    ) -> str:
         """Generate a relative URL for a named Pyramid route."""
 
-    def static_path(self, path: str, **kw) -> str:
+    def static_path(self, path: str, **kw) -> str:  # type: ignore[empty-body]
         """Generate a relative URL to a static resource."""
 
 
@@ -125,8 +130,8 @@ class KRequest(PyramidRequest):
     repo: BaseSQLAlchemyRepository
     user: Any
 
-    def add_flash(self, **kw) -> UIMessage:
+    def add_flash(self, **kw) -> UIMessage:  # type: ignore[empty-body]
         """Add a flash message to the current Pyramid session."""
 
-    def get_flash_msgs(self) -> List[UIMessage]:
+    def get_flash_msgs(self) -> List[UIMessage]:  # type: ignore[empty-body]
         """Return the UIMessages currently stored in the HTTP session."""

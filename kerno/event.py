@@ -40,7 +40,7 @@ from typing import Callable, Dict, List
 class EventHub:
     """A hub for events to be subscribed, fired and removed."""
 
-    def __init__(self):  # noqa
+    def __init__(self) -> None:  # noqa
         self._events: Dict[type, List[Callable]] = {}
 
     def subscribe(self, event_cls: type, function: Callable) -> Callable:
@@ -63,7 +63,7 @@ class EventHub:
             handlers.remove(function)
         return ret
 
-    def broadcast(self, event):
+    def broadcast(self, event) -> None:
         """Trigger/fire ``event`` -- execute its subscribers.
 
         The type of ``event`` must be an exact match: inheritance

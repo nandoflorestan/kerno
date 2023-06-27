@@ -242,25 +242,25 @@ class Query(Iterable, Generic[Entity]):
     https://github.com/dropbox/sqlalchemy-stubs/blob/master/sqlalchemy-stubs/orm/query.pyi
     """
 
-    def all(self) -> List[Entity]:  # noqa
+    def all(self) -> List[Entity]:  # type: ignore[empty-body]
         ...
 
-    def count(self) -> int:  # noqa
+    def count(self) -> int:  # type: ignore[empty-body]
         ...
 
-    def delete(self) -> None:  # noqa
+    def delete(self) -> None:  # type: ignore[empty-body]
         ...
 
-    # def exists(self): ...  # noqa
-    def first(self) -> Optional[Entity]:  # noqa
+    # def exists(self): ...
+    def first(self) -> Optional[Entity]:  # type: ignore[empty-body]
         ...
 
-    def get(self, ident) -> Optional[Entity]:  # noqa
+    def get(self, ident) -> Optional[Entity]:  # type: ignore[empty-body]
         ...
 
-    def one(self) -> Entity:  # noqa
+    def one(self) -> Entity:  # type: ignore[empty-body]
         ...
 
-    # def slice(self, start: int, stop: Optional[int]): ...  # noqa
-    def yield_per(self, count: int) -> List[Entity]:  # noqa
+    # def slice(self, start: int, stop: Optional[int]): ...
+    def yield_per(self, count: int) -> List[Entity]:  # type: ignore[empty-body]
         ...
