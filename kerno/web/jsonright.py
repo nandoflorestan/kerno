@@ -169,5 +169,12 @@ def _s(obj, peto: AbsUserlessPeto, features=(), **kw) -> Sequence:
     for entity in obj:
         adict = jsonright(entity, peto, features, **kw)
         for alist in ret:
-            alist.append(jsonright(adict[alist[0]], peto, features, **kw))
+            try:
+                val = jsonright(adict[alist[0]], peto, features, **kw)
+            except KeyError as e:
+                raise RuntimeError(
+                    "jsonright cannot pivot sequences containing "
+                    "objects of different types if their fields differ."
+                ) from e
+            alist.append(val)
     return ret
