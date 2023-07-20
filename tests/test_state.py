@@ -2,7 +2,7 @@
 
 from collections import OrderedDict
 from unittest import TestCase
-from kerno.state import to_dict, MalbonaRezulto, Rezulto, UICommand, UIMessage
+from kerno.state import to_dict, MalbonaRezulto, Rezulto, Mandate, UIMessage
 
 
 class TestUIMessage(TestCase):
@@ -33,7 +33,7 @@ class TestRezulto(TestCase):
     """Test cases for the Rezulto class and to_dict()."""
 
     def _make_one(self):
-        rez = Rezulto(commands=[UICommand(
+        rez = Rezulto(commands=[Mandate(
             name='add joke',
             payload={'What does a composer do when he dies?': 'Decompose'},
         )])

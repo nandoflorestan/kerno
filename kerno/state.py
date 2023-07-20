@@ -6,7 +6,8 @@ from __future__ import annotations  # allows forward references; python 3.7+
 from abc import ABCMeta
 from collections import OrderedDict
 from copy import copy
-from typing import Any, List, Optional, Union
+from typing import Any, Optional, Union
+from warnings import warn
 
 from kerno.typing import DictStr
 from kerno.web.to_dict import to_dict, reuse_dict
@@ -57,8 +58,8 @@ class UIMessage:
             return cls(**payload)
 
 
-class UICommand:
-    """Represents a message telling the UI to do something."""
+class Mandate:
+    """Represents a command from the server to the UI."""
 
     __slots__ = ("name", "payload")
 
@@ -72,12 +73,12 @@ class UICommand:
         self.payload = payload
 
     def __repr__(self):
-        return '<UICommand "{}">'.format(self.name)
+        return '<Mandate "{}">'.format(self.name)
 
 
-@to_dict.register(obj=UICommand, flavor="")
-def uicommand_to_dict(obj: UICommand, flavor: str = "", **kw) -> OrderedDict[str, Any]:
-    """Convert to dict a UICommand instance."""
+@to_dict.register(obj=Mandate, flavor="")
+def mandate_to_dict(obj: Mandate, flavor: str = "", **kw) -> OrderedDict[str, Any]:
+    """Convert to dict a Mandate instance."""
     return OrderedDict((("name", obj.name), ("payload", obj.payload)))
 
 
@@ -101,14 +102,14 @@ class Returnable(metaclass=ABCMeta):
 
     def __init__(
         self,
-        commands: Optional[List[UICommand]] = None,
+        commands: Optional[list[Mandate]] = None,
         debug: Optional[DictStr] = None,
         redirect: str = "",
         headers: Optional[DictStr] = None,
         **kw,
     ):  # noqa
-        self.messages: List[UIMessage] = []
-        self.toasts: List[UIMessage] = []
+        self.messages: list[UIMessage] = []
+        self.toasts: list[UIMessage] = []
         self.commands = commands or []
         self.headers = headers or {}  # HTTP headers
         self.debug = debug or {}
@@ -131,11 +132,15 @@ class Returnable(metaclass=ABCMeta):
         self.toasts.append(msg)
         return msg
 
-    def add_command(self, **kw) -> UICommand:
-        """Add to the commands for the UI to perform."""
-        cmd = UICommand(**kw)
+    def add_mandate(self, **kw) -> Mandate:
+        """Add a mandate: a command from the server to the UI."""
+        cmd = Mandate(**kw)
         self.commands.append(cmd)
         return cmd
+
+    def add_command(self, **kw) -> Mandate:
+        warn("Returnable.add_command() is deprecated; use add_mandate() instead.", DeprecationWarning)
+        return self.add_mandate(**kw)
 
 
 @to_dict.register(obj=Returnable, flavor="")
@@ -148,7 +153,7 @@ def returnable_to_dict(obj, flavor="", **kw):
     )
     amap["messages"] = [reuse_dict(obj=msg) for msg in obj.messages]
     amap["toasts"] = [reuse_dict(obj=msg) for msg in obj.toasts]
-    amap["commands"] = [to_dict(uicommand) for uicommand in obj.commands]
+    amap["commands"] = [to_dict(mandate) for mandate in obj.commands]
     return amap
 
 

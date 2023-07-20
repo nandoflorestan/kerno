@@ -3,7 +3,7 @@
 from unittest import TestCase
 from unittest.mock import Mock
 from kerno.colander import c, InvalidToMalbona
-from kerno.state import to_dict, MalbonaRezulto, Rezulto, UICommand, UIMessage
+from kerno.state import to_dict, MalbonaRezulto, Rezulto, Mandate, UIMessage
 
 
 class TestInvalidToMalbona(TestCase):
