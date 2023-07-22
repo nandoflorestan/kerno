@@ -1,6 +1,6 @@
 """A base class for SQLAlchemy-based repositories."""
 
-from typing import Any, Generic, Iterable, List, Optional, Sequence, Tuple
+from typing import Any, Generic, Iterable, Optional, Sequence, Tuple
 
 from kerno.kerno import Kerno
 from kerno.typing import DictStr, Entity
@@ -10,8 +10,8 @@ class SpyRepo:
     """Nice test double, can be inspected at the end of a test."""
 
     def __init__(self, **kw) -> None:  # noqa
-        self.new: List[Any] = []
-        self.deleted: List[Any] = []
+        self.new: list[Any] = []
+        self.deleted: list[Any] = []
         self.flushed = False
         for key, val in kw.items():
             setattr(self, key, val)
@@ -123,7 +123,7 @@ class BaseSQLAlchemyRepository:
         ids: Sequence[int],
         filters: DictStr,
         synchronize_session=None,
-    ) -> List[Entity]:
+    ) -> list[Entity]:
         """Update a many-to-many relationship.  Return only NEW associations."""
         return update_association(
             cls=cls,
@@ -167,7 +167,7 @@ def update_association(
     filters: DictStr,
     sas,
     synchronize_session=None,
-) -> List[Entity]:
+) -> list[Entity]:
     """Update a many-to-many relationship.  Return only NEW associations.
 
     When you have a many-to-many relationship, there is an association
@@ -242,7 +242,7 @@ class Query(Iterable, Generic[Entity]):
     https://github.com/dropbox/sqlalchemy-stubs/blob/master/sqlalchemy-stubs/orm/query.pyi
     """
 
-    def all(self) -> List[Entity]:  # type: ignore[empty-body]
+    def all(self) -> list[Entity]:  # type: ignore[empty-body]
         ...
 
     def count(self) -> int:  # type: ignore[empty-body]
@@ -262,5 +262,5 @@ class Query(Iterable, Generic[Entity]):
         ...
 
     # def slice(self, start: int, stop: Optional[int]): ...
-    def yield_per(self, count: int) -> List[Entity]:  # type: ignore[empty-body]
+    def yield_per(self, count: int) -> list[Entity]:  # type: ignore[empty-body]
         ...

@@ -1,6 +1,6 @@
 """Pyramid typing stubs so we can write annotated views."""
 
-from typing import Any, List, Optional, Union
+from typing import Any, Optional, Union
 
 from kerno.kerno import Kerno
 from kerno.repository.sqlalchemy import BaseSQLAlchemyRepository
@@ -8,13 +8,13 @@ from kerno.state import UIMessage
 from kerno.typing import DictStr
 
 
-JSON_primitives = Union[DictStr, List[Any], str, int, float]
+JSON_primitives = Union[DictStr, list[Any], str, int, float]
 
 
 class MultiDictStub(dict):
     """Typing stub for webob.multidict.MultiDict."""
 
-    def getall(self, key: str) -> List[JSON_primitives]:  # type: ignore[empty-body]
+    def getall(self, key: str) -> list[JSON_primitives]:  # type: ignore[empty-body]
         """Return a list of all values matching key (may be an empty list)."""
 
     def getone(self, key: str) -> JSON_primitives:  # type: ignore[empty-body]
@@ -59,7 +59,7 @@ class PyramidSession:
     ) -> None:  # type: ignore[empty-body]
         ...
 
-    def pop_flash(self) -> List[Any]:  # type: ignore[empty-body]
+    def pop_flash(self) -> list[Any]:  # type: ignore[empty-body]
         ...
 
 
@@ -90,7 +90,7 @@ class PyramidRequest:
     identity: Any  # Pyramid 2.0+
     # unauthenticated_userid: Union[int, str]  # deprecated in Pyramid 2.0
     # authenticated_userid: Union[int, str]  # deprecated in Pyramid 2.0
-    # effective_principals: List[str]  # deprecated in Pyramid 2.0
+    # effective_principals: list[str]  # deprecated in Pyramid 2.0
     client_addr: str
     remote_addr: str
     exception: Optional[Exception]
@@ -133,5 +133,5 @@ class KRequest(PyramidRequest):
     def add_flash(self, **kw) -> UIMessage:  # type: ignore[empty-body]
         """Add a flash message to the current Pyramid session."""
 
-    def get_flash_msgs(self) -> List[UIMessage]:  # type: ignore[empty-body]
+    def get_flash_msgs(self) -> list[UIMessage]:  # type: ignore[empty-body]
         """Return the UIMessages currently stored in the HTTP session."""

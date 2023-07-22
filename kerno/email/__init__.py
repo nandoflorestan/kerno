@@ -8,7 +8,7 @@ emails can be plugged at the end.
 
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
-from typing import List, Optional, Tuple, Union
+from typing import Optional, Tuple, Union
 
 from bag.email_validator import EmailValidator
 from bag.reify import reify
@@ -46,9 +46,9 @@ class Envelope:
 
     def __init__(  # noqa
         self,
-        recipients: List[EmailAddress],
-        cc: Optional[List[EmailAddress]] = None,
-        bcc: Optional[List[EmailAddress]] = None,
+        recipients: list[EmailAddress],
+        cc: Optional[list[EmailAddress]] = None,
+        bcc: Optional[list[EmailAddress]] = None,
         reply_to: Optional[EmailAddress] = None,
         sender: Optional[EmailAddress] = None,
     ):

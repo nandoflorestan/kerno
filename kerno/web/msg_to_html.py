@@ -1,7 +1,6 @@
 """A registry for ways to convert an UIMessage to HTML code."""
 
 from html import escape
-from typing import List
 
 import reg
 from kerno.state import UIMessage
@@ -80,6 +79,6 @@ def add_flash(
     return msg
 
 
-def get_flash_msgs(request: KRequest) -> List[UIMessage]:
+def get_flash_msgs(request: KRequest) -> list[UIMessage]:
     """Return the UIMessages currently stored in the HTTP session."""
     return [UIMessage.from_payload(f) for f in request.session.pop_flash()]

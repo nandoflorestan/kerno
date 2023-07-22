@@ -5,7 +5,7 @@ It works much like initial configuration of a Pyramid app.
 
 from configparser import NoSectionError
 from types import ModuleType
-from typing import Callable, Iterable, List, Union
+from typing import Callable, Iterable, Union
 
 from bag.settings import read_ini_files, resolve
 
@@ -70,7 +70,7 @@ class Eko:
                 "Received: {}".format(type(settings))
             )
 
-        self._included_modules: List[ModuleType] = []
+        self._included_modules: list[ModuleType] = []
         self.kerno = Kerno(settings)
         self.utilities = UtilityRegistryBuilder(kerno=self.kerno)
 

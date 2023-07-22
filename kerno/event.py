@@ -34,20 +34,20 @@ The library fires the event by doing::
     kerno.events.broadcast(EventUserLoggedIn(peto=peto))
 """
 
-from typing import Callable, Dict, List
+from typing import Callable, Dict
 
 
 class EventHub:
     """A hub for events to be subscribed, fired and removed."""
 
     def __init__(self) -> None:  # noqa
-        self._events: Dict[type, List[Callable]] = {}
+        self._events: Dict[type, list[Callable]] = {}
 
     def subscribe(self, event_cls: type, function: Callable) -> Callable:
         """Subscribe a handler ``function`` to the ``event_cls``."""
         assert isinstance(event_cls, type)
         assert callable(function)
-        handlers: List[Callable] = self._events.setdefault(event_cls, [])
+        handlers: list[Callable] = self._events.setdefault(event_cls, [])
         if function in handlers:
             raise RuntimeError(
                 f"This function is already subscribed to {event_cls}."
@@ -57,7 +57,7 @@ class EventHub:
 
     def unsubscribe(self, event_cls: type, function: Callable) -> bool:
         """Remove a function.  Return True if it really was subscribed."""
-        handlers: List[Callable] = self._events.setdefault(event_cls, [])
+        handlers: list[Callable] = self._events.setdefault(event_cls, [])
         ret = function in handlers
         if ret:
             handlers.remove(function)
@@ -69,6 +69,6 @@ class EventHub:
         The type of ``event`` must be an exact match: inheritance
         is not supported.
         """
-        handlers: List[Callable] = self._events.setdefault(type(event), [])
+        handlers: list[Callable] = self._events.setdefault(type(event), [])
         for fn in handlers:
             fn(event)
