@@ -34,14 +34,14 @@ The library fires the event by doing::
     kerno.events.broadcast(EventUserLoggedIn(peto=peto))
 """
 
-from typing import Callable, Dict
+from typing import Callable
 
 
 class EventHub:
     """A hub for events to be subscribed, fired and removed."""
 
     def __init__(self) -> None:  # noqa
-        self._events: Dict[type, list[Callable]] = {}
+        self._events: dict[type, list[Callable]] = {}
 
     def subscribe(self, event_cls: type, function: Callable) -> Callable:
         """Subscribe a handler ``function`` to the ``event_cls``."""
@@ -49,9 +49,7 @@ class EventHub:
         assert callable(function)
         handlers: list[Callable] = self._events.setdefault(event_cls, [])
         if function in handlers:
-            raise RuntimeError(
-                f"This function is already subscribed to {event_cls}."
-            )
+            raise RuntimeError(f"This function is already subscribed to {event_cls}.")
         handlers.append(function)
         return function
 

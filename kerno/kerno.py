@@ -1,7 +1,7 @@
 """The Kerno class."""
 
 from types import MappingProxyType  # which behaves like a FrozenDict
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from kerno.event import EventHub
 from kerno.typing import DictStr
@@ -15,7 +15,7 @@ class Kerno:
     """
 
     def __init__(
-        self, settings: Dict[str, Dict], const: Optional[DictStr] = None
+        self, settings: dict[str, DictStr], const: Optional[DictStr] = None
     ):
         """Construct. The ``settings`` are a dict of dicts."""
         self.settings = settings
