@@ -95,7 +95,7 @@ def raise_if_not_authenticated(request: KRequest) -> None:
         "plain": "The resource requires that you be logged in.",
     }
     malbona = MalbonaRezulto(status_int=418, **args)  # type: ignore[arg-type]
-    malbona.add_command(name="allowLogin", payload=None)  # show login form
+    malbona.add_mandate(name="allowLogin", payload=None)  # show login form
     malbona.add_message(level="danger", **args)
     raise malbona
 
