@@ -89,7 +89,7 @@ class Returnable(metaclass=ABCMeta):
 
     - messages: Grave UI messages.
     - toasts: UI messages that disappear automatically after a while.
-    - commands: messages to the UI, e. g., add an entity to your models
+    - commands: mandates to the UI, e. g., add an entity to your models
     - headers: HTTP headers to be added to the response.
     - debug: A dict with information that is not displayed to the end user.
     - redirect: URL or screen to redirect to.
