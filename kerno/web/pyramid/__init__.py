@@ -6,7 +6,8 @@ from json import dumps
 from typing import Callable
 
 from bag.web.exceptions import Problem
-from zope.interface import Interface
+# 2023-08: zope.interface lacks py.typed
+from zope.interface import Interface  # type: ignore[import]
 
 from kerno.kerno import Kerno
 from kerno.state import MalbonaRezulto, Rezulto, to_dict

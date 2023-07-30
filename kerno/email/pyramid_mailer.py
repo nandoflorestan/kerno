@@ -1,6 +1,7 @@
 """A complement to our email module, for those who use pyramid_mailer."""
 
-from pyramid_mailer.message import Message
+# 2023-08: pyramid_mailer lacks py.typed
+from pyramid_mailer.message import Message  # type: ignore[import]
 
 from kerno.email import EmailMessageBase
 from kerno.typing import DictStr

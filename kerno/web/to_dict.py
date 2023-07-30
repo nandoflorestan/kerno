@@ -46,7 +46,8 @@ from decimal import Decimal
 from typing import Any, Iterable, Sequence
 from warnings import warn
 
-import reg
+# 2023-08: reg lacks py.typed
+import reg  # type: ignore[import]
 
 warn(
     "to_dict will be removed in a future version of kerno. "

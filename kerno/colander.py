@@ -1,6 +1,7 @@
 """Convenience to use colander with kerno."""
 
-import colander as c
+# 2023-08: colander lacks py.typed
+import colander as c  # type: ignore[import]
 
 from kerno.state import MalbonaRezulto
 from kerno.typing import DictStr
@@ -106,7 +107,8 @@ def email_domain_must_exist(node, val: str) -> None:
 
     To use this you need your project to depend on the pyisemail library.
     """
-    from pyisemail import is_email
+    # 2023-08: pyisemail lacks py.typed
+    from pyisemail import is_email  # type: ignore[import]
 
     answer = is_email(val, diagnose=True, check_dns=True)
     if answer.diagnosis_type != "VALID":

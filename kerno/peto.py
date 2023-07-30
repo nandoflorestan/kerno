@@ -119,7 +119,8 @@ class AbstractPeto(AbsUserlessPeto[TRepo], Generic[TRepo, TUser]):
         """
         user = request.identity  # from a Pyramid 2.0+ security policy
         if user is None:
-            from pyramid.exceptions import Forbidden
+            # 2023-08: pyramid lacks py.typed
+            from pyramid.exceptions import Forbidden  # type: ignore[import]
 
             raise Forbidden(
                 detail="You need to log in before you can access that resource."

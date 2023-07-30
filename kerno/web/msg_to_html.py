@@ -2,7 +2,8 @@
 
 from html import escape
 
-import reg
+# 2023-08: reg lacks py.typed
+import reg  # type: ignore[import]
 from kerno.state import UIMessage
 from kerno.web.pyramid.typing import KRequest
 
@@ -63,7 +64,8 @@ def includeme(config) -> None:  # noqa
     def before_rendering_template(event):
         event["msg_to_html"] = msg_to_html
 
-    from pyramid.events import BeforeRender
+    # 2023-08: pyramid lacks py.typed
+    from pyramid.events import BeforeRender  # type: ignore[import]
 
     config.add_subscriber(before_rendering_template, BeforeRender)
     config.add_request_method(add_flash, "add_flash")
