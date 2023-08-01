@@ -25,3 +25,32 @@ These are some ideas for things the Kerno library could provide:
 - Figure out how to create a WebSockets server that doesn't open many database
   connections. Maybe have a WebSockets middleware and continue to use Pyramid.
 - Provide an example app or a good example in the tests.
+
+
+Ideas for kerno.email
+=====================
+
+- Address class -- does pyramid_mailer have it?
+- Envelope class -- does anyone have it?
+- Message class
+- Registry for a function that sends out an email
+- Implementation that sends it immediately
+- Implementation that sends it through Celery
+- Implementation that only tests it
+
+Desired mailer features:
+
+- Templates
+- validates input
+- holds configuration for SMTP credentials, default sender
+- premailer somehow (to use CSS in templates)
+- no need for transports, because Celery
+- DummyMailer for tests
+
+kerno utilities:
+
+def message_maker(envelope, html, plain)
+def email_sender(envelope, msg)
+
+Envelope(subject, author=None, plain=None, rich=None,
+             to=None, cc=None, bcc=None, reply=None)
