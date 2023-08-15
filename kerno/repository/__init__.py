@@ -65,7 +65,7 @@ def eki(eko: Eko) -> None:
       gradually build the ``kerno.Repository`` class from modular classes.
     - *kerno* gets a ``new_repo()`` method which instantiates a Repository.
     """
-    eko._repository_mixins = []  # type: ignore
+    eko._repository_mixins = []  # type: ignore[attr-defined]
 
     def add_repository_mixin(mixin):
         """Store one of the mixin classes to form the final repository."""
@@ -75,7 +75,7 @@ def eki(eko: Eko) -> None:
         # (only once) and will stay as a variable of the kerno instance:
         eko.kerno.Repository = compose_class(
             name='Repository', mixins=eko._repository_mixins)
-    eko.add_repository_mixin = add_repository_mixin  # type: ignore
+    eko.add_repository_mixin = add_repository_mixin  # type: ignore[attr-defined]
 
-    eko.kerno.new_repo = (  # type: ignore
-        lambda: eko.kerno.Repository(kerno=eko.kerno))  # type: ignore
+    eko.kerno.new_repo = (  # type: ignore[attr-defined]
+        lambda: eko.kerno.Repository(kerno=eko.kerno))  # type: ignore[attr-defined]

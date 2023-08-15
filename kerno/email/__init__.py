@@ -8,7 +8,7 @@ emails can be plugged at the end.
 
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
-from typing import Optional, Tuple, Union
+from typing import ClassVar, Optional, Tuple, Union
 
 from bag.email_validator import EmailValidator
 from bag.reify import reify
@@ -25,9 +25,7 @@ class EmailAddress:
     email: TEmailAddress
     name: TPersonsName
 
-    def __init__(
-        self, email: TEmailAddress, name: TPersonsName = TPersonsName("")
-    ):
+    def __init__(self, email: TEmailAddress, name: TPersonsName = TPersonsName("")):
         """Validate *email* and instantiate."""
         self.email_validator.validate_or_raise(email)
         self.__dict__["email"] = email  # avoid frozen dataclass error
@@ -83,6 +81,8 @@ class EmailMessageBase(metaclass=ABCMeta):
             HTML_TEMPLATE = 'path/to/template.jinja2'
     """
 
+    SUBJECT: ClassVar[str]
+
     def __init__(self, adict: DictStr, envelope: Envelope):
         """:param adict: dictionary for use in templates."""
         self.adict = adict
@@ -91,7 +91,7 @@ class EmailMessageBase(metaclass=ABCMeta):
     @reify
     def subject(self) -> str:
         """May be overridden in subclasses to decorate the subject line."""
-        return self.SUBJECT.format(**self.adict)  # type: ignore
+        return self.SUBJECT.format(**self.adict)
 
     @reify
     @abstractmethod
