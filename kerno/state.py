@@ -91,7 +91,11 @@ class Returnable(metaclass=ABCMeta):
     - toasts: UI messages that disappear automatically after a while.
     - commands: mandates to the UI, e. g., add an entity to your models
     - headers: HTTP headers to be added to the response.
-    - debug: A dict with information that is not displayed to the end user.
+    - transient: A dict with information for other Python code layers, but that
+      is NOT sent to the GUI. Used e. g. in automated tests, to allow the test
+      to see some of the state of the action.
+    - debug: A dict with information that is sent to the GUI, but not intended
+      for to the end user to see.
     - redirect: URL or screen to redirect to.
 
     Subclasses overload the ``status_int`` and ``level`` static variables.
@@ -104,6 +108,7 @@ class Returnable(metaclass=ABCMeta):
         self,
         commands: Optional[list[Mandate]] = None,
         debug: Optional[DictStr] = None,
+        transient: Optional[DictStr] = None,
         redirect: str = "",
         headers: Optional[DictStr] = None,
         **kw,
@@ -113,6 +118,7 @@ class Returnable(metaclass=ABCMeta):
         self.commands = commands or []
         self.headers = headers or {}  # HTTP headers
         self.debug = debug or {}
+        self.transient = transient or {}
         self.redirect = redirect
         for k, v in kw.items():
             setattr(self, k, v)
@@ -139,7 +145,10 @@ class Returnable(metaclass=ABCMeta):
         return cmd
 
     def add_command(self, **kw) -> Mandate:
-        warn("Returnable.add_command() is deprecated; use add_mandate() instead.", DeprecationWarning)
+        warn(
+            "Returnable.add_command() is deprecated; use add_mandate() instead.",
+            DeprecationWarning,
+        )
         return self.add_mandate(**kw)
 
 
