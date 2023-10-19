@@ -50,8 +50,7 @@ from warnings import warn
 import reg  # type: ignore[import]
 
 warn(
-    "to_dict will be removed in a future version of kerno. "
-    "Use jsonright instead.",
+    "to_dict will be removed in a future version of kerno. Use jsonright instead.",
     DeprecationWarning,
 )
 

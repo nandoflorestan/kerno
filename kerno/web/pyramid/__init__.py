@@ -6,6 +6,7 @@ from json import dumps
 from typing import Callable
 
 from bag.web.exceptions import Problem
+
 # 2023-08: zope.interface lacks py.typed
 from zope.interface import Interface  # type: ignore[import]
 
