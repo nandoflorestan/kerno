@@ -5,7 +5,7 @@ from base64 import b64decode
 
 class FileName(str):  # noqa
     def __init__(self, filename: str, max=50) -> None:  # noqa
-        super().__init__(filename.strip())
+        super().__init__(filename.strip())  # type: ignore[call-arg]
         length = len(self)
         assert length > 2, "The file name is too short; min: 3 characters."
         if max != 0:
