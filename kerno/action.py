@@ -1,4 +1,4 @@
-"""An abstract base for class-based actions."""
+"""An abstract base for class-based actions. DEPRECATED."""
 
 from abc import ABCMeta
 
@@ -6,7 +6,7 @@ from kerno.peto import AbstractPeto
 
 
 class Action(metaclass=ABCMeta):
-    """Abstract base for class-based actions.
+    """DEPRECATED abstract base for class-based actions.
 
     Subclasses must implement __call__() and, if happy,
     return a Rezulto instance::

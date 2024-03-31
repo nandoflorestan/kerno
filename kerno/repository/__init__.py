@@ -53,8 +53,7 @@ from kerno.start import Eko
 
 def compose_class(name: str, mixins: Iterable) -> type:
     """Return a class called ``name``, made of the bases ``mixins``."""
-    bases = (resolve(mixin) if isinstance(mixin, str) else mixin
-             for mixin in mixins)
+    bases = (resolve(mixin) if isinstance(mixin, str) else mixin for mixin in mixins)
     return type(name, tuple(bases), {})
 
 
@@ -74,8 +73,11 @@ def eki(eko: Eko) -> None:
         # When kerno.Repository is first accessed, the class will be assembled
         # (only once) and will stay as a variable of the kerno instance:
         eko.kerno.Repository = compose_class(
-            name='Repository', mixins=eko._repository_mixins)
+            name="Repository", mixins=eko._repository_mixins
+        )
+
     eko.add_repository_mixin = add_repository_mixin  # type: ignore[attr-defined]
 
-    eko.kerno.new_repo = (  # type: ignore[attr-defined]
-        lambda: eko.kerno.Repository(kerno=eko.kerno))  # type: ignore[attr-defined]
+    eko.kerno.new_repo = lambda: eko.kerno.Repository(  # type: ignore[attr-defined]
+        kerno=eko.kerno
+    )

@@ -4,7 +4,6 @@ from base64 import b64decode
 
 
 class FileName:  # noqa
-
     def __init__(self, value: str, *, max=50) -> None:  # noqa
         self.value = value.strip()
         length = len(self.value)

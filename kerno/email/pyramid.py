@@ -1,8 +1,9 @@
 """A complement to our email module, for those that use Pyramid."""
 
 from bag.reify import reify
+
 # 2023-08: libraries lack py.typed
-import premailer                      # type: ignore[import]
+import premailer  # type: ignore[import]
 from pyramid.renderers import render  # type: ignore[import]
 
 

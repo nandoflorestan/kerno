@@ -47,9 +47,7 @@ class InvalidToMalbona:
     def __exit__(self, exc_type, exc_val, exc_tb):
         if isinstance(exc_val, c.Invalid):
             malbona = MalbonaRezulto()
-            malbona.add_toast(
-                title=self.title, plain=self.plain, html=self.html
-            )
+            malbona.add_toast(title=self.title, plain=self.plain, html=self.html)
             malbona.invalid = exc_val.asdict()
             raise malbona
 

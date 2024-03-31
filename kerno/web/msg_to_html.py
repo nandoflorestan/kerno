@@ -72,9 +72,7 @@ def includeme(config) -> None:  # noqa
     config.add_request_method(get_flash_msgs, "get_flash_msgs")
 
 
-def add_flash(
-    request: KRequest, allow_duplicate: bool = False, **kw
-) -> UIMessage:
+def add_flash(request: KRequest, allow_duplicate: bool = False, **kw) -> UIMessage:
     """Add a flash message to the user's session. For convenience."""
     msg = UIMessage(**kw)
     request.session.flash(msg.to_dict(), allow_duplicate=allow_duplicate)
