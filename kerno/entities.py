@@ -22,6 +22,11 @@ class FileName:  # noqa
     def title(self):  # noqa
         return self.value[: -(len(self.extension) + 1)]
 
+    def __eq__(self, other):
+        if not hasattr(other, "value"):
+            return False
+        return self.value == other.value
+
     def __str__(self):
         return self.value
 
@@ -30,3 +35,6 @@ class UploadedFile:  # noqa
     def __init__(self, filename: str, payload: str) -> None:  # noqa
         self.byts: bytes = b64decode(payload)
         self.filename = FileName(filename)
+
+    def __repr__(self):  # noqa
+        return f"<UploadedFile {self.filename}>"

@@ -3,7 +3,7 @@
 Also a DEPRECATED abstract base for class-based actions.
 """
 
-from typing import Any, Generic, Iterable, Sequence
+from typing import Any, Generic, Iterable
 from warnings import warn
 
 from abc import ABCMeta
@@ -54,7 +54,7 @@ class EntityComparison(Generic[Entity]):
         self.new = new
 
     def get_differences(
-        self, var_names: Sequence[str] = ()
+        self, var_names: Iterable[str] = ()
     ) -> list[tuple[str, Any, Any]]:
         """Find the differences between the two entities.
 
@@ -73,7 +73,7 @@ class EntityComparison(Generic[Entity]):
         return ret
 
     @staticmethod
-    def to_str(differences: Sequence[tuple[str, Any, Any]], sep=" ") -> str:
+    def to_str(differences: Iterable[tuple[str, Any, Any]], sep=" ") -> str:
         """Return text stating the differences. The separator is configurable."""
         diffs = [f"{d[0]} changed from «{d[1]}» to «{d[2]}»." for d in differences]
         return sep.join(diffs)
@@ -111,7 +111,7 @@ class OrganizeValueObjects(Generic[Entity]):
 
     This version loops testing equality, so the objects must
     implement __eq__, or be dictionaries or tuples. Providing your own
-    equality function is also possible as *eq_fn*.
+    equality function is also possible via the argument *eq_fn*.
 
     In the output, *to_keep* contains instances of EntityComparison,
     so it is then possible to find further differences between the
@@ -119,7 +119,8 @@ class OrganizeValueObjects(Generic[Entity]):
 
     This helps figure out what objects to delete from a DB, what
     objects to add, and what objects to alter, with minimal interference
-    in the database (as opposed to crudely deleting and adding everything).
+    in the database. The alternatives are either to crudely
+    delete then add everything, or to write lots of ad hoc code.
     """
 
     def __init__(
@@ -132,24 +133,43 @@ class OrganizeValueObjects(Generic[Entity]):
         self.to_add: list[Entity] = []
         self.to_remove: list[Entity] = []
         self.to_keep: list[EntityComparison] = []
-        for d in desired_objects:
+        self.updated: list[Entity] = []
+        for wanted in desired_objects:
             found = False
-            for e in existing_objects:
-                if eq_fn(d, e) if eq_fn else (d == e):
-                    self.to_keep.append(EntityComparison(old=e, new=d))
+            for given in existing_objects:
+                if eq_fn(wanted, given) if eq_fn else (wanted == given):
+                    self.to_keep.append(EntityComparison(old=given, new=wanted))
                     found = True
                     break
             if found:
                 continue
             # Desired but not existing, therefore we need to add it.
-            self.to_add.append(d)
-        for e in existing_objects:
+            self.to_add.append(wanted)
+        for given in existing_objects:
             found = False
-            for d in desired_objects:
-                if eq_fn(d, e) if eq_fn else (d == e):
+            for wanted in desired_objects:
+                if eq_fn(wanted, given) if eq_fn else (wanted == given):
                     found = True
                     break
             if found:
                 continue
             # Existing but not desired, therefore we need to remove it.
-            self.to_remove.append(e)
+            self.to_remove.append(given)
+
+    def update_kept_entities(self, var_names: Iterable[str] = ()) -> list[Entity]:
+        """If kept entities have desired differences, apply these changes.
+
+        The changed objects are found in .updated.
+        """
+        for comparison in self.to_keep:
+            tups = comparison.get_differences(var_names=var_names)
+            for var_name, old_value, new_value in tups:
+                setattr(comparison.old, var_name, new_value)
+                self.updated.append(comparison.old)
+        return self.updated
+
+    def __repr__(self):
+        return (
+            f"<{self.__class__.__name__} add:{len(self.to_add)} "
+            f"keep:{len(self.to_keep)} del:{len(self.to_remove)}>"
+        )

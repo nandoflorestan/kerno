@@ -37,7 +37,8 @@ def test_OrganizeHashableObjects():  # noqa
     assert existing[1] in org.to_remove
 
 
-def test_OrganizeValueObjects():  # noqa
+def test_organize_tuples():
+    """Ensure tuples are correctly classified into to_add, to_keep, to_remove."""
     org = OrganizeValueObjects(existing, desired)
     assert len(org.to_add) == 1
     assert len(org.to_keep) == 1
@@ -47,3 +48,23 @@ def test_OrganizeValueObjects():  # noqa
     comparison = org.to_keep[0]
     assert existing[0] is comparison.old
     assert desired[0] is comparison.new
+    assert len(org.updated) == 0
+
+
+def test_organize_entities():  # noqa
+    old = UploadedFile(filename="hello_world.py", payload=b64encode(b"@ECHO OFF"))
+    new = UploadedFile(filename="hello_world.py", payload=b64encode(b"print('hi')"))
+    org = OrganizeValueObjects(
+        [old], [new], eq_fn=lambda one, other: one.filename == other.filename
+    )
+    assert repr(org) == "<OrganizeValueObjects add:0 keep:1 del:0>"
+    comparison = org.to_keep[0]
+    assert old is comparison.old
+    assert new is comparison.new
+
+    # Test the method that updates kept objects with desired variables:
+    assert len(org.updated) == 0
+    org.update_kept_entities(var_names=("byts",))
+    assert len(org.updated) == 1
+    assert org.updated[0] is old
+    assert org.updated[0].byts is new.byts
