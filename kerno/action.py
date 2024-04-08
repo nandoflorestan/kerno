@@ -10,6 +10,7 @@ from abc import ABCMeta
 
 from kerno.peto import AbstractPeto
 from kerno.typing import Entity
+from kerno.web.jsonright import get_sane_var_names
 
 
 class Action(metaclass=ABCMeta):
@@ -61,9 +62,7 @@ class EntityComparison(Generic[Entity]):
         Pay attention only to the relevant *var_names*.
         """
         if not var_names:
-            var_names = list(self.old.__dict__.keys())
-            if "password" in var_names:
-                var_names.remove("password")
+            var_names = get_sane_var_names(obj=self.old)
         ret = []
         for name in var_names:
             old_value = getattr(self.old, name)

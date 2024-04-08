@@ -24,8 +24,7 @@ class TestDefaultJsonrightImplementation(TestCase):
 
     def test_datetime(self):  # noqa
         assert (
-            jsonright(datetime(2020, 9, 27, 4, 55, 42), None)
-            == "2020-09-27T04:55:42"
+            jsonright(datetime(2020, 9, 27, 4, 55, 42), None) == "2020-09-27T04:55:42"
         )
 
     def test_dict(self):  # noqa
@@ -35,9 +34,7 @@ class TestDefaultJsonrightImplementation(TestCase):
         }
 
     def test_tuple_of_dicts(self):  # noqa
-        assert jsonright(
-            ({"id": 1, "date": datetime(2020, 9, 27)},), None
-        ) == [
+        assert jsonright(({"id": 1, "date": datetime(2020, 9, 27)},), None) == [
             {
                 "id": 1,
                 "date": "2020-09-27T00:00:00",
@@ -71,7 +68,7 @@ class TestMyModel(TestCase):  # noqa
         assert isinstance(right, dict)
         assert right["name"] == "Nando Florestan"
         assert right["profession1"] == "Python developer"
-        assert right["birth"] == datetime(1976, 7, 18, 0, 0)
+        assert right["birth"] == "1976-07-18T00:00:00"
         with self.assertRaises(KeyError):
             right["password"]
 
@@ -107,7 +104,7 @@ class TestMyModelSubclass(TestCase):  # noqa
         right = jsonright(entity, None)
         assert isinstance(right, dict)
         assert right["name"] == "Nando Florestan"
-        assert right["birth"] == datetime(1976, 7, 18, 0, 0)
+        assert right["birth"] == "1976-07-18T00:00:00"
         assert right["profession1"] == "Python developer"
         assert right["profession2"] == "Classical music composer"
         assert right["__class__"] == "MyModelSubclass"

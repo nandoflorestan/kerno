@@ -80,6 +80,11 @@ def excluding(blacklist: Sequence[str], keys: Iterable[str]) -> Iterable[str]:  
     return filter(lambda k: k not in blacklist, keys)
 
 
+def get_sane_var_names(obj: Any) -> Iterable[str]:
+    """Return instance variable names, excluding probably irrelevant ones."""
+    return excluding(("password",), only_relevant(keys_from(obj)))
+
+
 def entity2dict(
     obj: Any,
     keys: Iterable[str] = (),
@@ -89,9 +94,16 @@ def entity2dict(
     This function is reusable.
 
     If you do not provide any ``keys``, a sensible default is used.
+
+    If a value is a date or datetime, it gets converted to a str,
+    so the returned dictionary can be converted to JSON.
     """
-    kk = keys or excluding(("password",), only_relevant(keys_from(obj)))
-    return {key: getattr(obj, key) for key in kk}
+    kk = keys or get_sane_var_names(obj=obj)
+    adict = {}
+    for key in kk:
+        value = getattr(obj, key)
+        adict[key] = value.isoformat() if isinstance(value, (date, datetime)) else value
+    return adict
 
 
 @singledispatch
