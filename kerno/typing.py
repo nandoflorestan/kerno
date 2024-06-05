@@ -20,7 +20,7 @@ TURL = NewType("TURL", str)
 # But these exist: from urllib.parse import urlsplit, SplitResult, urlparse, ParseResult
 # https://docs.pydantic.dev/latest/api/networks/#pydantic.networks
 
-Jsonable = Union[None, int, float, str, bool, List['Jsonable'], Dict[str, 'Jsonable']]
+Jsonable = Union[None, int, float, str, bool, List["Jsonable"], Dict[str, "Jsonable"]]
 # If you expect a certain dictionary, again TypedDict is preferable.
 # Tests
 # a: Jsonable = {1: 1}  # Dict entry has incompatible type "int": "int"; expected "str"
