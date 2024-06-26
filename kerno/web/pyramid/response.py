@@ -1,4 +1,15 @@
-"""Common Pyramid response kinds."""
+"""Common Pyramid responses."""
+
+from pyramid.httpexceptions import HTTPSeeOther
+
+from kerno.web.pyramid.typing import PyramidRequest
+
+
+def redirect(url: str, request: PyramidRequest, **kw) -> HTTPSeeOther:
+    """Return a HTTPSeeOther, ensuring scheme_domain_port is respected."""
+    if not url.startswith("http"):
+        url = request.registry.settings["scheme_domain_port"] + url
+    return HTTPSeeOther(location=url, **kw)
 
 
 def content_disposition_value(file_name: str) -> str:
