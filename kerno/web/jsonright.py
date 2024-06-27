@@ -56,6 +56,7 @@ from functools import singledispatch
 from typing import Any, Iterable, Sequence
 
 from bag import first
+
 from kerno.peto import AbsUserlessPeto
 from kerno.typing import DictStr
 

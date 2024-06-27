@@ -71,6 +71,7 @@ class PyramidResponse:
     status_int: int
     content_length: int
     content_type: str
+    headerlist: list[tuple[str, str]]
     headers: DictStr
     body: bytes
 

@@ -5,11 +5,18 @@ from pyramid.httpexceptions import HTTPSeeOther
 from kerno.web.pyramid.typing import PyramidRequest
 
 
+def absolutify(url: str, request: PyramidRequest) -> str:
+    """Make *url* rooted, so scheme_domain_port is respected."""
+    if not url.startswith("http"):
+        left = request.registry.settings["scheme_domain_port"].rstrip("/")
+        right = url.lstrip("/")
+        return "/".join((left, right))
+    return url
+
+
 def redirect(url: str, request: PyramidRequest, **kw) -> HTTPSeeOther:
     """Return a HTTPSeeOther, ensuring scheme_domain_port is respected."""
-    if not url.startswith("http"):
-        url = request.registry.settings["scheme_domain_port"] + url
-    return HTTPSeeOther(location=url, **kw)
+    return HTTPSeeOther(location=absolutify(url, request), **kw)
 
 
 def content_disposition_value(file_name: str) -> str:
