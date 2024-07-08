@@ -9,6 +9,7 @@ from copy import copy
 from typing import Any, Optional, Union
 from warnings import warn
 
+from kerno.mandato import Mandato
 from kerno.typing import DictStr
 from kerno.web.to_dict import to_dict, reuse_dict
 
@@ -58,8 +59,11 @@ class UIMessage:
             return cls(**payload)
 
 
-class Mandate:
-    """Represents a command from the server to the UI."""
+class Mandate:  # TODO Remove this class
+    """Represents a command from the server to the UI.
+
+    Prefer the new Mandato class instead.
+    """
 
     __slots__ = ("name", "payload")
 
@@ -106,7 +110,7 @@ class Returnable(metaclass=ABCMeta):
 
     def __init__(
         self,
-        commands: Optional[list[Mandate]] = None,
+        commands: Optional[list[Mandate | Mandato]] = None,
         debug: Optional[DictStr] = None,
         transient: Optional[DictStr] = None,
         redirect: str = "",
@@ -151,6 +155,15 @@ class Returnable(metaclass=ABCMeta):
         )
         return self.add_mandate(**kw)
 
+    def add(self, thing: UIMessage | Mandato):
+        """Add either a toast or a mandate."""
+        if isinstance(thing, UIMessage):
+            self.toasts.append(thing)
+        elif isinstance(thing, Mandato):
+            self.commands.append(thing)
+        else:
+            raise RuntimeError(f"Cannot .add({thing})")
+
 
 @to_dict.register(obj=Returnable, flavor="")
 def returnable_to_dict(obj, flavor="", **kw):
@@ -162,7 +175,12 @@ def returnable_to_dict(obj, flavor="", **kw):
     )
     amap["messages"] = [reuse_dict(obj=msg) for msg in obj.messages]
     amap["toasts"] = [reuse_dict(obj=msg) for msg in obj.toasts]
-    amap["commands"] = [to_dict(mandate) for mandate in obj.commands]
+    amap["commands"] = mandicts = []
+    for mandate in obj.commands:
+        if isinstance(mandate, Mandato):
+            mandicts.append(mandate.as_dict)
+        else:
+            mandicts.append(to_dict(mandate))
     return amap
 
 
