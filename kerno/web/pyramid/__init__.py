@@ -15,14 +15,14 @@ from kerno.state import MalbonaRezulto, Rezulto, to_dict
 from .typing import DictStr, KRequest
 
 
-def kerno_view(fn: Callable) -> Callable:
+def kerno_view(view_fn: Callable) -> Callable:
     """Decorate Pyramid views that call Kerno actions or operations.
 
     The view can return a Rezulto or RAISE a MalbonaRezulto. Then this
     decorator sets the status_int of the response (to 200 or 201) and
     converts it to a dictionary.
     """
-    args = [str(name) for name in inspect.signature(fn).parameters.keys()]
+    args = [str(name) for name in inspect.signature(view_fn).parameters.keys()]
     if len(args) == 1 and "self" == args[0]:  # view signature #1: self
 
         def get_request(args):
@@ -40,13 +40,13 @@ def kerno_view(fn: Callable) -> Callable:
 
     else:
         raise RuntimeError(
-            f"The kerno_view decorator found an unexpected signature in {fn}"
+            f"The kerno_view decorator found an unexpected signature in {view_fn}"
         )
 
-    @wraps(fn)
+    @wraps(view_fn)
     def wrapper(*args):
         try:
-            rezulto = fn(*args)
+            rezulto = view_fn(*args)
         except Problem as e:
             adict = e.to_dict()
             raise MalbonaRezulto(
@@ -59,7 +59,7 @@ def kerno_view(fn: Callable) -> Callable:
             )
         if rezulto is None:
             raise RuntimeError(
-                "Error: None returned by view {}()".format(fn.__qualname__)
+                "Error: None returned by view {}()".format(view_fn.__qualname__)
             )
         elif isinstance(rezulto, Rezulto):
             request = get_request(args)
