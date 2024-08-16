@@ -221,6 +221,19 @@ class MalbonaRezulto(Returnable, Exception):
         if title or plain or html:
             self.add_toast(title=title, level=level, plain=plain, html=html)
 
+    @classmethod
+    def aserti(
+        cls,
+        condition: Any,
+        status_int: int = 400,
+        title: str = "",
+        plain: str = "",
+        html: str = "",
+    ):
+        """Raise MalbonaRezulto if `condition` is falsy. An assertion method."""
+        if not condition:
+            raise cls(status_int, title, plain, html)
+
 
 @to_dict.register(obj=MalbonaRezulto, flavor="")
 def malbona_to_dict(obj: MalbonaRezulto, flavor: str = "", **kw) -> DictStr:
