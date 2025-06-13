@@ -1,52 +1,52 @@
 [tool.poetry]
-	name = "kerno"
-	version = "0.8.1.dev1"
-	description = "Framework for the application service layer."
-	readme = "README.rst"
-	authors = ["Nando Florestan <nandoflorestan@gmail.com>"]
-	license = "MIT"
-	repository = "https://github.com/nandoflorestan/kerno"
-	documentation = "http://docs.nando.audio/kerno/latest/"
-	classifiers = [
-		# https://pypi.org/pypi?:action=list_classifiers
-		"Development Status :: 4 - Beta",
-		# "Development Status :: 5 - Production/Stable",
-		"Intended Audience :: Developers",
-		"License :: OSI Approved :: MIT License",
-		"Operating System :: OS Independent",
-		"Programming Language :: Python",
-		"Programming Language :: Python :: 3",
-		"Programming Language :: Python :: 3.9",
-		"Programming Language :: Python :: 3.10",
-		"Programming Language :: Python :: 3.11",
-		"Programming Language :: Python :: Implementation :: CPython",
-		"Programming Language :: Python :: Implementation :: PyPy",
-		"Framework :: Pyramid",
-		"Topic :: Database",
-		"Topic :: Internet :: WWW/HTTP",
-		"Topic :: Internet :: WWW/HTTP :: WSGI",
-		"Topic :: Software Development :: Libraries",
-		"Topic :: Software Development :: Libraries :: Application Frameworks",
-	]
-	# A list of keywords (max: 5) that the package is related to
-	keywords = [
-		"Clean Architecture",
-		"service layer",
-		"action",
-		"pyramid",
-		"sqlalchemy",
-	]
+name = "kerno"
+version = "0.8.1.dev1"
+description = "Framework for the application service layer."
+readme = "README.rst"
+authors = ["Nando Florestan <nandoflorestan@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/nandoflorestan/kerno"
+documentation = "http://docs.nando.audio/kerno/latest/"
+classifiers = [
+	# https://pypi.org/pypi?:action=list_classifiers
+	"Development Status :: 4 - Beta",
+	# "Development Status :: 5 - Production/Stable",
+	"Intended Audience :: Developers",
+	"License :: OSI Approved :: MIT License",
+	"Operating System :: OS Independent",
+	"Programming Language :: Python",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: 3.12",
+	"Programming Language :: Python :: 3.13",
+	"Programming Language :: Python :: Implementation :: CPython",
+	"Programming Language :: Python :: Implementation :: PyPy",
+	"Framework :: Pyramid",
+	"Topic :: Database",
+	"Topic :: Internet :: WWW/HTTP",
+	"Topic :: Internet :: WWW/HTTP :: WSGI",
+	"Topic :: Software Development :: Libraries",
+	"Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+# A list of keywords (max: 5) that the package is related to
+keywords = [
+	"Clean Architecture",
+	"service layer",
+	"action",
+	"pyramid",
+	"sqlalchemy",
+]
 
 [tool.poetry.dependencies]
-	python = ">= 3.9"
-	# https://python-poetry.org/docs/dependency-specification/
-	bag = ">=5.0"
-	reg = "0.12"
+python = ">= 3.11"
+# https://python-poetry.org/docs/dependency-specification/
+bag = ">=5.0"
+reg = "0.12"
 
-[tool.poetry.dev-dependencies]
-	colander = "*"
-	pytest = "*"
+[tool.poetry.group.dev.dependencies]
+colander = "*"
+pytest = "*"
 
 [build-system]
-	requires = ["poetry-core>=1.0.0"]
-	build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
