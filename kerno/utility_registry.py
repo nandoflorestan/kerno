@@ -31,8 +31,11 @@ class UtilityRegistryBuilder:
             self.register(name, utility)
 
     def register(self, name: str, utility: Any) -> Any:
-        """Register ``utility`` under ``name`` at startup for later use."""
-        obj = resolve(utility)
+        """Register ``utility`` under ``name`` at startup for later use.
+
+        Return the resolved function, class or object.
+        """
+        obj = resolve(utility) if isinstance(utility, str) else utility
         # print('Registering ', name, utility, obj)
         self._utilities[name] = obj
         return obj
