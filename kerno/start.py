@@ -4,16 +4,27 @@ It works much like initial configuration of a Pyramid app.
 """
 
 from configparser import NoSectionError
+from importlib import import_module
 from types import ModuleType
 from typing import Callable, Iterable, Union
 
-from bag.settings import read_ini_files, resolve
+from bag.settings import read_ini_files
 
 from kerno.kerno import Kerno
 from kerno.typing import DictStr
 from kerno.utility_registry import ConfigurationError, UtilityRegistryBuilder
 
-ResourceType = Union[str, ModuleType, Callable]
+
+def resolve_module(spec: str | ModuleType) -> ModuleType:
+    """Return the module referred to in the ``spec`` string.
+
+    Example spec: ``"my.python.module"``.
+    """
+    if not isinstance(spec, str):
+        assert isinstance(spec, ModuleType), "Want a string or Python module"
+        return spec
+    assert spec, "Got an empty string as a spec!"
+    return import_module(spec)
 
 
 class Eko:
@@ -81,7 +92,7 @@ class Eko:
         for extension in main_config_section.get("includes", []):
             self.include(extension)
 
-    def include(self, resource: ResourceType, throw: bool = True) -> None:
+    def include(self, spec: str | ModuleType, throw: bool = True) -> None:
         """Execute a configuration callable for imperative extension.
 
         If the argument ``throw`` is True (which is the default)
@@ -89,32 +100,27 @@ class Eko:
         raise ConfigurationError.  Otherwise, ignore the current module
         and return without an error.
         """
-        # TODO log.debug('Including {}'.format(module))
-        obj = resolve(resource) if isinstance(resource, str) else resource
-        if obj in self._included_modules:
-            raise ConfigurationError(f"{obj} has already been included!")
+        # TODO log.debug('Including {}'.format(spec))
+        module = resolve_module(spec)
+        if module in self._included_modules:
+            raise ConfigurationError(f"{module} has already been included!")
         else:
-            self._included_modules.append(obj)
+            self._included_modules.append(module)
 
-        if isinstance(obj, ModuleType):
-            try:
-                fn = getattr(obj, "eki")
-            except AttributeError:
-                if throw:
-                    raise ConfigurationError(
-                        "The module {} has no function called 'eki'.".format(
-                            obj.__name__
-                        )
-                    )
-                else:
-                    return
-        else:
-            fn = obj
+        try:
+            fn = getattr(module, "eki")
+        except AttributeError:
+            if throw:
+                raise ConfigurationError(
+                    "The module {} has no function called 'eki'.".format(module)
+                )
+            else:
+                return
         fn(self)
 
     def include_many(
-        self, resources: Iterable[ResourceType], throw: bool = True
+        self, specs: Iterable[str | ModuleType], throw: bool = True
     ) -> None:
         """Initialize multiple app modules."""
-        for resource in resources:
-            self.include(resource, throw=throw)
+        for spec in specs:
+            self.include(spec, throw=throw)
