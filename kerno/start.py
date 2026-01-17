@@ -3,6 +3,8 @@
 It works much like initial configuration of a Pyramid app.
 """
 
+import logging
+
 from configparser import NoSectionError
 from importlib import import_module
 from types import ModuleType
@@ -13,6 +15,8 @@ from bag.settings import read_ini_files
 from kerno.kerno import Kerno
 from kerno.typing import DictStr
 from kerno.utility_registry import ConfigurationError, UtilityRegistryBuilder
+
+logger = logging.getLogger(__name__)
 
 
 def resolve_module(spec: str | ModuleType) -> ModuleType:
@@ -100,7 +104,7 @@ class Eko:
         raise ConfigurationError.  Otherwise, ignore the current module
         and return without an error.
         """
-        # TODO log.debug('Including {}'.format(spec))
+        logger.debug(f"Including {spec}")
         module = resolve_module(spec)
         if module in self._included_modules:
             raise ConfigurationError(f"{module} has already been included!")
