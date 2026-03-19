@@ -24,7 +24,7 @@ class UtilityRegistryBuilder:
         self.kerno.utilities = MappingProxyType(self._utilities)
 
         try:
-            section = kerno.settings["kerno utilities"]
+            section = kerno.settings["kerno_utilities"]
         except (NoSectionError, KeyError):
             return
         for name, utility in section.items():

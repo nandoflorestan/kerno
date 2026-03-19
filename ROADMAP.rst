@@ -4,7 +4,7 @@ Kerno roadmap
 
 These are some ideas for things the Kerno library could provide:
 
-- Use colander to validate configuration
+- Use attrs or protocols for validated configuration
 - Investigate https://antidote.readthedocs.io/en/latest/
 - A component to register and generate URLs
 - Hook documentation for the implemented actions
