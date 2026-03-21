@@ -1,50 +1,9 @@
-"""Helpers for business layers of applications.
-
-Also a DEPRECATED abstract base for class-based actions.
-"""
+"""Helpers for business layers of applications."""
 
 from typing import Any, Generic, Iterable
-from warnings import warn
 
-from abc import ABCMeta
-
-from kerno.bases import Peto
 from kerno.typing import Entity
 from kerno.web.jsonright import get_sane_var_names
-
-
-class Action(metaclass=ABCMeta):
-    """DEPRECATED abstract base for class-based actions.
-
-    Subclasses must implement __call__() and, if happy,
-    return a Rezulto instance::
-
-        from kerno.action import Action
-        from kerno.state import Rezulto
-
-        class MyAction(Action):
-            def __call__(self, *a, **kw) -> Rezulto:
-                ...
-    """
-
-    def __init__(self, peto: Peto):  # noqa
-        warn("kerno.Action is deprecated and will be removed.", DeprecationWarning)
-        self.peto = peto
-
-    @property
-    def kerno(self):
-        """Return the global application object."""
-        return self.peto.kerno
-
-    @property
-    def repo(self):
-        """Return a repository instance for the current request."""
-        return self.peto.repo
-
-    @property
-    def user(self):
-        """Return the current user or None."""
-        return self.peto.user
 
 
 class EntityComparison(Generic[Entity]):
