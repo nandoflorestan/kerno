@@ -1,30 +1,28 @@
-"""Convenience types to store incoming state and remove boilerplate.
-
-A ``Peto`` is typically instantiated in the controller layer and then
-passed around (as the main context object) to actions, event handlers,
-schemas, helpers etc.  This removes boilerplate, helps remove
-global variables and makes unit testing easier.
-
-A previous version had an Optional ``user`` variable in Peto,
-but that led to ``assert peto.user`` in most actions.  We avoid that
-by providing also a ``UserlessPeto`` class.  Now it's explicit in the type!
-
-In your application you should subclass them like this::
-
-    from kerno.peto import AbstractPeto, AbsUserlessPeto
-    UserlessPeto = AbsUserlessPeto[Repo]  # using the concrete Repo type
-    Peto = AbstractPeto[Repo, User]  # with the concrete User type
-
-Now you can use the above Peto and UserlessPeto classes in your application.
-"""
+"""Base implementations that you may want to extend. See protocols.py first."""
 
 from dataclasses import dataclass
-from typing import Generic, Type, TypeVar
+from types import MappingProxyType  # which behaves like a FrozenDict
+from typing import Any, Callable, Generic, Iterable, Type, TypeVar, Protocol, Self
 
-from kerno.kerno import Kerno
-from kerno.repository.sqlalchemy import BaseSQLAlchemyRepository
+from kerno.protocols import IConfig, IKerno, IPeto, IUserlessPeto, IEmailUser, IRepo
 from kerno.state import MalbonaRezulto
 from kerno.typing import DictStr
+
+
+class Kerno(IKerno):
+    """Core of an application, integrating decoupled resources.
+
+    The Kerno instance is used at runtime; at startup it is instantiated by
+    the "Eko" configurator.
+    """
+
+    def __init__(self, config: IConfig, const: DictStr | None):
+        """Construct. The `config` parameter is a validated configuration object."""
+        # The `settings` dictionary has been replaced by a `config` object.
+        self.config = config
+        self.utilities: MappingProxyType[str, Any] = MappingProxyType({})
+        self.const = const or {}  # The app should put global constants here
+        # self.events = EventHub()  # from kerno.event import EventHub
 
 
 def _pyramid_args(request, json: bool) -> DictStr:  # noqa
@@ -48,21 +46,19 @@ def _pyramid_args(request, json: bool) -> DictStr:  # noqa
     }
 
 
-TRepo = TypeVar("TRepo", bound=BaseSQLAlchemyRepository)
-
-
 @dataclass
-class AbsUserlessPeto(Generic[TRepo]):
-    """Convenience type for actions NOT done by a logged user."""
+class UserlessPeto(IUserlessPeto):
+    """Convenience type for actions NOT done by a logged user.
 
-    kerno: Kerno  # the global application object
-    repo: TRepo  # repository is an abstraction of the data access layer
+    An application should subclass this to replace variable types.
+    """
+
+    kerno: IKerno  # the global application object
+    repo: IRepo  # the data access layer
     raw: DictStr  # operation-specific data
 
     @classmethod
-    def from_pyramid(
-        cls: Type["AbsUserlessPeto"], request, json=False
-    ) -> "AbsUserlessPeto":
+    def from_pyramid(cls: Type["UserlessPeto"], request, json=False) -> "UserlessPeto":
         """Integration with the *pyramid* web framework.
 
         Typical usage is, inside your pyramid view, you do::
@@ -78,20 +74,14 @@ class AbsUserlessPeto(Generic[TRepo]):
         return cls(**_pyramid_args(request, json))
 
 
-TUser = TypeVar("TUser")
-
-# A generic variable that represents AbstractPeto or any subclass.
-APeto = TypeVar("APeto", bound="AbstractPeto")
-
-
 @dataclass
-class AbstractPeto(AbsUserlessPeto[TRepo], Generic[TRepo, TUser]):
+class Peto(UserlessPeto, IPeto):
     """Convenience type for actions done by a logged user."""
 
-    user: TUser  # the current user requesting an operation. Not None!
+    user: IEmailUser  # the current user requesting an operation. Not None!
 
     @classmethod
-    def from_pyramid(cls: Type[APeto], request, json=False) -> APeto:
+    def from_pyramid(cls: Type[Self], request, json=False) -> Self:
         r"""Integration with the *pyramid* web framework.
 
         Typical usage is, inside your pyramid view, you do::
@@ -128,6 +118,6 @@ class AbstractPeto(AbsUserlessPeto[TRepo], Generic[TRepo, TUser]):
         return cls(user=user, **_pyramid_args(request, json))
 
     @classmethod
-    def from_userless(cls: Type[APeto], upeto: AbsUserlessPeto, user: TUser) -> APeto:
+    def from_userless(cls: Type[Self], upeto: UserlessPeto, user: IEmailUser) -> Self:
         """Get a Peto instance from a UserlessPeto and a user object."""
         return cls(kerno=upeto.kerno, repo=upeto.repo, raw=upeto.raw, user=user)

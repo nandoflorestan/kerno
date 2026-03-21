@@ -8,11 +8,10 @@ import logging
 from configparser import NoSectionError
 from importlib import import_module
 from types import ModuleType
-from typing import Callable, Iterable, Union
+from typing import Callable, Generic, Iterable, Type, TypeVar
 
-from bag.settings import read_ini_files
-
-from kerno.kerno import Kerno
+from kerno.bases import Kerno, IConfig, IKerno
+from kerno.protocols import TKerno
 from kerno.typing import DictStr
 from kerno.utility_registry import ConfigurationError, UtilityRegistryBuilder
 
@@ -31,7 +30,7 @@ def resolve_module(spec: str | ModuleType) -> ModuleType:
     return import_module(spec)
 
 
-class Eko:
+class Eko(Generic[TKerno]):
     r"""At startup builds the Kerno instance for the app.
 
     In the Esperanto language, Eko is a noun that means "a start".
@@ -47,9 +46,9 @@ class Eko:
     Usage example::
 
         from kerno.start import Eko
-        eko = Eko.from_ini('main_config.ini', 'production.ini')
-        eko.settings  # lets you access the merged settings from INI files
+        eko = Eko(validated_configuration_object)
         eko.kerno  # is the Kerno instance that will be the core of the app
+        eko.kerno.config  # returns your validated_configuration_object
 
         eko.utilities.register('mailer', 'some.package:mailer_function')
         # ...and later you can retrieve *mailer_function* by doing:
@@ -73,28 +72,12 @@ class Eko:
         print(*eko._included_modules, sep='\n')
     """
 
-    @classmethod
-    def from_ini(cls, *config_files, encoding: str = "utf-8"):
-        """Return an instance after reading some INI file(s)."""
-        return cls(settings=read_ini_files(*config_files, encoding=encoding))
-
-    def __init__(self, settings: DictStr = {}):  # noqa
-        if settings and not hasattr(settings, "__getitem__"):
-            raise TypeError(
-                "The *settings* argument must be dict-like. "
-                "Received: {}".format(type(settings))
-            )
-
+    def __init__(
+        self, config: IConfig, const: DictStr | None, kerno_class=IKerno
+    ):  # noqa
         self._included_modules: list[ModuleType] = []
-        self.kerno = Kerno(settings)
+        self.kerno: IKerno = kerno_class(config, const=const)
         self.utilities = UtilityRegistryBuilder(kerno=self.kerno)
-
-        try:
-            main_config_section = settings["kerno"]
-        except (NoSectionError, KeyError):
-            return
-        for extension in main_config_section.get("includes", []):
-            self.include(extension)
 
     def include(self, spec: str | ModuleType, throw: bool = True) -> None:
         """Execute a configuration callable for imperative extension.

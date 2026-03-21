@@ -6,7 +6,8 @@ from typing import Any
 
 from bag.settings import resolve
 
-from kerno.kerno import Kerno
+from kerno.bases import Kerno
+from kerno.protocols import TKerno
 from kerno.typing import DictStr
 
 
@@ -17,17 +18,14 @@ class ConfigurationError(Exception):
 class UtilityRegistryBuilder:
     """Gradually builds Kerno's utility registry, which is immutable."""
 
-    def __init__(self, kerno: Kerno):
+    def __init__(self, kerno: TKerno):
         """Read the config section "kerno utilites"; register each utility."""
         self.kerno = kerno
         self._utilities: DictStr = {}
         self.kerno.utilities = MappingProxyType(self._utilities)
 
-        try:
-            section = kerno.settings["kerno_utilities"]
-        except (NoSectionError, KeyError):
-            return
-        for name, utility in section.items():
+        adict = kerno.config.kerno_utilities
+        for name, utility in adict.items():
             self.register(name, utility)
 
     def register(self, name: str, utility: Any) -> Any:

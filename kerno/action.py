@@ -8,7 +8,7 @@ from warnings import warn
 
 from abc import ABCMeta
 
-from kerno.peto import AbstractPeto
+from kerno.bases import Peto
 from kerno.typing import Entity
 from kerno.web.jsonright import get_sane_var_names
 
@@ -27,7 +27,7 @@ class Action(metaclass=ABCMeta):
                 ...
     """
 
-    def __init__(self, peto: AbstractPeto):  # noqa
+    def __init__(self, peto: Peto):  # noqa
         warn("kerno.Action is deprecated and will be removed.", DeprecationWarning)
         self.peto = peto
 

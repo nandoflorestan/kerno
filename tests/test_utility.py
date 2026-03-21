@@ -1,12 +1,18 @@
 # noqa
 
 from unittest import TestCase
+from kerno.bases import Kerno
 from kerno.start import ConfigurationError, Eko
+from kerno.typing import DictStr
+
+
+class ConfigMock:
+    kerno_utilities: DictStr = {}
 
 
 class TestUtilityRegistry(TestCase):  # noqa
     def _make_one(self, register=False):
-        eko = Eko({})
+        eko = Eko(config=ConfigMock(), const=None, kerno_class=Kerno)
         if register:
             eko.utilities.register("test_utility", object)
         return eko

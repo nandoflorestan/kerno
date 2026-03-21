@@ -2,8 +2,8 @@
 
 from typing import Any, Optional, Union
 
-from kerno.kerno import Kerno
-from kerno.repository.sqlalchemy import BaseSQLAlchemyRepository
+from kerno.bases import Kerno
+from kerno.protocols import IRepo
 from kerno.state import UIMessage
 from kerno.typing import DictStr
 
@@ -128,7 +128,7 @@ class KRequest(PyramidRequest):
     """
 
     kerno: Kerno
-    repo: BaseSQLAlchemyRepository
+    repo: IRepo
     user: Any
 
     def add_flash(self, **kw) -> UIMessage:  # type: ignore[empty-body]

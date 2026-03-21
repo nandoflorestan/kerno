@@ -2,7 +2,7 @@
 
 from typing import Any, Generic, Iterable, Optional, Sequence, Tuple
 
-from kerno.kerno import Kerno
+from kerno.bases import Kerno
 from kerno.typing import DictStr, Entity
 
 
