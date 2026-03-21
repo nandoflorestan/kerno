@@ -76,7 +76,7 @@ class Eko(Generic[TKerno]):
         self, config: IConfig, const: DictStr | None, kerno_class=IKerno
     ):  # noqa
         self._included_modules: list[ModuleType] = []
-        self.kerno: IKerno = kerno_class(config, const=const)
+        self.kerno: TKerno = kerno_class(config, const=const)
         self.utilities = UtilityRegistryBuilder(kerno=self.kerno)
 
     def include(self, spec: str | ModuleType, throw: bool = True) -> None:

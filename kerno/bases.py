@@ -1,6 +1,6 @@
 """Base implementations that you may want to extend. See protocols.py first."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from types import MappingProxyType  # which behaves like a FrozenDict
 from typing import Any, Callable, Generic, Iterable, Type, TypeVar, Protocol, Self
 
@@ -9,6 +9,7 @@ from kerno.state import MalbonaRezulto
 from kerno.typing import DictStr
 
 
+@dataclass
 class Kerno(IKerno):
     """Core of an application, integrating decoupled resources.
 
@@ -16,13 +17,14 @@ class Kerno(IKerno):
     the "Eko" configurator.
     """
 
-    def __init__(self, config: IConfig, const: DictStr | None):
-        """Construct. The `config` parameter is a validated configuration object."""
-        # The `settings` dictionary has been replaced by a `config` object.
-        self.config = config
-        self.utilities: MappingProxyType[str, Any] = MappingProxyType({})
-        self.const = const or {}  # The app should put global constants here
-        # self.events = EventHub()  # from kerno.event import EventHub
+    config: IConfig  # for validated configuration
+    const: DictStr = field(default_factory=dict)  # for global constants of the app
+    utilities: MappingProxyType[str, Any] = field(
+        default_factory=lambda: MappingProxyType({})
+    )
+    # Suggestion for subclasses:
+    # from kerno.event import EventHub
+    # events: EventHub = field(default_factory=EventHub)
 
 
 def _pyramid_args(request, json: bool) -> DictStr:  # noqa
@@ -58,7 +60,7 @@ class UserlessPeto(IUserlessPeto):
     raw: DictStr  # operation-specific data
 
     @classmethod
-    def from_pyramid(cls: Type["UserlessPeto"], request, json=False) -> "UserlessPeto":
+    def from_pyramid(cls: Type[Self], request, json=False) -> Self:
         """Integration with the *pyramid* web framework.
 
         Typical usage is, inside your pyramid view, you do::
