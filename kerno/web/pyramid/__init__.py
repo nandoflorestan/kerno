@@ -105,6 +105,8 @@ def raise_if_not_authenticated(request: KRequest) -> None:
 class IKerno(Interface):
     """Marker to register and retrieve a Kerno instance in a Pyramid app."""
 
+    # This cannot be kerno.protocols.IKerno, zope.interface errors out.
+
 
 def includeme(config) -> None:
     r"""Integrate kerno with Pyramid.
