@@ -47,7 +47,6 @@ http://ben-morris.com/why-the-generic-repository-is-just-a-lazy-anti-pattern
 from typing import Iterable
 
 from bag.settings import resolve
-
 from kerno.start import Eko
 
 
