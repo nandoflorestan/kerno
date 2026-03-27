@@ -7,47 +7,40 @@ requires-python = ">= 3.11"
 readme = "README.rst"
 license = "MIT"
 keywords = [
-    "Clean Architecture",
-    "service layer",
-    "action",
-    "pyramid",
-    "sqlalchemy",
+	"Clean Architecture",
+	"service layer",
+	"action",
+	"pyramid",
+	"sqlalchemy",
 ]
 classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: Implementation :: CPython",
-    "Programming Language :: Python :: Implementation :: PyPy",
-    "Framework :: Pyramid",
-    "Topic :: Database",
-    "Topic :: Internet :: WWW/HTTP",
-    "Topic :: Internet :: WWW/HTTP :: WSGI",
-    "Topic :: Software Development :: Libraries",
-    "Topic :: Software Development :: Libraries :: Application Frameworks",
-    "Typing :: Typed",
-    "Programming Language :: Python :: 3.14",
+	"Development Status :: 4 - Beta",
+	"Intended Audience :: Developers",
+	"License :: OSI Approved :: MIT License",
+	"Operating System :: OS Independent",
+	"Programming Language :: Python",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3.12",
+	"Programming Language :: Python :: 3.13",
+	"Programming Language :: Python :: 3.14",
+	"Programming Language :: Python :: Implementation :: CPython",
+	"Programming Language :: Python :: Implementation :: PyPy",
+	"Framework :: Pyramid",
+	"Topic :: Database",
+	"Topic :: Internet :: WWW/HTTP",
+	"Topic :: Internet :: WWW/HTTP :: WSGI",
+	"Topic :: Software Development :: Libraries",
+	"Topic :: Software Development :: Libraries :: Application Frameworks",
+	"Typing :: Typed",
 ]
-dependencies = [
-    "bag>=5.0",
-    "reg==0.12",
-]
+dependencies = ["bag>=5.0", "reg==0.12"]
 
 [project.urls]
 Repository = "https://github.com/nandoflorestan/kerno"
 Documentation = "http://docs.nando.audio/kerno/latest/"
 
 [dependency-groups]
-dev = [
-    "colander",
-    "pytest",
-]
+dev = ["colander", "pytest"]
 
 [tool.uv.build-backend]
 module-root = ""

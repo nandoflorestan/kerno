@@ -26,6 +26,7 @@ var/
 .installed.cfg
 *.egg
 poetry.lock
+uv.lock
 
 # Installer logs
 pip-log.txt
