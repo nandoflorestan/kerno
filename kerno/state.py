@@ -2,6 +2,7 @@
 
 These are typically returned by *action* layer code to controllers.
 """
+
 from __future__ import annotations  # allows forward references; python 3.7+
 from abc import ABCMeta
 from collections import OrderedDict
@@ -59,10 +60,10 @@ class UIMessage:
             return cls(**payload)
 
 
-class Mandate:  # TODO Remove this class
-    """Represents a command from the server to the UI.
+class Mandate:  # TODO Remove
+    """Represents a command from the server to the UI. DEPRECATED.
 
-    Prefer the new Mandato class instead.
+    The Mandato class is better because it encapsulates transformation to dict.
     """
 
     __slots__ = ("name", "payload")
