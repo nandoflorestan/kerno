@@ -13,11 +13,12 @@ Characteristics of this style:
 - Type composition (like lego), as opposed to subtyping (OO).
 """
 
-from typing import Protocol, NewType, Annotated, Literal, TypeAlias
+from typing import Protocol, NewType, Annotated, Literal, TypeAlias, get_args
 from dataclasses import dataclass
 
 # Tiny types: Prevent primitive obsession by wrapping base types.
 UserId = NewType("UserId", int)
+user_id = UserId(42)
 
 # Constrained types: Using metadata for domain documentation.
 Price = Annotated[float, "positive"]
@@ -45,6 +46,8 @@ Result: TypeAlias = Success | Failure
 
 # Discrete states: Making illegal states unrepresentable via Literals.
 OrderState = Literal["Pending", "Shipped", "Delivered"]
+# You can get the values at runtime, so it's like a better Enum:
+order_states: tuple[str, ...] = get_args(OrderState)
 
 
 # Composition: Combining small types into complex domain models.
@@ -63,3 +66,49 @@ class Validator(Protocol):
 def process_data(data: str, check: Validator) -> None:
     if check(data):
         ...
+
+
+# Invariant, covariant and contravariant generics
+# ===============================================
+
+from typing import TypeVar, Generic
+
+
+class Animal: ...
+
+
+class Cat(Animal): ...
+
+
+# Invariant: Must be exactly the type (e.g., a List)
+# Use when the container is both read from AND written to.
+I = TypeVar("I")
+
+
+class Box(Generic[I]):
+    def set(self, item: I): ...
+    def get(self) -> I: ...
+
+
+# Covariant: Can be the type or a subtype (e.g., a Tuple)
+# Use for "Producers" (read-only).
+Co = TypeVar("Co", covariant=True)
+
+
+class ImmutableList(Generic[Co]):
+    def get(self) -> Co: ...
+
+
+# Contravariant: Can be the type or a supertype
+# Use for "Consumers" (write-only).
+Contra = TypeVar("Contra", contravariant=True)
+
+
+class Sink(Generic[Contra]):
+    def send(self, item: Contra): ...
+
+
+# Usage logic:
+# Box[Cat] cannot be Box[Animal]
+# ImmutableList[Cat] is a subtype of ImmutableList[Animal]
+# Sink[Animal] is a subtype of Sink[Cat]
