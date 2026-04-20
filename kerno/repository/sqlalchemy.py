@@ -1,7 +1,9 @@
 """A base class for SQLAlchemy-based repositories."""
 
-from typing import Any, Generic, Iterable, Optional, Sequence, Tuple
+from dataclasses import dataclass, InitVar
+from typing import Any, ClassVar, Generic, Iterable, Optional, Sequence, Tuple
 
+from kerno.protocols import IKerno
 from kerno.bases import Kerno
 from kerno.typing import DictStr, Entity
 
@@ -30,26 +32,27 @@ class SpyRepo:
         self.flushed = True
 
 
+@dataclass
 class BaseSQLAlchemyRepository:
     """Base class for a SQLAlchemy-based repository."""
 
-    SAS = "session factory"  # name of the SQLAlchemy session utility
+    SAS: ClassVar[str] = "session factory"
+    kerno: IKerno
+    session_factory: InitVar[Any] = None
 
-    def __init__(self, kerno: Kerno, session_factory: Any = None):
-        """Construct a SQLAlchemy repository instance to serve ONE request.
-
-        - ``kerno`` is the Kerno instance for the current application.
-        - ``session_factory`` is a function that returns a
-          SQLAlchemy session to be used in this request -- scoped or not.
-          If not provided as an argument, get it from the
-          kerno utility registry (under the "session factory" name.
-        """
-        self.kerno = kerno
-        self.sas = self.new_sas(session_factory or kerno.utilities[self.SAS])
+    def __post_init__(self, session_factory: Any) -> None:
+        """Construct a SQLAlchemy repository instance to serve ONE request."""
+        self.sas = self.new_sas(session_factory or self.kerno.utilities[self.SAS])
         assert self.sas
 
-    def new_sas(self, session_factory):
-        """Obtain a new SQLAlchemy session instance."""
+    def new_sas(self, session_factory: Any) -> Any:
+        """Obtain a new SQLAlchemy session instance.
+
+        ``session_factory`` is a function that returns a
+        SQLAlchemy session to be used in this request -- scoped or not.
+        If not provided as an argument, get it from the
+        kerno utility registry (under the "session factory" name.
+        """
         assert session_factory is not None
         is_scoped_session = hasattr(session_factory, "query")
         # Because we don't want to depend on SQLAlchemy:
