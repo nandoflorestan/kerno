@@ -119,6 +119,9 @@ class PyramidRequest:
     def static_path(self, path: str, **kw) -> str:  # type: ignore[empty-body]
         """Generate a relative URL to a static resource."""
 
+    def add_response_callback(self, callback) -> None:  # type: ignore[empty-body]
+        """Register a callback to run before the response is returned."""
+
 
 class KRequest(PyramidRequest):
     """Typing stub for a Pyramid/kerno request object.
