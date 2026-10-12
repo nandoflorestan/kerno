@@ -37,7 +37,7 @@ dependencies = ["bag>=5.0", "reg==0.12"]
 
 [project.urls]
 Repository = "https://github.com/nandoflorestan/kerno"
-Documentation = "http://docs.nando.audio/kerno/latest/"
+Documentation = "https://docs.revulo.dev/kerno/latest/"
 
 [dependency-groups]
 dev = ["colander", "pytest"]
